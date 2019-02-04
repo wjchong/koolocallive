@@ -1,11 +1,11 @@
 <?php
 
 
-
 session_start();
 
 include("config.php");
 
+$current_time = date('Y-m-d H:i:s');
 if($_SESSION['login']=='')
 
 {
@@ -17,13 +17,46 @@ if($_SESSION['login']=='')
 }
 
 
-
 $total_rows = mysqli_query($conn, "SELECT order_list.*, users.mobile_number FROM order_list inner join users on order_list.user_id = users.id WHERE merchant_id ='".$_SESSION['login']."' ORDER BY `created_on` DESC");
 
-
+$total_rows1 = mysqli_query($conn, "SELECT order_list.*, users.mobile_number FROM order_list inner join users on order_list.user_id = users.id WHERE merchant_id ='".$_SESSION['login']."' ORDER BY `created_on` DESC");
+$merchant_name = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM users WHERE id ='".$_SESSION['login']."'"));
+$pending_time = $merchant_name['pending_time'];
 
 require_once ("languages/".$_SESSION["langfile"].".php");
 
+ $i =1;
+$pending_data = array();
+while ($row=mysqli_fetch_assoc($total_rows1)){
+   
+    $merchant_name = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM users WHERE id ='".$row['merchant_id']."'"));
+    $pending_time = $merchant_name['pending_time'];
+
+    $created =$row['created_on'];
+
+    $date=date_create($created);
+    $dteDiff  = date_diff($date, date_create($current_time));
+    $diff_day = $dteDiff->d;
+    if($diff_day != '0') $diff_day .= ' days ';
+    else $diff_day = '';
+    $diff_hour = $dteDiff->h;
+    if(intval($diff_hour) < 10) $diff_hour = '0'.$diff_hour.':'; else $diff_hour = $diff_hour.':';
+    $diff_minute = $dteDiff->i;
+    if($diff_minute < 10) $diff_minute = '0'.$diff_minute.':'; else $diff_minute = $diff_minute;
+    $diff_second = $dteDiff->s;
+    if($diff_second < 10) $diff_second = '0'.$diff_second;
+    $diff_time = $diff_day.' '.$diff_hour.$diff_minute.$diff_second;
+    if($diff_day == '')
+      $diff_time = $diff_hour.$diff_minute;
+    $diff_total_minute = 60 * $diff_hour + 60 * 24 * $diff_day + $diff_minute;
+
+    $new_time = explode(" ",$created);
+
+    if((intval($diff_total_minute) > intval($pending_time)) && ($row['status'] == 0)){ 
+        $item = array("date" => $date, "new_time" => $new_time[1], 'diff_time' => $diff_time, 'invoice_no' => $row['invoice_no'], 'table_no' => $row['table_type']);
+        array_push($pending_data, $item);
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -313,10 +346,42 @@ require_once ("languages/".$_SESSION["langfile"].".php");
             <div class="row" id="main-content" style="padding-top:25px">
 
                 <div class="well">
+                    <?php if (count($pending_data) > 0){?>
+                        <h5 style="color: red;">Invoice not yet done and require immediate attention!</h5>
+                        <div style="width: 380px; height: 300px; overflow: auto;">
 
+                        
+                            <table class="table table-striped" >
+                              <thead>
+                                <tr>
+                                  <th><?php echo $language["date_of_order"];?></th>
+                                  <th>Invoice <br> Numbers</th>
+                                  <th>Table <br> Number</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <?php  $i =1;
+                                    foreach ($pending_data as $key => $value) { ?>
+                                        <tr style="text-align: center;">
+                                            <td><?php echo date_format($value['date'],"Y/m/d"). ' ';
+                                                 echo $value['new_time'].'<br>';?>
+                                              <p style="color: red; margin-bottom: 0px;"> <?php  echo $value['diff_time']; ?></p>
+                                                
+                                            </td>
+                                            <td style="font-size: 20px; cursor: pointer; text-decoration: underline;" class="pending_invoice_no" invoice-no="<?= $value['invoice_no'];?>"><?= $value['invoice_no'];?></td>
+                                            <td style="font-size: 20px;"><?= $value['table_no'];?></td>
+                                        </tr>
+                                    <?php } ?>
+                              </tbody>
+                            </table> 
+
+                    </div>
+                    <?php }?>
+                    
+                    
                     <div>
 
-                        <h3><?php echo $language['order_list'];?></h3>
+                        <h3><?php //echo $language['order_list'];?></h3>
 
                         <span style="cursor: pointer; color: #ff0000; font-size: 40px;" id="scan_order"><?php echo $language['scan_order'];?></span>
 
@@ -354,15 +419,15 @@ require_once ("languages/".$_SESSION["langfile"].".php");
 
                             <th><?php echo $language["table_number"];?></th>
 
-			    <th>Invoice Number</th>
+                            <th>Invoice Number</th>
 
-                             <th><?php echo $language["quantity"];?></th>
+                            <th><?php echo $language["quantity"];?></th>
 
                             <th class="product_name test_product"><?php echo $language["product_name"];?></th>
 
                             <th class="product_name test_product"><?php echo $language["remark"];?></th>
 
-							<th><?php echo $language["product_code"];?></th>
+                            <th><?php echo $language["product_code"];?></th>
 
                             <th>Price</th>
 
@@ -378,7 +443,7 @@ require_once ("languages/".$_SESSION["langfile"].".php");
 
                             <th>Delivery <br> Service</th>
 
-                            <th><?php echo $language["print"];?></th>
+                            <!-- <th><?php echo $language["print"];?></th> -->
 
                             <th>K1/K2</th>
 
@@ -386,6 +451,7 @@ require_once ("languages/".$_SESSION["langfile"].".php");
 
                         </thead>
 
+                        <tbody id="orderview-body">
                         <?php
 
                         $i =1;
@@ -434,7 +500,6 @@ require_once ("languages/".$_SESSION["langfile"].".php");
 
                         ?>
 
-                        <tbody>
 
                         <?php
 
@@ -450,7 +515,7 @@ require_once ("languages/".$_SESSION["langfile"].".php");
 
                         $i1 =1;  ?>
 
-                        <tr class="<?php echo $todayorder; ?> fdfd <?php echo $callss; ?>" data-id="<?php echo $row['id']; ?>">
+                        <tr id="<?php echo $row['invoice_no']; ?>" class="<?php echo $todayorder; ?> fdfd <?php echo $callss; ?>" data-id="<?php echo $row['id']; ?>">
 
                             <input type="hidden" class="merchant_<?php echo $row['id'];?>" value="<?php echo $merchant_name['name'];?>">
 
@@ -461,11 +526,27 @@ require_once ("languages/".$_SESSION["langfile"].".php");
                             <input type="hidden" class="merchantaddress_<?php echo $row['id'];?>" value="<?php echo $merchant_name['google_map'];?>" >
 
                             <td><?php echo  $i ?></td>
-
+                            <?php 
+                              $dteDiff  = date_diff($date, date_create($current_time));
+                              $diff_day = $dteDiff->d;
+                              if($diff_day != '0') $diff_day .= ' days ';
+                              else $diff_day = '';
+                              $diff_hour = $dteDiff->h;
+                              if(intval($diff_hour) < 10) $diff_hour = '0'.$diff_hour.':'; else $diff_hour = $diff_hour.':';
+                              $diff_minute = $dteDiff->i;
+                              if($diff_minute < 10) $diff_minute = '0'.$diff_minute.':'; else $diff_minute = $diff_minute.':';
+                              $diff_second = $dteDiff->s;
+                              if($diff_second < 10) $diff_second = '0'.$diff_second;
+                              $diff_time = $diff_day.'<br>'.$diff_hour.$diff_minute.$diff_second;
+                            ?>
                             <td><?php echo date_format($date,"m/d/Y");  ?>
 
                                 <?php echo '<br>'; echo $new_time[1] ?>
 
+                                <?php 
+                                  if($row['status'] == 0){?>
+                                    <p style="color: red;"><?php echo $diff_time; ?></p> <?php 
+                                  }?>
                             </td>
 
                             <td class="username_<?php echo $row['id'];?>"><?php echo $user_name['name']; ?></td>
@@ -514,7 +595,7 @@ require_once ("languages/".$_SESSION["langfile"].".php");
 
                             </td>
 
-                             <td class="quantity_<?php echo $row['id'];?>"><?php
+                            <td class="quantity_<?php echo $row['id'];?>"><?php
 
                                 foreach ($quantity_ids as $key)
 
@@ -570,9 +651,9 @@ require_once ("languages/".$_SESSION["langfile"].".php");
 
                                 } ?></td>
 
-                           
 
-								<td>
+
+                            <td>
 
                                 <?php
 
@@ -586,7 +667,7 @@ require_once ("languages/".$_SESSION["langfile"].".php");
 
                             </td>
 
-							
+
 
                             <td>
 
@@ -1038,9 +1119,13 @@ require_once ("languages/".$_SESSION["langfile"].".php");
 
                     var barcodeRead = $("#barcode").val();
 
-                    addOrderToDialog( barcodeRead );
+                    setTimeout(function(){
+                        addOrderToDialog( barcodeRead );
 
-                    $("#barcode").val('');
+                        $("#barcode").val('');
+
+                        $("#barcode").focus();
+                    }, 200);
 
                 }
 
@@ -1058,11 +1143,13 @@ require_once ("languages/".$_SESSION["langfile"].".php");
 
                 var barcodeRead = $("#barcode").val();
 
-                addOrderToDialog( barcodeRead );
+                setTimeout(function(){
+                    addOrderToDialog( barcodeRead );
 
-                $("#barcode").val('');
+                    $("#barcode").val('');
 
-                $("#barcode").focus();
+                    $("#barcode").focus();
+                }, 200);
 
             }
 
@@ -1361,14 +1448,16 @@ require_once ("languages/".$_SESSION["langfile"].".php");
         $("#scan_order").click(function() {
 
             $("#myScanModal").modal("show");
-
+            $("#total_qty").text('');
             $("#scanned_data").html('');
-
+            $("#total_amount").text('');
         });
 
 
 
-        $(".print-order").click(function() {
+        $(".well").on('click','.print-order', function(e) {
+
+            e.preventDefault();
 
             var id = $(this).attr("data-id");
 
@@ -1382,9 +1471,11 @@ require_once ("languages/".$_SESSION["langfile"].".php");
 
                 success:function(data){
 
+
                     if( data != null ) {
 
                         var obj = JSON.parse( data );
+
 
                         if( obj.length > 0 ) {
 
@@ -1404,7 +1495,6 @@ require_once ("languages/".$_SESSION["langfile"].".php");
 
                                 success : function(data) {
 
-                                    console.log(data);
 
                                     if( ! data || data.indexOf('print_setting_error') > -1 ) {
 
@@ -1414,7 +1504,11 @@ require_once ("languages/".$_SESSION["langfile"].".php");
 
                                     alert(data);
 
-                                }});
+                                },
+                                error: function(data){
+                                    console.log(data);
+                                }
+                            });
 
                         }
 
@@ -1528,7 +1622,7 @@ require_once ("languages/".$_SESSION["langfile"].".php");
 
         $("form#data").submit(function(e) {
 
-			//alert('adf') ;
+            //alert('adf') ;
 
             console.log(e);
 
@@ -1552,7 +1646,7 @@ require_once ("languages/".$_SESSION["langfile"].".php");
 
                     console.log(data);
 
-                   // alert(data);
+                    // alert(data);
 
                     location.reload();
 
@@ -1568,7 +1662,7 @@ require_once ("languages/".$_SESSION["langfile"].".php");
 
 </script>
 
-<script> 
+<script>
 
 
     /*window.setInterval('refresh()', 60000);
@@ -1584,17 +1678,136 @@ require_once ("languages/".$_SESSION["langfile"].".php");
         }
 
     }*/
-    setInterval(function(){ 
-        
+    var merchant_id = '<?php echo $_SESSION['login'];?>';
+    var site_url = '<?php echo $site_url;?>';
+
+    setInterval(function(){
+
+
         if( !hasClass( document.getElementById("myScanModal"), "show" ) ) {
 
-            window.location.reload();
+            //window.location.reload();
+            $.ajax({
+                url : site_url + 'get_order_list_merchant.php',
+                type : 'post',
+                dataType: 'json',
+                data: {merchant: merchant_id},
+                success: function(data){
+                    //console.log(data);
+                    console.log("sdfsdf");
+                    var content = "";
+                    for(var i = 0; i < data.length; i++){
 
+                        content +=  "<tr id='"+data[i]['invoice_no']+"' class='"+data[i]['todayorder']+" fdfd "+data[i]['callss']+"' data-id='"+data[i]['id']+"'>";
+                        
+                        content +=      "<input type='hidden' class='merchant_"+data[i]['id']+"' value='"+data[i]['merchant_name']+"'>";
+                        
+                        content +=      "<input type='hidden' class='userphone_"+data[i]['id']+"' value='"+data[i]['user_mobile_number']+"' >";
+
+                        content +=      "<input type='hidden' class='merchantphone_"+data[i]['id']+"' value='"+data[i]['merchant_mobile_number']+"' >";
+
+                        content +=      "<input type='hidden' class='merchantaddress_"+data[i]['id']+"' value='"+data[i]['merchant_google_map']+"' >";
+
+                        content +=      "<td>"+(i+1)+"</td>";
+                        content +=      "<td>"+data[i]['date']+"<br>"+data[i]['new_time']+"<p style='color: red;'>"+data[i]['diff_time']+"</p></td>";
+                        content +=      "<td class='username_"+data[i]['id']+"'>"+data[i]['user_name']+"</td>";
+                        content += "<td><label class='status' status='"+data[i]['status']+"' data-id='"+data[i]['id']+"'>"+data[i]['sta']+"</label></td>";
+
+                        if(data[i]['status'] == '2'){
+                            content += "<td target='_blank' href='print_kitchen.php?id="+data[i]['id']+"&merchant="+merchant_id+"'>Print</td>";
+                        } else {
+                           content += "<td></td>"; 
+                        }
+                        content += "<td><a class='print-order' href='#' data-id='"+data[i]['id']+"' data-invoice='"+data[i]['invoice_no']+"'>Print Receipt</a></td>";
+                        content += "<td><a target='_blank' href='"+site_url+"/chat/chat.php?sender="+merchant_id+"&receiver="+data[i]['user_id']+"'><i class='fa fa-comments-o' style='font-size:25px;'></i></a></td>";
+                        content += "<td><a target='_blank' href='print.php?id="+data[i]['id']+"&merchant="+merchant_id+"'>Print</a></td>";
+                        content += "<td class='table_number_"+data[i]['id']+"'>"+data[i]['table_type']+"</td>";
+                        content += "<td>"+data[i]['invoice_no']+"</td>";
+                        content += "<td class='quantity_"+data[i]['id']+"'>"+data[i]['quantities']+"</td>";
+                        content += "<td class='products_namess product_name_"+data[i]['id']+" test_productss'>"+data[i]['product_name']+"</td>";
+                        content += "<td>"+data[i]['remark']+"</td>";
+                        content += "<td>"+data[i]['product_code']+"</td>";
+                        content += "<td>"+data[i]['amount_val']+"</td>";
+                        content += "<td>"+data[i]['quantity_val']+"</td>";
+                        content += "<td>"+data[i]['total_val']+"</td>";
+                        content += "<td>"+data[i]['wallet']+"</td>";
+                        content += "<td class='location_"+data[i]['id']+" new_tablee'>"+data[i]['location']+"</td>";
+                        content += "<td>"+data[i]['lock_mobile']+"</td>";
+                        content += "<td><a onclick='copy_orderDetail("+data[i]['id']+")'' href='#' class='delivery' id='"+data[i]['id']+"'><i class='fa fa-truck' style='font-size:25px;'></i></a></td>";
+                        content += "<td>"+data[i]['account_type']+"</td>";
+                        content += "</tr>";
+                    }
+                    $("#orderview-body").html(content);
+                }
+            }); 
 
 
         }
-    }, 
+    },
     60000);
 
+    $(".pending_invoice_no").click(function(e){
+        var id = $(this).attr('invoice-no');
+        var top = $("#"+id).position().top;
+        window.scroll(0, top - 90); 
+        //console.log($(this).attr('invoice-no'));
+    });
+
+    /*function ajax_loading(){
+        $.ajax({
+            url : site_url + 'get_order_list_merchant.php',
+            type : 'post',
+            dataType: 'json',
+            data: {merchant: merchant_id},
+            success: function(data){
+                //console.log(data);
+                console.log("sdfsdf");
+                var content = "";
+                for(var i = 0; i < data.length; i++){
+
+                    content +=  "<tr id='"+data[i]['invoice_no']+"' class='"+data[i]['todayorder']+" fdfd "+data[i]['callss']+"' data-id='"+data[i]['id']+"'>";
+                    
+                    content +=      "<input type='hidden' class='merchant_"+data[i]['id']+"' value='"+data[i]['merchant_name']+"'>";
+                    
+                    content +=      "<input type='hidden' class='userphone_"+data[i]['id']+"' value='"+data[i]['user_mobile_number']+"' >";
+
+                    content +=      "<input type='hidden' class='merchantphone_"+data[i]['id']+"' value='"+data[i]['merchant_mobile_number']+"' >";
+
+                    content +=      "<input type='hidden' class='merchantaddress_"+data[i]['id']+"' value='"+data[i]['merchant_google_map']+"' >";
+
+                    content +=      "<td>"+(i+1)+"</td>";
+                    content +=      "<td>"+data[i]['date']+"<br>"+data[i]['new_time']+"<p style='color: red;'>"+data[i]['diff_time']+"</p></td>";
+                    content +=      "<td class='username_"+data[i]['id']+"'>"+data[i]['user_name']+"</td>";
+                    content += "<td><label class='status' status='"+data[i]['status']+"' data-id='"+data[i]['id']+"'>"+data[i]['sta']+"</label></td>";
+
+                    if(data[i]['status'] == '2'){
+                        content += "<td target='_blank' href='print_kitchen.php?id="+data[i]['id']+"&merchant="+merchant_id+"'>Print</td>";
+                    } else {
+                       content += "<td></td>"; 
+                    }
+                    content += "<td><a class='print-order' href='#' data-id='"+data[i]['id']+"' data-invoice='"+data[i]['invoice_no']+"'>Print Receipt</a></td>";
+                    content += "<td><a target='_blank' href='"+site_url+"/chat/chat.php?sender="+merchant_id+"&receiver="+data[i]['user_id']+"'><i class='fa fa-comments-o' style='font-size:25px;'></i></a></td>";
+                    content += "<td><a target='_blank' href='print.php?id="+data[i]['id']+"&merchant="+merchant_id+"'>Print</a></td>";
+                    content += "<td class='table_number_"+data[i]['id']+"'>"+data[i]['table_type']+"</td>";
+                    content += "<td>"+data[i]['invoice_no']+"</td>";
+                    content += "<td class='quantity_"+data[i]['id']+"'>"+data[i]['quantities']+"</td>";
+                    content += "<td class='products_namess product_name_"+data[i]['id']+" test_productss'>"+data[i]['product_name']+"</td>";
+                    content += "<td>"+data[i]['remark']+"</td>";
+                    content += "<td>"+data[i]['product_code']+"</td>";
+                    content += "<td>"+data[i]['amount_val']+"</td>";
+                    content += "<td>"+data[i]['quantity_val']+"</td>";
+                    content += "<td>"+data[i]['total_val']+"</td>";
+                    content += "<td>"+data[i]['wallet']+"</td>";
+                    content += "<td class='location_"+data[i]['id']+" new_tablee'>"+data[i]['location']+"</td>";
+                    content += "<td>"+data[i]['lock_mobile']+"</td>";
+                    content += "<td><a onclick='copy_orderDetail("+data[i]['id']+")'' href='#' class='delivery' id='"+data[i]['id']+"'><i class='fa fa-truck' style='font-size:25px;'></i></a></td>";
+                    content += "<td>"+data[i]['account_type']+"</td>";
+                    content += "</tr>";
+                }
+                $("#orderview-body").html(content);
+            }
+        }); 
+    }*/
+    
 </script>
 

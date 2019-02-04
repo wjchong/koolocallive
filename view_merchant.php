@@ -732,21 +732,25 @@ label {
         <form method="post" action="order_place.php">
         <?php } ?>
         
-        <table class="table table-striped">
+       <table class="table table-striped" id="cartsection">
         <thead>
-        <tr>
+        <tr> 
         <th></th>
         <th><?php echo $language["product_name"] ;?></th>
         <th>QTY</th>
+        
         <th><?php echo $language["product_code"]  ;?></th>
         
         <th><?php echo $language["remark"] ;?></th>
+		<th>Unit Price</th>
+        <th>Total</th>
         </tr>
         <tbody id="test"> </tbody>
         </thead>
         
         </table>
         
+        <a href="#main-content"><p class="" style="width: 110px !important;font-size: 16px;padding:14px;background-color: #003A66;color: white; font-weight: bold; border-radius: 8px;"> Add order </p></a> <br/>
         
         
         <div class="location_merchant">
@@ -762,6 +766,7 @@ label {
         
         </div>
         </div>
+        <a href="#cartsection"><img src ="images/shopping-14-512.png" style="width:90px;height:90px;position: fixed;right: 10px;bottom: 70px;"></a>
         </form>
 
 </main>
@@ -787,7 +792,9 @@ label {
 		var name = $(this).data("name");
 		var quantity = $(this).closest(".well").find("input[name='quatity']").val();
         
-		$("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td>"+name+"</td><td><input type=number style='width:70px;' name='qty[]' value="+quantity+" ><input type= hidden name='p_id[]' value= "+id+"><input type= hidden name='p_code[]' value= "+code+"><input type= hidden name='p_price[]' value= "+p_price+"></td><td>"+code+"</td>  <td> <textarea name='option[]'></textarea></td>  </tr>");
+		var p_total = p_price*quantity ;
+        
+    	$("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td>"+name+"</td><td><input style='width:70px;'  onchange='UpdateTotal("+id+" ,"+p_price+")'  type=number name='qty[]' value="+quantity+" id='"+id+"_test_athy'><input type= hidden name='p_id[]' value= "+id+"><input type= hidden name='p_code[]' value= "+code+"></td><td>"+code+"</td><td> <textarea name='option[]'></textarea></td>  <td><input style='width:70px;' type='text' name='p_price[]' value= "+p_price+" readonly></td><td><input type='text' style='width:70px;' name='p_total[]' value= "+p_total+" readonly  id='"+id+"_cat_total'></td> </tr>");
 		alert('The product added');
 	});
 
@@ -806,14 +813,15 @@ label {
 		    
 		    var quantity = 1 ;
 		}
-		$("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td style='width:50px;'>"+name+"</td><td><input style='width:70px;' type=number name='qty[]' value="+quantity+" id='test_athy'><input type= hidden name='p_id[]' value= "+id+"><input type= hidden name='p_code[]' value= "+code+"><input type= hidden name='p_price[]' value= "+p_price+"></td><td>"+code+"</td>  <td> <textarea name='option[]'></textarea></td>  </tr>");
+		var p_total = p_price *quantity ;
+		$("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td>"+name+"</td><td><input style='width:70px;'  onchange='UpdateTotal("+id+" ,"+p_price+")'  type=number name='qty[]' value="+quantity+" id='"+id+"_test_athy'><input type= hidden name='p_id[]' value= "+id+"><input type= hidden name='p_code[]' value= "+code+"></td><td>"+code+"</td><td> <textarea name='option[]'></textarea></td>  <td><input style='width:70px;' type='text' name='p_price[]' value= "+p_price+" readonly></td><td><input type='text' style='width:70px;' name='p_total[]' value= "+p_total+" readonly  id='"+id+"_cat_total'></td> </tr>");
 		alert('The product added');
 	});
-
+  var other_product_id = 1;
 	$(".oth_pr").on("click", function(){
-		$("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td> <td><input style='width:70px;' type= text name='p_id[]'></td> <td><input style='width:70px;' type=text name='qty[]'><input type= hidden name='p_price[]' value='0' ></td> <td><input style='width:70px;' type=text name='p_code[]' id='test_code'</td><td> <textarea name='option[]'></textarea></td>  </tr>");
+		$("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td><input style='width:120px;' type=text  id='other_product_name_"+other_product_id+"' class='other_product_name'><input type='hidden' name='p_id[]' id='other_product_id_"+other_product_id+"'></td> <td><input style='width:70px;' type=text name='qty[]' value='1'></td>  <td><input class='other_product_code' style='width:70px;' type= text name='p_code[]' id='other_product_code_"+other_product_id+"'></td><td> <textarea name='option[]'  id='other_product_remark_"+other_product_id+"'></textarea></td> <td><input style='width:70px;' type=text name='p_price[]' value='' readonly></td> <td><input  readonly style='width:70px;' type=text name='p_total[]' value=''></td> </tr>");
 	});
-
+	
      jQuery(document).on('click', 'button.removebutton', function () {
          alert("Product has Removed");
          jQuery(this).closest('tr').remove();
@@ -1041,7 +1049,8 @@ $(document).ready(function(){
             		    	var quantity = 1 ; 
             		    
             		}
-            		$("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td>"+name+"</td><td><input style='width:70px;' type=number name='qty[]' value="+quantity+" id='test_athy'><input type= hidden name='p_id[]' value= "+id+"><input type= hidden name='p_code[]' value= "+code+"><input type= hidden name='p_price[]' value= "+p_price+"></td>  <td>"+code+"</td><td> <textarea name='option[]'></textarea></td>  </tr>");
+                	var p_total = p_price *quantity ;
+            		$("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td>"+name+"</td><td><input style='width:70px;' onchange='UpdateTotal("+id+" ,"+p_price+")'  type=number name='qty[]' value="+quantity+" id='"+id+"_test_athy'><input type= hidden name='p_id[]' value= "+id+"><input type= hidden name='p_code[]' value= "+code+"></td> <td>"+code+"</td><td> <textarea name='option[]'></textarea></td>  <td><input type='text' name='p_price[]' style='width:70px;' value= "+p_price+" readonly></td><td><input type='text' style='width:70px;' name='p_total[]' value= "+p_total+" readonly id='"+id+"_cat_total'></td></tr>");
             		alert('The product added');
             	});
                 
@@ -1097,5 +1106,15 @@ var chat_appid = '52013';
     document.getElementsByTagName("head")[0].appendChild(chat_css);
     var chat_js = document.createElement('script'); chat_js.type = 'text/javascript'; chat_js.src = 'https://fast.cometondemand.net/'+chat_appid+'x_xchat.js'; var chat_script = document.getElementsByTagName('script')[0]; chat_script.parentNode.insertBefore(chat_js, chat_script);
   })();
+</script>
+
+<script>
+function UpdateTotal(id=0 , uprice= 0){
+	var qty = $("#"+id+"_test_athy").val();
+	//alert(qty);
+	//alert(qty);
+	var total =  parseFloat(Number(qty*uprice).toFixed(2));
+	$("#"+id+"_cat_total").val(total);
+}
 </script>
 

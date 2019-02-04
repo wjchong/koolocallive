@@ -469,6 +469,12 @@ if(isset($_POST['submit']))
                                     </div>
                                  </div>
                               </div>
+                              <div class="login-bottom login-bottom1" style="width:100%;clear:both; padding-top: 20px;">
+<div class="Back">
+<a class="col-md-2" href="<?php echo $site_url;?>/facebook-login/fbconfig.php"><img src="img/login-cont-facebook.jpg" style=""></a>
+</div>
+</div>
+                              </div>
                            </form>
                            <div class="clear" style="padding:24px;"></div>
                      <div class="col-md-2"> </div>

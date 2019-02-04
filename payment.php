@@ -129,7 +129,11 @@ else
 		$invoice_no = mysqli_fetch_assoc(mysqli_query($conn, $sql))['invoice_no'];
 		if($invoice_no == NULL) $invoice_no = 1;
 		else $invoice_no += 1; 
-
+		
+  if(empty($guest_user_id)){
+      
+     $guest_user_id =  $_SESSION['login'] ; 
+  }
   
 	 $sqlFinalIns = "INSERT INTO order_list SET product_id='$pro_id',  user_id='$guest_user_id', merchant_id='$m_id', quantity='$qty_list', amount='$p_price',product_code='$p_code', remark='$option', location='".$location."', table_type='".$table_type."',created_on='$date', invoice_no='$invoice_no'";
       $test_method = mysqli_query($conn, $sqlFinalIns);
@@ -207,6 +211,10 @@ else
 		else $invoice_no += 1;
 
 
+if(empty($user_id)){
+        
+        $user_id =  $_SESSION['login'] ; 
+        }
 		
 		$sqlFinalIns = "INSERT INTO order_list SET product_id='$pro_id',  user_id='$user_id', merchant_id='$m_id', quantity='$qty_list', amount='$p_price',product_code='$p_code', remark='$option', location='".$location."', table_type='".$table_type."',created_on='$date', invoice_no='$invoice_no'";
 		$test_method = mysqli_query($conn, $sqlFinalIns);
