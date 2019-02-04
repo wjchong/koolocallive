@@ -794,7 +794,7 @@ label {
         
 		var p_total = p_price*quantity ;
         
-    	$("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td>"+name+"</td><td><input style='width:30px;'  onchange='UpdateTotal("+id+" ,"+p_price+")'  type=number name='qty[]' maxlength='3'  value="+quantity+" id='"+id+"_test_athy'><input type= hidden name='p_id[]' value= "+id+"><input type= hidden name='p_code[]' value= "+code+"></td><td>"+code+"</td><td> <textarea style='height:28px;' name='option[]'></textarea></td>  <td><input style='width:70px;' type='text' name='p_price[]' value= "+p_price+" readonly></td><td><input type='text' style='width:70px;' name='p_total[]' value= "+p_total+" readonly  id='"+id+"_cat_total'></td> </tr>");
+    	$("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td>"+name+"</td><td><input style='width:50px;'  onchange='UpdateTotal("+id+" ,"+p_price+")'  type=number name='qty[]' maxlength='3'  value="+quantity+" id='"+id+"_test_athy'><input type= hidden name='p_id[]' value= "+id+"><input type= hidden name='p_code[]' value= "+code+"></td><td>"+code+"</td><td> <textarea style='height:28px;' name='option[]'></textarea></td>  <td><input style='width:70px;' type='text' name='p_price[]' value= "+p_price+" readonly></td><td><input type='text' style='width:70px;' name='p_total[]' value= "+p_total+" readonly  id='"+id+"_cat_total'></td> </tr>");
 		alert('The product added');
 	});
 
@@ -814,7 +814,7 @@ label {
 		    var quantity = 1 ;
 		}
 		var p_total = p_price *quantity ;
-		$("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td>"+name+"</td><td><input style='width:30px;' maxlength='3'  onchange='UpdateTotal("+id+" ,"+p_price+")'  type=number name='qty[]' value="+quantity+" id='"+id+"_test_athy'><input type= hidden name='p_id[]' value= "+id+"><input type= hidden name='p_code[]' value= "+code+"></td><td>"+code+"</td><td> <textarea style='height:28px;' name='option[]'></textarea></td>  <td><input style='width:70px;' type='text' name='p_price[]' value= "+p_price+" readonly></td><td><input type='text' style='width:70px;' name='p_total[]' value= "+p_total+" readonly  id='"+id+"_cat_total'></td> </tr>");
+		$("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td>"+name+"</td><td><input style='width:50px;' maxlength='3'  onchange='UpdateTotal("+id+" ,"+p_price+")'  type=number name='qty[]' value="+quantity+" id='"+id+"_test_athy'><input type= hidden name='p_id[]' value= "+id+"><input type= hidden name='p_code[]' value= "+code+"></td><td>"+code+"</td><td> <textarea style='height:28px;' name='option[]'></textarea></td>  <td><input style='width:70px;' type='text' name='p_price[]' value= "+p_price+" readonly></td><td><input type='text' style='width:70px;' name='p_total[]' value= "+p_total+" readonly  id='"+id+"_cat_total'></td> </tr>");
 		alert('The product added');
 	});
   var other_product_id = 1;
@@ -822,21 +822,26 @@ label {
 		   $('html,body').animate({
         scrollTop: $("#cartsection").offset().top},
         'slow');  
-       		   
-		$("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td><input style='width:120px;' type=text  id='other_product_name_"+other_product_id+"' class='other_product_name'><input type='hidden' name='p_id[]' id='other_product_id_"+other_product_id+"'><input type='hidden'  name='p_price[]' value='0' id='other_product_price_"+other_product_id+"'></td> <td><input style='width:30px;' id='other_qty_"+other_product_id+"' type=number name='qty[]' value='1'></td> <td><input class='other_product_code' style='width:70px;' type= text name='p_code[]' id='other_product_code_"+other_product_id+"'></td><td> <textarea name='option[]' style='height:28px;' id='other_product_remark_"+other_product_id+"'></textarea></td><td><input style='width:70px;' id='other_product_price_"+other_product_id+"' type='text' name='p_price[]' readonly></td><td><input type='text' style='width:70px;' name='p_total[]' readonly  id='"+other_product_id+"_cat_total'></td></tr>");
+      	   
+		$("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td><input style='width:120px;' type=text  id='other_product_name_"+other_product_id+"' class='other_product_name'><input type='hidden' name='p_id[]' id='other_product_id_"+other_product_id+"'></td> <td><input style='width:50px;' onchange='UpdateTotalCart("+other_product_id+")' id='other_qty_"+other_product_id+"' type=number name='qty[]' value='1'></td> <td><input class='other_product_code' style='width:70px;' type= text name='p_code[]' id='other_product_code_"+other_product_id+"'></td><td> <textarea name='option[]' style='height:28px;' id='other_product_remark_"+other_product_id+"'></textarea></td><td><input style='width:70px;' id='other_product_price_"+other_product_id+"' type='text' name='p_price[]' readonly></td><td><input type='text' style='width:70px;' name='p_total[]' readonly  id='"+other_product_id+"_cat_total'></td></tr>");
       var focus_id="other_product_code_"+other_product_id;
 	  document.getElementById(focus_id).focus(); 
 	other_product_id++;
     jQuery(".other_product_name").autocomplete({
       source: "auto_complete_product_name.php",
-      minLength: 1,
+      minLength: 1, 
       select: function(event, ui) {
         var id = $(this).attr('id').split('_')[3];
-		
+		var qty_id='other_qty_'+id;
+		var qty_no=document.getElementById(qty_id).value;
+		 var total_cart=qty_no*(ui.item.price);
+		 // alert(total_cart);
         $("#other_product_id_"+id).val(ui.item.id);
         $("#other_product_code_"+id).val(ui.item.code);
         $("#other_product_price_"+id).val(ui.item.price);
         $("#other_product_remark_"+id).val(ui.item.remark);
+        var cart_id=id+"_cat_total";
+		document.getElementById(cart_id).value =total_cart;
       }
     });
     jQuery(".other_product_name").keyup(function(e){
@@ -1152,6 +1157,15 @@ function UpdateTotal(id=0 , uprice= 0){
 	//alert(qty);
 	var total =  parseFloat(Number(qty*uprice).toFixed(2));
 	$("#"+id+"_cat_total").val(total);
+}
+function UpdateTotalCart(id=0){
+	// var qty = $("#"+id+"_test_athy").val();
+	var qty = $("#other_qty_"+id).val();
+	var unitprize = $("#other_product_price_"+id).val();
+	var total =  parseFloat(Number(qty*unitprize).toFixed(2));
+	$("#"+id+"_cat_total").val(total);
+	
+	
 }
 </script>
 

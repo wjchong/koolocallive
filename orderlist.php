@@ -229,7 +229,7 @@ table.table.table-striped {
                          $i1++;
                         }
                         ?></td>
-                        <td><?php echo $merchant_name['name'];  ?></td>
+                    <td><a href="<?php echo $site_url; ?>/structure_merchant.php?favorite_id=<?php echo $row['merchant_id'];?>"><?php echo $merchant_name['name'];  ?></td>
                         <td>
                        <?php
                         $sta = $row['status'] == 1 ? "Done" : "Pending"?>
