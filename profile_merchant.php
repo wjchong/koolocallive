@@ -1,23 +1,18 @@
 <?php 
 include("config.php");
-
 if(!isset($_SESSION['login']))
 {
 	header("location:login.php");
 }
-
 $bank_data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM users WHERE id='".$_SESSION['login']."'"));
 $k_history = mysqli_query($conn, "SELECT * FROM k_type WHERE user_id='".$_SESSION['login']."' ORDER BY date");
-
 $referred_by = $bank_data['referred_by'];
 if($bank_data['referred_by'] == "")
     $referred_by = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM users WHERE user_roles = '1' and  referral_id='".$_SESSION['referral_id']."'"))['referred_by'];
     
 $user_mobile = mysqli_fetch_assoc(mysqli_query($conn, "SELECT mobile_number FROM users WHERE id='".$_SESSION['login']."'"))['mobile_number'];
-//echo $user_mobile ; echo "asdf" ;
 if(isset($_POST['submit']))
 {
-
 	$ref_result = mysqli_fetch_assoc(mysqli_query($conn, "SELECT id, created_at, referred_by, k_date, account_type FROM users WHERE id='".$_SESSION['login']."'"));
 	$user_id = $ref_result['id'];
 	if(($ref_result['created_at'] != null) || ($ref_result['created_at'] != "")){
@@ -73,6 +68,8 @@ if(isset($_POST['submit']))
 	$print_ip_address = addslashes(isset($_POST['print_ip_address']) ? $_POST['print_ip_address'] : '');
 	$merchant_code = $bank_data['merchant_code'];
 	$guest_permission = addslashes(isset($_POST['guest_permission']) ? $_POST['guest_permission'] : '');
+	$pending_time = addslashes(isset($_POST['pending_time']) ? $_POST['pending_time'] : '');
+	$menu_type = addslashes(isset($_POST['menu_type']) ? $_POST['menu_type'] : '');
 	if($merchant_code == ""){
 	    $code = mysqli_fetch_assoc(mysqli_query($conn, "SELECT MAX(SUBSTR(merchant_code,5)) + 1 code FROM users "))['code'];
 	    $merchant_code = "KOO_".str_pad($code,5,'0',STR_PAD_LEFT);
@@ -116,7 +113,6 @@ if(isset($_POST['submit']))
 	    $k_date = date('Y-m-d');
 	    mysqli_query($conn, "INSERT INTO k_type SET user_id='$user_id', type='$account_type', date='$k_date'");
 	}
-
 	$flag = false;
 	
 	
@@ -142,7 +138,7 @@ if(isset($_POST['submit']))
 	
 	if($flag == false)
 	{
-		$test_test = mysqli_query($conn, "UPDATE users SET merchant_code='$merchant_code', merchant_url='$merchant_address', name='$realname',latitude='$latitude', longitude='$longitude', company='$company',register='$register',address='$address',gst='$gst', sst='$sst', print_ip_address='$print_ip_address', order_print_setting='$order_print_setting', facsimile_number='$facsimile',referred_by='$referred_by', business1='$business1', business2='$business2', name_card='$name_card',card_number='$card_number',expiry_date='$expiry_date',cvv='$cvv',bank_name='$bankname',name_accoundholder='$name_accoundholder',bank_ac_num='$ac_num',charge='$charge',nric_number='$nric_number',address_person='$address_person',hand_phone='$hand_phone',google_map='$google_map',doc_copy='$filename',company_doc='$filenamess',number_lock='$number_lock', handphone_number='$handphone_number', created_at='$date', account_type='$account_type', k_date='$k_date', k_lock='$k_lock', guest_permission='$guest_permission' WHERE id='".$_SESSION['login']."'");
+		$test_test = mysqli_query($conn, "UPDATE users SET merchant_code='$merchant_code', merchant_url='$merchant_address', name='$realname',latitude='$latitude', longitude='$longitude', company='$company',register='$register',address='$address',gst='$gst', sst='$sst', print_ip_address='$print_ip_address', order_print_setting='$order_print_setting', facsimile_number='$facsimile',referred_by='$referred_by', business1='$business1', business2='$business2', name_card='$name_card',card_number='$card_number',expiry_date='$expiry_date',cvv='$cvv',bank_name='$bankname',name_accoundholder='$name_accoundholder',bank_ac_num='$ac_num',charge='$charge',nric_number='$nric_number',address_person='$address_person',hand_phone='$hand_phone',google_map='$google_map',doc_copy='$filename',company_doc='$filenamess',number_lock='$number_lock', handphone_number='$handphone_number', created_at='$date', account_type='$account_type', k_date='$k_date', k_lock='$k_lock', guest_permission='$guest_permission', pending_time='$pending_time',menu_type='$menu_type' WHERE id='".$_SESSION['login']."'");
 		$error .= "Successfully Updated profile Details.<br>";
 		if($expired_flag == false){
 			$error .= "You can change the referral id after ".(183 - $num_date)." days. <br />"; 
@@ -190,6 +186,8 @@ else
     $merchant_address = $bank_data['merchant_url'];
 	$order_print_setting = $bank_data['order_print_setting'];
 	$guest_permission = $bank_data['guest_permission'];
+	$pending_time = $bank_data['pending_time'];
+	$menu_type = $bank_data['menu_type'];
 }
 ?>
 <!DOCTYPE html>
@@ -349,7 +347,10 @@ else
 										<label>Hide Number</label><br>
 										<input class="hide_number" type="checkbox" name="number_lock" <?php if($number_lock == '1') echo "checked='checked'";?>" ><br>
 									</div>
-									
+									<div class="form-group">
+										<label>Pending time(minute)</label><br>
+										<input type="number" name="pending_time" class="form-control" value="<?php if(isset($pending_time)){ echo $pending_time; }?>" >
+									</div>
 									<div class="form-group">
 										<label>K1/K2 Type</label><br>
 										<select class='account_kType' name="account_type" style="">
@@ -363,6 +364,13 @@ else
 										I only allow above members to place orders. 
 										<br>
 									</div>
+                                    <div class="form-group">
+                                        <label>Menu Type</label>
+                                        <select class='menu_type' name="menu_type" style="">
+                                            <option <?php if($menu_type == '1') echo 'selected'; ?> value="1">Layout 1</option>
+                                            <option <?php if($menu_type == '2') echo 'selected'; ?> value="2">Layout 2</option>
+                                        </select>
+                                    </div>
 									<div class="form-group">
 									    <label>Date of changing - Discount to K1/K2</label><br>
 									    <table class="table table-striped" id="kType_table">
@@ -568,8 +576,8 @@ else
                 <h3 class="text_qrcode">QR Code</h3>
         		<br>
         		<?php
-        		//echo $user_mobile ;
-        		$PPU = urlencode("https://www.koofamilies.com/structure_merchant.php?sid=$user_mobile") ;
+        		
+        		$PPU = urlencode("$site_url/structure_merchant.php?sid=$user_mobile") ;
         		?>
         		<div class="col-md-3"></div>
         		<div class="well col-md-6">
@@ -614,31 +622,19 @@ select {
         theForm.validate({
             'email':{
                 email: true,
-
             remote:{
-
                 url: "validatorAJAX.php",
-
                 type: "post"
-
             }
         },
-
-
         },
-
         messages:{
         'email':{
         email: "Please enter a valid email address!",
         remote: "The email is already in use by another user!"
         },
-
-
-
         }
-
     });*/
-
     </script>   
 <style>
   .tele_num{
@@ -675,7 +671,6 @@ div#multiSelectCombo {
 }
 </style>
 <script type="text/javascript">
-
         $(document).ready(function () {
             $('.new_creditcard').click(function () {
             $('.credit_card').css('display', 'block');
@@ -703,7 +698,6 @@ div#multiSelectCombo {
     <script src="http://cdn-na.infragistics.com/igniteui/2018.1/latest/js/infragistics.core.js"></script>
     <script src="http://cdn-na.infragistics.com/igniteui/2018.1/latest/js/infragistics.lob.js"></script>
     <script>
-
         var colors = [
             { Name: "Foods and Beverage, such as restaurants, healthy foods,  franchise, etc" },
             { Name: "Motor Vehicle, such as car wash, repair, towing, etc" },
@@ -768,8 +762,6 @@ div#multiSelectCombo {
                     var address = $("#mapSearch").val();
                 });
             });
-
         });
-
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAEr0LmMAPOTZ-oxiy9PoDRi3YWdDE_vlI&libraries=places" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAEr0LmMAPOTZ-oxiy9PoDRi3YWdDE_vlI&libraries=places" async defer></script>
