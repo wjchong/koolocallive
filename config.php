@@ -7,10 +7,10 @@ if(!isset($_SESSION))
  session_start();
 }
 
-// error_reporting(0);
-ini_set('display_errors', 1);
+error_reporting(0);
+/*ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);  
+error_reporting(E_ALL);  */
 $conn = mysqli_connect("localhost", "root", "root", "koofamily");
 //$conn = mysqli_connect("localhost", "root","","koofamil_b277");
 // $conn = mysqli_connect("stallioni.net", "dotnetst_B277", "Sy?}z)-o;TB6", "dotnetst_B277");
