@@ -4,6 +4,7 @@ $language["dashboard"] = "Dashboard";
 $language["wallet"] = "Wallet";
 $language["transfer"] = "transfer";
 $language["merchant"] = "MERCHANT";
+$language["sections"] ="SECTION";
 $language["withdrawal"] = "Withdrawal";
 $language["exchange"] = "Exchange";
 $language["referral_list"] = "Referral List";

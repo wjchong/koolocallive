@@ -110,64 +110,54 @@ if(false){  //@isset($_SESSION['IsVIP']
         <?php } ?>
 			<?php 
 			if(isset($profile_data['user_roles']) && $profile_data['user_roles'] ==  '2') { ?>
-			<li class="menu-item-has-children">
-			<a href="merchant_product.php"><span class="hide-menu"><?php echo $language['merchant'];?></span></a>
-			<ul class="list-unstyled sub-menu collapse" aria-expanded="true">
-			<li><a href="orderview.php">Order list</a></li> 
-			<li><a href="report.php">Report</a></li> 
-			<?php 
-
-			$check = $user['xyz'];
-
-			$value = $product_type['type'] != "" ? 10000 + 10 : '10';
-
-			if($check  <  $value) 
-			{ ?>
-
-			<li><a href="merchant_product.php">Add Product</a></li>
-
-			<?php 
-			}
-
-            else
-
-             {
-	
-             }
-
-        ?>   
-				 
-				<li><a href="view_product.php">View Product</a></li>
-				
-				  <?php 
-        if(isset($profile_data['user_roles']) && $profile_data['user_roles'] ==  '2') { 
-			if(!empty($product_type['type']))
-			{?>
-		
-        <li class="menu-item-has-children">
-			<a href="javascript:void(0);" class="ripple"><span class="color-color-scheme"><span class="hide-menu">Category</span></span></a>
-			<ul class="list-unstyled sub-menu collapse" aria-expanded="true">
-				<li><a href="add_category.php">Add Category</a></li>
-				<li><a href="view_category.php">View Category</a></li>
-			</ul>
-        </li>
-        <?php } 
-        }?>
-				 <li><a href="sub.php"><span class="hide-menu">Subscription</span></a></li>
-				 <li><a href="about_us.php"><span class="hide-menu">About Us</span></a></li>
-<!--
-				 <li><a href="rating.php"><span class="hide-menu">Rating</span></a></li>
--->
-			</ul>
-        </li>
-        
-        
-
-        <?php } ?>
-        
-       <!--chat/chat.php?sender=<?php echo $_SESSION['login'];?>!-->
-        
-        <li><a href="https://www.koofamilies.com/chat.php" target="_new"><span class="hide-menu"><?php echo $language["my_community"];?></span></a></li>
+				<li class="menu-item-has-children">
+					<a href="merchant_product.php"><span class="hide-menu"><?php echo $language['merchant'];?></span></a>
+					<ul class="list-unstyled sub-menu collapse" aria-expanded="true">
+						<li><a href="orderview.php">Order list</a></li> 
+						<li><a href="report.php">Report</a></li> 
+						<?php 
+							$check = $user['xyz'];
+							$value = $product_type['type'] != "" ? 10000 + 10 : '10';
+							if($check  <  $value) 
+							{ ?>
+								<li><a href="merchant_product.php">Add Product</a></li>
+							<?php 
+							} else {}
+	        			?>
+						<li><a href="view_product.php">View Product</a></li>
+					  	<?php 
+	        				if(isset($profile_data['user_roles']) && $profile_data['user_roles'] ==  '2') { 
+								if(!empty($product_type['type']))
+								{?>
+	        						<li class="menu-item-has-children">
+										<a href="javascript:void(0);" class="ripple">
+											<span class="color-color-scheme">
+												<span class="hide-menu">Category</span>
+											</span>
+										</a>
+										<ul class="list-unstyled sub-menu collapse" aria-expanded="true">
+											<li><a href="add_category.php">Add Category</a></li>
+											<li><a href="view_category.php">View Category</a></li>
+										</ul>
+							        </li>
+					        	<?php } 
+					        }
+					    ?>
+						<li><a href="sub.php"><span class="hide-menu">Subscription</span></a></li>
+						<li><a href="about_us.php"><span class="hide-menu">About Us</span></a></li>
+						<!--<li><a href="rating.php"><span class="hide-menu">Rating</span></a></li>-->
+					</ul>
+	        	</li>
+	        	<li>
+	        		<a href="sections.php"><?php echo $language['sections'];?></a>
+	        	</li>
+        	<?php } ?>
+       		<!--chat/chat.php?sender=<?php echo $_SESSION['login'];?>!-->
+        	<li>
+        		<a href="https://www.koofamilies.com/chat.php" target="_new">
+        			<span class="hide-menu"><?php echo $language["my_community"];?></span>
+        		</a>
+        	</li>
         <?php 
         if(isset($profile_data['user_roles']) && $profile_data['user_roles'] !=  '2') { ?>
      

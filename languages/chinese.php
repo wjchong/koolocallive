@@ -4,6 +4,7 @@ $language["dashboard"] = "主页";
 $language["wallet"] = "钱包";
 $language["transfer"] = "转账";
 $language["merchant"] = "商家";
+$language["sections"] ="部分";
 $language["withdrawal"] = "提现";
 $language["exchange"] = "兑现";
 $language["referral_list"] = "介绍";
