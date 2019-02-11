@@ -7,12 +7,12 @@ if(strtolower($method) == 'delete') {
 	include_once('php/Section.php');
 	$sectionObj = new Section($conn);
     if($sectionObj->delete($id)) {
-        redirect($site_url.'/sections.php?success=Section delete successfully.');
+        redirectToUrl($site_url.'/sections.php?success=Section delete successfully.');
         exit;
     }
-    redirect($site_url.'/sections.php?error=Section could not be deleted. Please try again.');
+    redirectToUrl($site_url.'/sections.php?error=Section could not be deleted. Please try again.');
     exit;
 	
 }
-redirect($site_url.'/sections.php');
+redirectToUrl($site_url.'/sections.php');
 exit;

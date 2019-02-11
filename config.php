@@ -38,8 +38,11 @@ $site_url = "http://localhost:8080";   // Prod
  $paypal_cancel_url = $site_url . "/wallet.php?status=cancel";
  $paypal_success_url = $site_url . "/success.php";
 
-function redirect($url) {
-	echo '<script language="javascript">window.location.href ="'.$url.'"</script>';
-	exit;
+if(!function_exists('redirectToUrl')) {
+
+	function redirectToUrl($url) {
+		echo '<script language="javascript">window.location.href ="'.$url.'"</script>';
+		exit;
+	}
 }
 ?>
