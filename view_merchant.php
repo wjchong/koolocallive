@@ -50,7 +50,7 @@ $nature_image = array(
 			width:25% !important;
 		}
 		.comment{
-			width:90%;
+			width:100%;
 		}
 	.well
 	{
@@ -274,6 +274,9 @@ h4.head_oth {
     }
 }
 @media only screen and (max-width: 600px) and (min-width: 300px)  {
+  .name_mer div{
+    grid-template-columns: 1.2fr 2fr !important;
+  }
    .sidebar-expand .main-wrapper {
         margin-left: 0px!important;
     }
@@ -406,8 +409,9 @@ h4.head_oth {
 }
 @media (min-width:200px) and (max-width:767px){
   .new_grid{
-    grid-column-gap: 0 !important;
-    grid-row-gap: 0 !important;
+    margin-left: -10%;
+    grid-column-gap: 5px !important;
+    grid-row-gap: 5px !important;
   }
 .total_rat_abt {
     font-size: 14px!important;
@@ -429,7 +433,7 @@ h4.head_oth {
 }
 @media only screen and (max-width: 400px){
    .new_grid{
-    grid-template-columns: 1fr !important;
+    grid-template-columns: 1fr 1fr !important;
     grid-row-gap: 10px !important;
    }
 }
@@ -671,7 +675,7 @@ input[name='p_total[]'],input[name='p_price[]']{
                     <input type="hidden" id="id" name="p_id" value="<?php echo $row['id'];?>">
                     
                     <p class ="pro_name"><?php echo $row['product_name']; ?></p>
-                    <p class="mBt10"><?php echo 'Code: '.$row['product_type']; ?></p>
+                    <!-- <p class="mBt10"><?php echo 'Code: '.$row['product_type']; ?></p> -->
                     <p class="mBt10"><?php echo $row['remark']; ?></p>
                     <!--	<p><?php echo 'Category : '.str_replace("-", " ", $row['category']); ?></p>-->
                     <p class="mBt10"></p><?php echo 'Price : Rm'.number_format((float)$row['product_price'], 2, '.', ''); ?></p>
@@ -792,37 +796,40 @@ input[name='p_total[]'],input[name='p_price[]']{
         
         </table>
         
-        <a href="#main-content"><p class="" style="width: 110px !important;font-size: 16px;padding:14px;background-color: #003A66;color: white; font-weight: bold; border-radius: 8px;"> Add order </p></a> <br/>
+        <a href="#main-content"><p class="" style="width: 10em !important;font-size: 16px;padding:14px;background-color: #003A66;color: white; font-weight: bold; border-radius: 8px;"> Add more order </p></a> <br/>
         
         
         <div class="location_merchant">
-        <label class="head_loca"><?php echo $language["location"];?></label>
         <div class="name_mer">
-        <input type="hidden" name="latitude" value="<?php echo $merchant_detail['latitude'];?>">
-        <input type="hidden" name="longitude" value="<?php echo $merchant_detail['longitude'];?>">
+          <div style="display:grid;grid-template-columns:.2fr 2fr .4fr 1fr;grid-column-gap: 10px;vertical-align: middle;align-content:center;margin-bottom: 20px;">
+            
+            <label class="head_loca" style="display:grid;align-content:center;text-align:right;"><?php echo ucfirst(strtolower($language["location"])); ?></label>
+            <input type="hidden" name="latitude" value="<?php echo $merchant_detail['latitude'];?>">
+            <input type="hidden" name="longitude" value="<?php echo $merchant_detail['longitude'];?>">
 
-        <?php 
-        // --------------------
-        // Start of Hire's code 
-        // --------------------
-        if(isset($_GET['data']))
-        {
-          $getdetail=$_GET['data'];
-          $getdetail=base64_decode($getdetail);
-          $epxplode=explode("hweset",$getdetail);
-          $locaionset=$epxplode[0];
-          $tablenumber=$epxplode[1];
-        }
-        // --------------------
-        // End of Hire's code 
-        // --------------------
-        ?>
+            <?php 
+            // --------------------
+            // Start of Hire's code 
+            // --------------------
+            if(isset($_GET['data']))
+            {
+              $getdetail=$_GET['data'];
+             $getdetail=base64_decode($getdetail);
+              $epxplode=explode("hweset",$getdetail);
+              $section=$epxplode[0];
+              $tablenumber=$epxplode[1];
+            }
+            // --------------------
+            // End of Hire's code 
+            // --------------------
+            ?>
 
-         <input class="form-control comment" name="location" placeholder="location" value="<?php if(empty($locaionset)) { echo $merchant_detail['google_map']; } else { echo $locaionset;  }?>" required><br><br>
-        <label><?php echo $language["table_number"];?></label>
-        <input type="text" class="form-control table" name="table_type" value="<?php echo $tablenumber; ?>" required /><br><br>
-        <input type="hidden" id="id" name="m_id" value="<?php echo $id;?>">
-        <input type="hidden" name="options" value="" />  
+              <input class="form-control comment" name="location" placeholder="location" value="<?php  echo $merchant_detail['google_map']; ?>" required style="margin: 0 !important;">
+              <label><?php echo ucfirst(strtolower($language["table_number"]));?></label>
+              <input type="text" class="form-control table" name="table_type" value="<?php echo $tablenumber; ?>" required style="margin: 0 !important;"   />
+              <input type="hidden" id="id" name="m_id" value="<?php echo $id;?>">
+              <input type="hidden" name="options" value="" />  
+          </div>
         <input type="submit" class="btn btn-block btn-primary submit_button" name="submit" value="<?php echo $language["confirm_order"];?>"><br><br>
         
         </div>

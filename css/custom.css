@@ -135,7 +135,7 @@
     }
     table#without_table
     {
-    height:300px;
+    max-height:300px;
      overflow: scroll!important;
     }
     .favorite_name{
