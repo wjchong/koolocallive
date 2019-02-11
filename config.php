@@ -8,7 +8,10 @@ if(!isset($_SESSION))
 }
 
 error_reporting(0);
-$conn = mysqli_connect("localhost", "root", "", "koofamil_b277");
+/*ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);  */
+$conn = mysqli_connect("localhost", "root", "root", "koofamily");
 //$conn = mysqli_connect("localhost", "root","","koofamil_b277");
 // $conn = mysqli_connect("stallioni.net", "dotnetst_B277", "Sy?}z)-o;TB6", "dotnetst_B277");
 
@@ -24,7 +27,7 @@ $paypalUrl='https://www.sandbox.paypal.com/cgi-bin/webscr';
 
 //$site_url = "http://koofamilies.local";  // local
 
-$site_url = "http://localhost/koolive";   // Prod
+$site_url = "http://localhost:8080";   // Prod
 
 
 //$paypalId='stallioni.vvijay@gmail.com';
@@ -35,4 +38,11 @@ $site_url = "http://localhost/koolive";   // Prod
  $paypal_cancel_url = $site_url . "/wallet.php?status=cancel";
  $paypal_success_url = $site_url . "/success.php";
 
+if(!function_exists('redirectToUrl')) {
+
+	function redirectToUrl($url) {
+		echo '<script language="javascript">window.location.href ="'.$url.'"</script>';
+		exit;
+	}
+}
 ?>

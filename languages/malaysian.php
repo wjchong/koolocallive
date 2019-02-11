@@ -4,6 +4,7 @@
     $language["wallet"] = "Dompet";
     $language["transfer"] = "PEMINDAHAN";
     $language["merchant"] = "PENIAGA";
+    $language["sections"] ="SECTION";
     $language["withdrawal"] = "PENGELUARAN";
     $language["exchange"] = "PERTUKARAN";
     $language["referral_list"] = "SENERAI RUJUKAN";
