@@ -54,6 +54,7 @@ $nature_image = array(
 		}
 	.well
 	{
+    max-width: 100%;
 		min-height: 20px;
 		padding: 19px;
 		margin-bottom: 20px;
@@ -64,9 +65,10 @@ $nature_image = array(
 		box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
 	}
 	.well {
+   width: 100% !important;
+   padding: 0 !important;
+   margin: 0 !important;
     min-height: 20px;
-    padding: 19px;
-    margin-bottom: 20px;
     background-color: transparent!important;
     border: 0px solid #e3e3e3!important;
     border-radius: 4px;
@@ -74,12 +76,10 @@ $nature_image = array(
     box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
 }
 	.well form{
-	    min-height: 340px;
+    width: 100% !important;
+    margin: 0 !important;
+    min-height: 340px;
 	}
-	.well{
-	width: 33%;
-    float: left;
-    }
 	.pro_name
 	{
 	 text-align: center;
@@ -185,6 +185,9 @@ p.quantity {
 
 
 @media only screen and (max-width: 600px) and (min-width: 300px)  {
+  .new_grid{
+    grid-template-columns: 1fr 1fr !important;
+  }
 
 	.sidebar-expand .main-wrapper {
         margin-left: 0px!important;
@@ -213,6 +216,9 @@ p.quantity {
      
 }
 @media only screen and (max-width: 600px) and (min-width: 300px)  {
+  .new_grid{
+      grid-template-columns: 1fr 1fr !important;
+    }
      .well{
           width: 50%;
     float: left;
@@ -393,6 +399,10 @@ h4.head_oth {
 }
 }
 @media (min-width:200px) and (max-width:767px){
+  .new_grid{
+    grid-column-gap: 0 !important;
+    grid-row-gap: 0 !important;
+  }
 .total_rat_abt {
     font-size: 14px!important;
     display: flex;
@@ -411,7 +421,12 @@ h4.head_oth {
     display: none;
 }
 }
-
+@media only screen and (max-width: 400px){
+   .new_grid{
+    grid-template-columns: 1fr !important;
+    grid-row-gap: 10px !important;
+   }
+}
 .fjhj br {
     display: none;
 }
@@ -427,6 +442,18 @@ label {
 input[name='p_total[]'],input[name='p_price[]']{
   text-align: right;
 }
+
+/* Style for new products layout */
+
+.new_grid{
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-column-gap: 40px;
+  grid-row-gap: 20px;
+}
+
+/* End of Style for new products layout */
 	</style>
 </head>
 
@@ -610,7 +637,7 @@ input[name='p_total[]'],input[name='p_price[]']{
                     <?php }?>
                     </div>
                     
-                    <div class="grid row">
+                    <div class="new_grid">
                     
                     
                     <?php
@@ -1195,6 +1222,7 @@ $(document).ready(function(){
         var filterValue = $(this).attr('data-filter');
         $("#without_table tbody").html("");  
         var data = {method:"getNoneImageProduct", id: <?php echo $id;?>, category: filterValue.substr(1, filterValue.length)};
+        $(".new_grid").html("");
         $.ajax({
              url:"functions.php",
              type:"post",
@@ -1214,6 +1242,7 @@ $(document).ready(function(){
                     html += "</tr>";
                 }
                 $("#without_table tbody").html(html);
+                $(".new_grid").html(html);
             	$(".text_add_cart_without").on("click", function(){
             		var id = $(this).data("id");
             		//~ alert(id);
