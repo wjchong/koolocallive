@@ -74,13 +74,19 @@
                             </a>
                         </td>
                         <td>
+                            <a href="<?php echo $site_url; ?>/section_tables.php?section_id=<?php echo $id; ?>" 
+                                class="btn btn-secondary" 
+                                style="padding:2px 7px;float: left;">
+
+                                <i class="fa fa-table"></i>
+                            </a>
+                            <span style="float: left;">&nbsp;</span>
                             <a href="<?php echo $site_url; ?>/sections.php?action=edit&id=<?php echo $id; ?>" 
                                 class="btn btn-secondary" 
                                 style="padding:2px 7px;float: left;">
 
                                 <i class="fa fa-edit"></i>
                             </a>
-                            
                             <span style="float: left;">&nbsp;</span>
                             <form action="<?php echo $site_url; ?>/sections.php?action=delete&id=<?php echo $id; ?>" 
                                 onsubmit="return confirm('Do you really want to delete section?');"

@@ -32,7 +32,7 @@ class SectionTable
 			foreach ($filters as $key => $value) {
 
 				if(in_array($key, $this->fields)) {
-					$where[] = "$key='$value'";
+					$where[] = "$tableName.$key='$value'";
 				}
 			}
 			$query .= ' AND ' . implode(' AND ', $where);
@@ -48,6 +48,31 @@ class SectionTable
 		}
 		
 		return $result;
+	}
+
+	public function getList($filters = [], $order = 'name', $orderDir = 'ASC')
+	{
+		$tableName = $this->table;
+
+		$query = "SELECT id, name FROM $tableName WHERE 1=1 ";
+
+		if($filters) {
+			$where = [];
+			foreach ($filters as $key => $value) {
+				$where[] = "$key='$value'";
+			}
+			$query .= ' AND ' . implode(' AND ', $where);
+		}
+		$query .= " ORDER BY $order $orderDir";
+		
+		$list = null;
+		if ($stmt = mysqli_query($this->connection, $query)) {
+			
+			while($row = mysqli_fetch_assoc($stmt)) {
+				$list[$row['id']] = $row['name'];
+			}
+		}
+		return $list;
 	}
 
 	/**
