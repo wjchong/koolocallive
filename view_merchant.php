@@ -122,7 +122,13 @@ $nature_image = array(
     display: flex;
 }
 p.quantity {
-    margin-top: 7px;
+  display: grid;
+  grid-template-columns: .2fr 2fr;
+  margin-top: 7px;
+  align-content: center;
+  vertical-align: middle;
+  margin-left: 10px;
+  grid-column-gap: 5px;
 }
 .order_product{
     margin-top: 15px;
