@@ -1255,7 +1255,7 @@ $(document).ready(function(){
                     html += "</tr>";
                 }
                 $("#without_table tbody").html(html);
-                $(".new_grid").html(html);
+                // $(".new_grid").html(html);
             	$(".text_add_cart_without").on("click", function(){
             		var id = $(this).data("id");
             		//~ alert(id);
