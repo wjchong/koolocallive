@@ -778,7 +778,7 @@ while ($row=mysqli_fetch_assoc($total_rows1)){
                 }
             });
         });
-        $(".status").click(function(){
+        $("body").on('click','.status',function(){
             var data_id = $(this).attr("data-id");
             var status = $(this).attr("status");
             if(status == 0){
