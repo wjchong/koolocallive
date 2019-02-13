@@ -5,6 +5,7 @@ include_once('php/SectionTable.php');
 $sectionsObj = new Section($conn);
 $sectionTablesObj = new SectionTable($conn);
 $sectionsFilter = [
+  'user_id' => $_SESSION['mm_id'],
   'status' => true
 ];
 $sectionsList = $sectionsObj->getList($sectionsFilter);
