@@ -1,6 +1,21 @@
 <?php
 include("config.php");
-
+// Start of Hire's work
+// Load merchant's product with QR
+if(!empty($_GET['sid'])){
+    $sid = $_GET['sid'];
+    $product = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM users WHERE mobile_number='$sid' and user_roles='2'"));
+    $merchant_name = $product['name'];
+    $_SESSION['invitation_id'] = $product['referral_id'];
+    $_SESSION['merchant_id'] = $product['id'];
+    $_SESSION['address_person'] = $product['address'] ;
+    $_SESSION['latitude'] = $product['latitude'] ; 
+    $_SESSION['longitude'] = $product['longitude'] ;
+    $_SESSION['IsVIP'] = $product['IsVIP'] ;
+    $_SESSION['mm_id']= $product['id'];
+     
+} 
+// End of Hire's work
 $bank_data = isset($_SESSION['login']) ? mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM users WHERE id='".$_SESSION['login']."'")) : '';
 $nature_array = array(
         "Foods and Beverage, such as restaurants, healthy foods, franchise, etc",
@@ -28,46 +43,42 @@ $nature_image = array(
 
 <head>
     <?php include("includes1/head.php"); ?>
-	<style>
-		.other_products {
+  <style>
+    .other_products {
     display: flex;
 }
-		.create_date
-		{
-			float: right;
-		}
+    .create_date
+    {
+      float: right;
+    }
 
-		.comment_box {
+    .comment_box {
     border: 1px solid #ccc;
     padding: 15px;
     border-radius: 5px;
     margin-bottom: 15px;
     margin-top: 15px;
     box-shadow: 0 0 5px 0px;
-	}
-		.submit_button
-		{
-			width:25% !important;
-		}
-		.comment{
-			width:100%;
-		}
-	.well
-	{
-    max-width: 100%;
-		min-height: 20px;
-		padding: 19px;
-		margin-bottom: 20px;
-		background-color: #fff;
-		border: 1px solid #e3e3e3;
-		border-radius: 4px;
-		-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
-		box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
-	}
-	.well {
-   width: 100% !important;
-   padding: 0 !important;
-   margin: 0 !important;
+  }
+    .submit_button
+    {
+      width:25% !important;
+    }
+    .comment{
+      width:90%;
+    }
+  .well
+  {
+  
+    min-height: 20px;
+    background-color: #fff;
+    border: 1px solid #e3e3e3;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
+  }
+  .well {
+    width: 100% !important;
     min-height: 20px;
     background-color: transparent!important;
     border: 0px solid #e3e3e3!important;
@@ -75,14 +86,12 @@ $nature_image = array(
     -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
     box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
 }
-	.well form{
-    width: 100% !important;
-    margin: 0 !important;
-    min-height: 340px;
-	}
-	.pro_name
-	{
-	 text-align: center;
+  .well form{
+      min-height: 280px;
+  }
+  .pro_name
+  {
+   text-align: center;
     font-size: 22px;
     font-weight: 600;
     margin: 10px 0px;
@@ -122,13 +131,7 @@ $nature_image = array(
     display: flex;
 }
 p.quantity {
-  display: grid;
-  grid-template-columns: .2fr 2fr;
-  margin-top: 7px;
-  align-content: center;
-  vertical-align: middle;
-  margin-left: 10px;
-  grid-column-gap: 5px;
+    margin-top: 7px;
 }
 .order_product{
     margin-top: 15px;
@@ -147,11 +150,9 @@ p.quantity {
     margin-bottom: 10px;
 }
 @media only screen and (max-width: 767px) and (min-width: 300px)  {
-
-    .well{
-    	width: 50%;
-        float: left;
-        }
+    .new_grid{
+      grid-template-columns: 1fr 1fr !important;
+    }
 
     .text_add_cart {
         background: #003A66;
@@ -165,6 +166,12 @@ p.quantity {
         /* margin-right: 8px; */
         border-radius: 8px;
         margin-left: -10px;
+    }
+   .master_category_filter{
+        font-size: 1.2rem;
+        line-height: 0.8rem;
+        margin-bottom: 5px !important;
+        padding: 0.5rem 0.5rem;
     }
     .category_filter{
         font-size: 1.2rem;
@@ -191,11 +198,8 @@ p.quantity {
 
 
 @media only screen and (max-width: 600px) and (min-width: 300px)  {
-  .new_grid{
-    grid-template-columns: 1fr 1fr !important;
-  }
 
-	.sidebar-expand .main-wrapper {
+  .sidebar-expand .main-wrapper {
         margin-left: 0px!important;
     }
 
@@ -207,9 +211,7 @@ p.quantity {
 
 @media only screen and (max-width: 500px) and (min-width: 400px)  {
      .well{
-         width: 60%;
-         float: left;
-    padding-top: 0px !important;
+        padding-top: 0px !important;
      }
      .pro_name {
          font-size: 18px;
@@ -223,12 +225,10 @@ p.quantity {
 }
 @media only screen and (max-width: 600px) and (min-width: 300px)  {
   .new_grid{
-      grid-template-columns: 1fr 1fr !important;
-    }
+    grid-template-columns: 1fr 1fr !important;
+  }
      .well{
-          width: 50%;
-    float: left;
-    padding-top: 0px !important;
+        padding-top: 0px !important;
      }
 h4.head_oth {
     font-size: 20px;
@@ -274,9 +274,6 @@ h4.head_oth {
     }
 }
 @media only screen and (max-width: 600px) and (min-width: 300px)  {
-  .name_mer div{
-    grid-template-columns: 1.2fr 2fr !important;
-  }
    .sidebar-expand .main-wrapper {
         margin-left: 0px!important;
     }
@@ -290,8 +287,8 @@ h4.head_oth {
 
     }
     .oth_pr{
-	height: 40px;
-	}
+  height: 40px;
+  }
 }
 @media only screen and (max-width: 1050px) and (min-width: 992px)  {
    .text_add_cart{width: 100px}
@@ -389,54 +386,59 @@ h4.head_oth {
 
 /* Edited by Sumit */
 @media (min-width:768px) and (max-width:1150px){
-.total_rat_abt {
-    font-size: 14px!important;
-    display: flex;
-}
-.well {
-    min-height: 20px;
-    padding: 19px;
-    margin-bottom: 20px;
-    background-color: transparent!important;
-    border: 0px solid #e3e3e3!important;
-    border-radius: 4px;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
-    box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
-}
-.fjhj br {
-    display: none;
-}
+  .total_rat_abt {
+      font-size: 14px!important;
+      display: flex;
+  }
+  .well {
+      min-height: 20px;
+      background-color: transparent!important;
+      border: 0px solid #e3e3e3!important;
+      border-radius: 4px;
+      -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
+      box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
+  }
+  label {
+      font-weight: 600;
+      width: 100%;
+  }
+  .fjhj br {
+      display: none;
+  }
+  .master_category_filter{
+      background-color: #545c73;
+      border-color: #4a5368;
+      -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(0, 0, 0, 0.075);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(0, 0, 0, 0.075);
+  }
+  .master_category_filter:focus, .master_category_filter.focus {
+      -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 0 3px rgba(74, 83, 104, 0.5);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 0 3px rgba(74, 83, 104, 0.5);
+  }
+  .master_category_filter:hover {
+      color: #fff;
+      background-color: #4a5368;
+      border-color: #545c73;
+  }
 }
 @media (min-width:200px) and (max-width:767px){
-  .new_grid{
-    margin-left: -10%;
-    grid-column-gap: 5px !important;
-    grid-row-gap: 5px !important;
+  .total_rat_abt {
+      font-size: 14px!important;
+      display: flex;
   }
-.total_rat_abt {
-    font-size: 14px!important;
-    display: flex;
+  .well {
+      min-height: 20px;
+      background-color: transparent!important;
+      border: 0px solid #e3e3e3!important;
+      border-radius: 4px;
+      -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
+      box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
+  }
+  .fjhj br {
+      display: none;
+  }
 }
-.well {
-    min-height: 20px;
-    padding: 19px;
-    margin-bottom: 20px;
-    background-color: transparent!important;
-    border: 0px solid #e3e3e3!important;
-    border-radius: 4px;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
-    box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
-}
-.fjhj br {
-    display: none;
-}
-}
-@media only screen and (max-width: 400px){
-   .new_grid{
-    grid-template-columns: 1fr 1fr !important;
-    grid-row-gap: 10px !important;
-   }
-}
+
 .fjhj br {
     display: none;
 }
@@ -457,14 +459,13 @@ input[name='p_total[]'],input[name='p_price[]']{
 
 .new_grid{
   display: grid;
-  width: 100%;
   grid-template-columns: 1fr 1fr 1fr;
   grid-column-gap: 40px;
   grid-row-gap: 20px;
 }
 
 /* End of Style for new products layout */
-	</style>
+  </style>
 </head>
 
 <body class="header-light sidebar-dark sidebar-expand pace-done">
@@ -487,7 +488,7 @@ input[name='p_total[]'],input[name='p_price[]']{
 
                     <?php
                      $id = $_SESSION['mm_id'];
-			
+      
                     $merchant_detail = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM users WHERE id='".$id."'"));
                     if( isset($_SESSION['login']) ) {
                         $sql_transaction = "SELECT COUNT(id) ordered_num
@@ -513,7 +514,8 @@ input[name='p_total[]'],input[name='p_price[]']{
                     }
                     
                     $product = mysqli_fetch_assoc(mysqli_query($conn, "SELECT count(id) as pro_ct FROM products WHERE user_id ='".$id."' and status=0"));
-                    $total_rows = mysqli_query($conn, "SELECT * FROM products WHERE user_id ='".$id."' and status=0");                    
+                    $total_rows = mysqli_query($conn, "SELECT * FROM products WHERE user_id ='".$id."' and status=0");  
+          
                     $favorite = isset($_SESSION['login']) ? mysqli_query($conn, "SELECT * FROM favorities WHERE user_id = ".$_SESSION['login']." AND favorite_id = ".$id."") : '';
                     $count = $favorite != '' ? mysqli_num_rows($favorite) : 0;
                     ?>
@@ -554,7 +556,7 @@ input[name='p_total[]'],input[name='p_price[]']{
                             </div> 
                         </div> 
                         <div class="cont-area3"> 
-                        <div class="white-box">	
+                        <div class="white-box"> 
                         <div class="btns">
                         <div class="main-btn"> <a  href="<?php echo $site_url; ?>/about_menu.php"><?php echo $language["about_us"]?></a> </div>
                         <div class="main-btn1">  <a  href="<?php echo $site_url; ?>/rating_list.php"><?php echo $language["rating"]?> </div>
@@ -580,7 +582,7 @@ input[name='p_total[]'],input[name='p_price[]']{
                         
                         </div>
                         </div>
-                        </div> 
+                    </div> 
                     
                     <?php }else{ ?> 
                     <div class="col-md-12">
@@ -626,12 +628,19 @@ input[name='p_total[]'],input[name='p_price[]']{
                     <div class="comm_prd">
                     <h4 class="head_oth"><?php echo $language["order_direct"];?></h4>
                     <div class="oth_pr" id="oth_pr">
-                    Order
+                    Order 
                     </div>
                     </div>
-                    
-                    
-                    <?php
+                     <?php
+                        if($merchant_detail['menu_type']==2){
+                            include 'view_merchant_layout2.php';
+                        } else {  
+                            include 'view_merchant_layout1.php';
+                        }
+                    ?>  
+                   
+                    <?php 
+          /** 
                     $categories = mysqli_query($conn, "SELECT DISTINCT(products.category) FROM products WHERE user_id ='".$id."' and status=0 ORDER BY created_date ASC");
                     if($product['pro_ct'] > 0) { ?>
                     <div class="col-md-12 filter-button-group">
@@ -647,7 +656,7 @@ input[name='p_total[]'],input[name='p_price[]']{
                     <?php }?>
                     </div>
                     
-                    <div class="new_grid">
+                    <div class="grid row">
                     
                     
                     <?php
@@ -675,9 +684,9 @@ input[name='p_total[]'],input[name='p_price[]']{
                     <input type="hidden" id="id" name="p_id" value="<?php echo $row['id'];?>">
                     
                     <p class ="pro_name"><?php echo $row['product_name']; ?></p>
-                    <!-- <p class="mBt10"><?php echo 'Code: '.$row['product_type']; ?></p> -->
+                    <p class="mBt10"><?php echo 'Code: '.$row['product_type']; ?></p>
                     <p class="mBt10"><?php echo $row['remark']; ?></p>
-                    <!--	<p><?php echo 'Category : '.str_replace("-", " ", $row['category']); ?></p>-->
+                    <!--  <p><?php echo 'Category : '.str_replace("-", " ", $row['category']); ?></p>-->
                     <p class="mBt10"></p><?php echo 'Price : Rm'.number_format((float)$row['product_price'], 2, '.', ''); ?></p>
                     <!--
                     <p ><?php //echo 'Remark : '.$row['remark']; ?></p>
@@ -706,13 +715,18 @@ input[name='p_total[]'],input[name='p_price[]']{
                     <?php  } } ?>
                     </div>
                     <?php 
-                    }
+                    } **/
                     ?>
                 </div>
         
         <!-- without picture--->
         <?php
-        $total_rows1 = isset($category) ? mysqli_query($conn, "SELECT * FROM products WHERE category = '".$category."' and user_id ='".$id."' and status=0") : [];
+        if($merchant_detail['menu_type']==1) {
+
+
+    // echo "SELECT * FROM products WHERE category = '".$sub_cat."' and user_id ='".$id."' and status=0";
+    // die;
+        $total_rows1 = isset($category) ? mysqli_query($conn, "SELECT * FROM products WHERE category = '".$sub_cat."' and user_id ='".$id."' and status=0") : [];
         ?>
         <div class="without_picture">
         
@@ -735,23 +749,24 @@ input[name='p_total[]'],input[name='p_price[]']{
         
         
         ?>
-        	<tr>
-        	    <td><?php echo $i; ?> </td>
-        	    <input type="hidden" id="id" name="m_id" value="<?php echo $id;?>">
+          <tr>
+              <td><?php echo $i; ?> </td>
+              <input type="hidden" id="id" name="m_id" value="<?php echo $id;?>">
                 <input type="hidden" id="id" name="p_id" value="<?php echo $row['id'];?>">
-        		<td><?php echo $row['product_name']; ?></td>
-        		<td class="text_add_cart_without"  data-id = "<?php echo $row['id'] ?>" data-code = "<?php echo $row['product_type'] ?>"  data-pr = "<?php echo number_format((float)$row['product_price'], 2, '.', ''); ?>" data-name = "<?php echo $row['product_name'] ?>" id="text_without">Add to Cart</td>
-        		<td><?php echo number_format((float)$row['product_price'], 2, '.', ''); ?></td>
-        		<td><?php echo $row['remark']; ?></td>
-        		<td><?php echo $row['product_type']; ?></td>
-        		
-        		</tr>
+            <td><?php echo $row['product_name']; ?></td>
+            <td class="text_add_cart_without"  data-id = "<?php echo $row['id'] ?>" data-code = "<?php echo $row['product_type'] ?>"  data-pr = "<?php echo number_format((float)$row['product_price'], 2, '.', ''); ?>" data-name = "<?php echo $row['product_name'] ?>" id="text_without">Add to Cart</td>
+            <td><?php echo number_format((float)$row['product_price'], 2, '.', ''); ?></td>
+            <td><?php echo $row['remark']; ?></td>
+            <td><?php echo $row['product_type']; ?></td>
+            
+            </tr>
         <?php  $i++; }
         ?>
         <?php } ?>
         </tbody>
         </table>
         </div>
+        <?php } ?>
         
         <div class="comm_prd">
         <h4 class="head_oth"><?php echo $language["order_direct"];?></h4>
@@ -781,14 +796,14 @@ input[name='p_total[]'],input[name='p_price[]']{
         <thead>
         <tr> 
         <th></th>
-        <th><?php echo $language["product_name"] ;?></th>
-        <th>QTY</th>
+        <th><?php echo ucfirst(strtolower($language["product_name"])); ?></th>
+        <th>Qty</th>
 
-        <th><?php echo $language["product_code"]  ;?></th>
+        <th><?php echo ucfirst(strtolower($language["product_code"])); ?></th>
         
-        <th><?php echo $language["remark"] ;?></th>
+        <th><?php echo ucfirst(strtolower($language["remark"])); ?></th>
         
-		<th>Unit Price</th>
+    <th>Unit Price</th>
         <th>Total</th>
         </tr>
         <tbody id="test"> </tbody>
@@ -796,14 +811,14 @@ input[name='p_total[]'],input[name='p_price[]']{
         
         </table>
         
-        <a href="#main-content"><p class="" style="width: 10em !important;font-size: 16px;padding:14px;background-color: #003A66;color: white; font-weight: bold; border-radius: 8px;"> Add more order </p></a> <br/>
+        <a href="#main-content"><p class="" style="width: 12rem !important;text-align:center;font-size: 16px;padding:14px;background-color: #003A66;color: white; font-weight: bold; border-radius: 8px;"> Add more order </p></a> <br/>
         
         
         <div class="location_merchant">
         <div class="name_mer">
-          <div style="display:grid;grid-template-columns:.2fr 2fr .4fr 1fr;grid-column-gap: 10px;vertical-align: middle;align-content:center;margin-bottom: 20px;">
+          <div style="display:grid;grid-template-columns:.2fr 2fr;grid-column-gap: 10px;vertical-align: middle;align-content:center;">
             
-            <label class="head_loca" style="display:grid;align-content:center;text-align:right;"><?php echo ucfirst(strtolower($language["location"])); ?></label>
+            <label class="head_loca" style="display:grid;align-content:center;text-align:left;"><?php echo ucfirst(strtolower($language["location"])); ?></label>
             <input type="hidden" name="latitude" value="<?php echo $merchant_detail['latitude'];?>">
             <input type="hidden" name="longitude" value="<?php echo $merchant_detail['longitude'];?>">
 
@@ -824,13 +839,27 @@ input[name='p_total[]'],input[name='p_price[]']{
             // --------------------
             ?>
 
-              <input class="form-control comment" name="location" placeholder="location" value="<?php  echo $merchant_detail['google_map']; ?>" required style="margin: 0 !important;">
-              <label><?php echo ucfirst(strtolower($language["table_number"]));?></label>
-              <input type="text" class="form-control table" name="table_type" value="<?php echo $tablenumber; ?>" required style="margin: 0 !important;"   />
-              <input type="hidden" id="id" name="m_id" value="<?php echo $id;?>">
-              <input type="hidden" name="options" value="" />  
+              <input class="form-control comment" name="location" placeholder="location" value="<?php  echo $merchant_detail['google_map']; ?>" required style="margin: 0 !important;"><br><br>
           </div>
-        <input type="submit" class="btn btn-block btn-primary submit_button" name="submit" value="<?php echo $language["confirm_order"];?>"><br><br>
+    
+  <div style="float:left;width:100%">
+  
+    
+    <div style="float:left;width:20%;margin-top:20px;">
+        <label>Section <br></label>
+             <input type="text" class="form-control table" name="section_type" value="<?php echo $section; ?>"/>
+    </div>
+
+    <div style="float:left;width:33%;margin-top:20px;">
+            <label><?php echo ucfirst(strtolower($language["table_number"])); ?></label>
+            <input type="text" class="form-control table" name="table_type" value="<?php echo $tablenumber; ?>"/>
+    </div>
+    
+  </div>  
+  
+        <input type="hidden" id="id" name="m_id" value="<?php echo $id;?>">
+        <input type="hidden" name="options" value="" />  
+        <input type="submit" class="btn btn-block btn-primary submit_button" name="submit" value="<?php echo $language["confirm_order"];?>">
         
         </div>
         </div>
@@ -911,8 +940,8 @@ input[name='p_total[]'],input[name='p_price[]']{
         if($("#remark_input").val() != ''){
           selected.push($("#remark_input").val().split(' ').join('_'));
         }
-        console.log(selected.toString().split("_").join(" "));
-        $("a.introduce-remarks.selected").removeClass("selected").html(selected.toString().split("_").join(" "));
+        // console.log(selected.toString().split("_").join(" "));
+        $("a.introduce-remarks.selected").removeClass("selected").html((selected.toString() == '') ? "Remarks" : selected.toString().split("_").join(" "));
         $("input[name='ingredients'].selected").val('').val(selected).removeClass("selected");
     });
     $(".manual_input").click(function(e){
@@ -928,9 +957,7 @@ input[name='p_total[]'],input[name='p_price[]']{
     $("input[type='submit']").click(function(e){
       var remarks = [];
       $('input[name="ingredients"]').each(function() {
-           if ($(this).val() != '') {
-             remarks.push($(this).val());
-           }
+         remarks.push($(this).val());
         });
       var result = '';
         for (var i = 0; i <= remarks.length - 1; i++) {
@@ -954,66 +981,66 @@ input[name='p_total[]'],input[name='p_price[]']{
 
     // Remark
     // End of DrakkoFire's code
-	$(".text_add_cart").on("click", function(){
-		var id = $(this).data("id");
-		var code = $(this).data("code");
-		var p_price = $(this).data("pr");
-		var name = $(this).data("name");
-		var quantity = $(this).closest(".well").find("input[name='quatity']").val();
+  $(".text_add_cart").on("click", function(){
+    var id = $(this).data("id");
+    var code = $(this).data("code");
+    var p_price = $(this).data("pr");
+    var name = $(this).data("name");
+    var quantity = $(this).closest("form").find("input[name='quatity']").val();
         
-		var p_total = p_price*quantity;
+    var p_total = p_price*quantity;
     p_total = p_total.toFixed(2);
         
-    	$("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td>"+name+"</td><td><input style='width:50px;'  onchange='UpdateTotal("+id+" ,"+p_price+")'  type=number name='qty[]' maxlength='3'  value="+quantity+" id='"+id+"_test_athy'><input type= hidden name='p_id[]' value= "+id+"><input type= hidden name='p_code[]' value= "+code+"><input type='hidden' name='ingredients'/></td><td>"+code+"</td><td><a href='#remarks_area' role='button' class='introduce-remarks btn btn-large btn-primary' data-toggle='modal'>Remarks</a></td>  <td><input style='width:70px;' type='text' name='p_price[]' value= "+p_price+" readonly></td><td><input type='text' style='width:70px;' name='p_total[]' value= "+p_total+" readonly  id='"+id+"_cat_total'></td> </tr>");
-		alert('The product added');
-	});
+      $("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td>"+name+"</td><td><input style='width:50px;'  onchange='UpdateTotal("+id+" ,"+p_price+")'  type=number name='qty[]' maxlength='3'  value="+quantity+" id='"+id+"_test_athy'><input type= hidden name='p_id[]' value= "+id+"><input type= hidden name='p_code[]' value= "+code+"><input type='hidden' name='ingredients'/></td><td>"+code+"</td><td><a href='#remarks_area' role='button' class='introduce-remarks btn btn-large btn-primary' data-toggle='modal'>Remarks</a></td>  <td><input style='width:70px;' type='text' name='p_price[]' value= "+p_price+" readonly></td><td><input type='text' style='width:70px;' name='p_total[]' value= "+p_total+" readonly  id='"+id+"_cat_total'></td> </tr>");
+    alert('The product added');
+  });
 
-	$(".text_add_cart_without").on("click", function(){
-		var id = $(this).data("id");
-		//~ alert(id);
-		var code = $(this).data("code");
-		//~ alert(code);
-		var p_price = $(this).data("pr");
-		//~ alert(p_price);
-		var name = $(this).data("name");
-		// alert(name);
-		var quantity = 1 ;
-		//alert(quantity) ;
-		if(quantity ==''){
-		    
-		    var quantity = 1 ;
-		}
-		var p_total = p_price *quantity ;
+    $(".text_add_cart_without").on("click", function(){
+    var id = $(this).data("id");
+    //~ alert(id);
+    var code = $(this).data("code");
+    //~ alert(code);
+    var p_price = $(this).data("pr");
+    //~ alert(p_price);
+    var name = $(this).data("name");
+    // alert(name);
+    var quantity = 1 ;
+    //alert(quantity) ;
+    if(quantity ==''){
+        
+        var quantity = 1 ;
+    }
+    var p_total = p_price *quantity ;
     p_total = p_total.toFixed(2);
 
-		$("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td>"+name+"</td><td><input style='width:50px;' maxlength='3'  onchange='UpdateTotal("+id+" ,"+p_price+")'  type=number name='qty[]' value="+quantity+" id='"+id+"_test_athy'><input type= hidden name='p_id[]' value= "+id+"><input type= hidden name='p_code[]' value= "+code+"><input type='hidden' name='ingredients'/></td><td>"+code+"</td><td><a href='#remarks_area' role='button' class='introduce-remarks btn btn-large btn-primary' data-toggle='modal'>Remarks</a></td>  <td><input style='width:70px;' type='text' name='p_price[]' value= "+p_price+" readonly></td><td><input type='text' style='width:70px;' name='p_total[]' value= "+p_total+" readonly  id='"+id+"_cat_total'></td> </tr>");
-		alert('The product added');
-	});
+    $("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td>"+name+"</td><td><input style='width:50px;' maxlength='3'  onchange='UpdateTotal("+id+" ,"+p_price+")'  type=number name='qty[]' value="+quantity+" id='"+id+"_test_athy'><input type= hidden name='p_id[]' value= "+id+"><input type= hidden name='p_code[]' value= "+code+"><input type='hidden' name='ingredients'/></td><td>"+code+"</td><td><a href='#remarks_area' role='button' class='introduce-remarks btn btn-large btn-primary' data-toggle='modal'>Remarks</a></td>  <td><input style='width:70px;' type='text' name='p_price[]' value= "+p_price+" readonly></td><td><input type='text' style='width:70px;' name='p_total[]' value= "+p_total+" readonly  id='"+id+"_cat_total'></td> </tr>");
+    alert('The product added');
+  });
   var other_product_id = 1;
-	 $(".oth_pr").on("click", function(){
-		   $('html,body').animate({
+   $(".oth_pr").on("click", function(){
+       $('html,body').animate({
         scrollTop: $("#cartsection").offset().top},
         'slow');  
-      	   
-		$("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td><input style='width:120px;' type=text  id='other_product_name_"+other_product_id+"' class='other_product_name'><input type='hidden' name='p_id[]' id='other_product_id_"+other_product_id+"'></td> <td><input style='width:50px;' onchange='UpdateTotalCart("+other_product_id+")' id='other_qty_"+other_product_id+"' type=number name='qty[]' value='1'></td> <td><input class='other_product_code' style='width:70px;' type= text name='p_code[]' id='other_product_code_"+other_product_id+"'><input type='hidden' name='ingredients'/></td><td> <a href='#remarks_area' role='button' class='introduce-remarks btn btn-large btn-primary' data-toggle='modal'>Remarks</a></td><td><input style='width:70px;' id='other_product_price_"+other_product_id+"' type='text' name='p_price[]' readonly></td><td><input type='text' style='width:70px;' name='p_total[]' readonly  id='"+other_product_id+"_cat_total'></td></tr>");
+           
+    $("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td><input style='width:120px;' type=text  id='other_product_name_"+other_product_id+"' class='other_product_name'><input type='hidden' name='p_id[]' id='other_product_id_"+other_product_id+"'></td> <td><input style='width:50px;' onchange='UpdateTotalCart("+other_product_id+")' id='other_qty_"+other_product_id+"' type=number name='qty[]' value='1'></td> <td><input class='other_product_code' style='width:70px;' type= text name='p_code[]' id='other_product_code_"+other_product_id+"'><input type='hidden' name='ingredients'/></td><td> <a href='#remarks_area' role='button' class='introduce-remarks btn btn-large btn-primary' data-toggle='modal'>Remarks</a></td><td><input style='width:70px;' id='other_product_price_"+other_product_id+"' type='text' name='p_price[]' readonly></td><td><input type='text' style='width:70px;' name='p_total[]' readonly  id='"+other_product_id+"_cat_total'></td></tr>");
       var focus_id="other_product_code_"+other_product_id;
-	  document.getElementById(focus_id).focus(); 
-	other_product_id++;
+    document.getElementById(focus_id).focus(); 
+  other_product_id++;
     jQuery(".other_product_name").autocomplete({
       source: "auto_complete_product_name.php",
       minLength: 1, 
       select: function(event, ui) {
         var id = $(this).attr('id').split('_')[3];
-		var qty_id='other_qty_'+id;
-		var qty_no=document.getElementById(qty_id).value;
-		 var total_cart=qty_no*(ui.item.price);
-		 // alert(total_cart);
+    var qty_id='other_qty_'+id;
+    var qty_no=document.getElementById(qty_id).value;
+     var total_cart=qty_no*(ui.item.price);
+     // alert(total_cart);
         $("#other_product_id_"+id).val(ui.item.id);
         $("#other_product_code_"+id).val(ui.item.code);
         $("#other_product_price_"+id).val(ui.item.price);
         $("#other_product_remark_"+id).val(ui.item.remark);
         var cart_id=id+"_cat_total";
-		document.getElementById(cart_id).value =total_cart;
+    document.getElementById(cart_id).value =total_cart;
       }
     });
     jQuery(".other_product_name").keyup(function(e){
@@ -1026,21 +1053,22 @@ input[name='p_total[]'],input[name='p_price[]']{
       select: function(event, ui) {
         var id = $(this).attr('id').split('_')[3];
        var qty_id='other_qty_'+id;
-		var qty_no=document.getElementById(qty_id).value;
-		 var total_cart=qty_no*(ui.item.price);
-		 // alert(total_cart);
+    var qty_no=document.getElementById(qty_id).value;
+     var total_cart=qty_no*(ui.item.price);
+     // alert(total_cart);
         $("#other_product_id_"+id).val(ui.item.id);
         $("#other_product_code_"+id).val(ui.item.code);
+        $("#other_product_name_"+id).val(ui.item.name);
         $("#other_product_price_"+id).val(ui.item.price);
         $("#other_product_remark_"+id).val(ui.item.remark);
         var cart_id=id+"_cat_total";
-		document.getElementById(cart_id).value =total_cart;
+    document.getElementById(cart_id).value =total_cart;
         
       }
     });
 
-	});
-	
+  });
+  
      jQuery(document).on('click', 'button.removebutton', function () {
          alert("Product has Removed");
          jQuery(this).closest('tr').remove();
@@ -1048,11 +1076,15 @@ input[name='p_total[]'],input[name='p_price[]']{
      });
 
      $()
-	</script>
+  </script>
 
 <style>
 .category_filter{
     margin-bottom: 10px;
+  padding: 8px;
+}
+.sub_category_grid{
+    margin-top: 10px;
 }
 .other_products{
 display:none;
@@ -1155,19 +1187,158 @@ $('.make_bigger').click(function() {
   }
 });
 // init Isotope
+var $grid_sub = $('.sub_category_grid').isotope({
+    // options
+    layoutMode: 'fitRows'
+});
 var $grid = $('.grid').isotope({
   // options
 });
+var master_filter='.'+'<?php echo $master_cat;?>';
+$grid.isotope({ filter:master_filter });
 // filter items on button click
+$('.master_category_filter').on( 'click', function(e) {
+    e.preventDefault();
+    var filterValue = $(this).attr('data-filter');
 
-$('.filter-button-group').on( 'click', 'button', function() {
+    $grid_sub.on( 'arrangeComplete', function ( event, filteredItems) {
+        console.log(event, filteredItems);
+        $(filteredItems[0].element).find('button').trigger('click');
+        console.log('am called');
+    });
+
+    $grid_sub.isotope({ filter: filterValue });
+
+
+
+
+  var menu_type='<?php echo $merchant_detail['menu_type'];?>';
+    
+        var filterValue = $(this).attr('data-filter');
+        var position_value = $(this).attr('data-position');
+    
+        $("#without_table tbody").html("");  
+    // alert(position_value);
+    // alert(menu_type);
+       
+    if(menu_type==1)
+    {
+      var data = {type:"mainclick",method:"getImageProduct", id: <?php echo $id;?>, category:position_value};
+        $(".new_grid").html("");
+      $.ajax({
+             url:"functions.php",
+             type:"post",
+             data:data,
+             dataType:'json',
+             success:function(result){
+                var html="";
+        
+                for(var i = 0; i < result.length; i++){
+                    html += "<div class='well col-md-4 element-item Cham鸳鸯'>";
+          html += " <form action='product_view.php' method='post' class='set_calss input-has-value' data-id='"+result[i]['id']+"' data-code='C005' data-pr='39' style='background: #51d2b7;    padding: 12px;    border: 1px solid #e3e3e3;    border-radius: 4px;    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05); box-shadow: inset 0 1px 1px rgba(0,0,0,.05);'>";
+                    html += " <div class='container_test'>";
+          html +="<img src='<?php echo $site_url; ?>/images/product_images/"+result[i]['image']+"' class='make_bigger' width='100%' height='150px'>";
+                    // html += "<td>"+result[i]['product_name']+"</td>";
+                    // html += "<td id='text_without' class='text_add_cart_without' data-id='"+result[i]['id']+"' data-code='"+result[i]['type']+"' data-pr='"+result[i]['price']+"' data-name='"+result[i]['product_name']+"'>Add to cart</td>";
+                    // html += "<td>"+result[i]['price']+"</td>";
+                    // html += "<td>"+result[i]['remark']+"</td>";
+                    // html += "<td>"+result[i]['type']+"</td>";
+                    html += "</div>";
+                    html += "<input type='hidden' id='id' name='m_id' value='"+result[i]['user_id']+"'>";
+                    html += "<input type='hidden' id='id' name='p_id' value='"+result[i]['id']+"'>";
+                    html += "<p class='pro_name'>"+result[i]['product_name']+"</p>";
+          html += "<p class='mBt10'></p>";
+          html += "<p class='mBt10'></p>Price : Rm"+result[i]['price']+"<p></p>";
+                    html += "<div class='common_quant'>";
+          //html += "<p class='text_add_cart' data-id='"+result[i]['id']+"' data-code='C005' data-pr='39' data-name='Carlsberg Smooth (B)X3'>Add to Cart</p>";
+                    html += "<p class='text_add_cart' data-id='"+result[i]['id']+"' data-code='"+result[i]['type']+"' data-pr='"+result[i]['price']+"' data-name='"+result[i]['product_name']+"'>Add to Cart</p>";
+           
+          html += "<p class='quantity'> </p>";
+                    html += "<div style='display:grid;grid-template-columns:.2fr 1fr;align-content:center;vertical-align:center;' class='input-has-value'>";
+          html += " <label>X</label><input type='number' value='1' class='quatity' name='quatity' style='height:1.5em'>";
+                    html += "</div>";
+                    html += "</div>";
+                    html += "</form>";
+                    html += "</div>";
+                }
+                $(".new_grid").html(html);
+              $(".text_add_cart").on("click", function(){
+        var id = $(this).data("id");
+        var code = $(this).data("code");
+        var p_price = $(this).data("pr");
+        var name = $(this).data("name");
+        var quantity = $(this).closest("form").find("input[name='quatity']").val();
+        
+        var p_total = p_price*quantity;
+      p_total = p_total.toFixed(2);
+        
+        $("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td>"+name+"</td><td><input style='width:50px;'  onchange='UpdateTotal("+id+" ,"+p_price+")'  type=number name='qty[]' maxlength='3'  value="+quantity+" id='"+id+"_test_athy'><input type= hidden name='p_id[]' value= "+id+"><input type= hidden name='p_code[]' value= "+code+"><input type='hidden' name='ingredients'/></td><td>"+code+"</td><td><a href='#remarks_area' role='button' class='introduce-remarks btn btn-large btn-primary' data-toggle='modal'>Remarks</a></td>  <td><input style='width:70px;' type='text' name='p_price[]' value= "+p_price+" readonly></td><td><input type='text' style='width:70px;' name='p_total[]' value= "+p_total+" readonly  id='"+id+"_cat_total'></td> </tr>");
+        alert('The product added');
+      });
+                
+             }
+         });
+    
+     var data = {type:"mainclick",method:"getNoneImageProduct", id: <?php echo $id;?>, category: position_value};
+        $.ajax({
+             url:"functions.php",
+             type:"post",
+             data:data,
+             dataType:'json',
+             success:function(result){
+                var html="";
+                for(var i = 0; i < result.length; i++){
+                    html += "<tr>";
+                    html += "<td>"+(i + 1)+"</td>";
+                    html += "<td>"+result[i]['product_name']+"</td>";
+                    html += "<td id='text_without' class='text_add_cart_without' data-id='"+result[i]['id']+"' data-code='"+result[i]['type']+"' data-pr='"+result[i]['price']+"' data-name='"+result[i]['product_name']+"'>Add to cart</td>";
+                    html += "<td>"+result[i]['price']+"</td>";
+                    html += "<td>"+result[i]['remark']+"</td>";
+                    html += "<td>"+result[i]['type']+"</td>";
+                    html += "</tr>";
+                }
+                $("#without_table tbody").html(html);
+                $(".text_add_cart_without").on("click", function(){
+    var id = $(this).data("id");
+    //~ alert(id);
+    var code = $(this).data("code");
+    //~ alert(code);
+    var p_price = $(this).data("pr");
+    //~ alert(p_price);
+    var name = $(this).data("name");
+    // alert(name);
+    var quantity = 1 ;
+    //alert(quantity) ;
+    if(quantity ==''){
+        
+        var quantity = 1 ;
+    }
+    var p_total = p_price *quantity ;
+    p_total = p_total.toFixed(2);
+
+    $("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td>"+name+"</td><td><input style='width:50px;' maxlength='3'  onchange='UpdateTotal("+id+" ,"+p_price+")'  type=number name='qty[]' value="+quantity+" id='"+id+"_test_athy'><input type= hidden name='p_id[]' value= "+id+"><input type= hidden name='p_code[]' value= "+code+"><input type='hidden' name='ingredients'/></td><td>"+code+"</td><td><a href='#remarks_area' role='button' class='introduce-remarks btn btn-large btn-primary' data-toggle='modal'>Remarks</a></td>  <td><input style='width:70px;' type='text' name='p_price[]' value= "+p_price+" readonly></td><td><input type='text' style='width:70px;' name='p_total[]' value= "+p_total+" readonly  id='"+id+"_cat_total'></td> </tr>");
+    alert('The product added');
+  });
+                
+             }
+         });
+     }
+  
+});
+$('.sub_category_grid .category_filter button').on( 'click',function() {
       var filterValue = $(this).attr('data-filter');
+      console.log(filterValue);
       $grid.isotope({ filter: filterValue });
-
-
 });
 </script>
 <style>
+.sub_category_grid button{ /* You Can Name it what you want*/
+margin-right:10px;
+}
+.sub_category_grid button:last-child{
+margin-right:0px;
+/*so the last one dont push the div thas giving the space only between the inputs*/
+}
 img.active {
   animation: make_bigger 1s ease;
   width: 600px;
@@ -1225,17 +1396,91 @@ img.make_bigger {
     display: block;
 }
 }
+.col-md-4{
+  max-width: 100% !important;
+}
+.well.col-md-4{
+  padding: 0 !important;
+}
 
 </style>
 
 <script>
-$(document).ready(function(){   
-    $('.filter-button-group .category_filter:first-child').trigger('click');
+$(document).ready(function(){
+    //$('.master_category_filter:first-child').trigger('click');
+    $('.sub_category_grid .category_filter:first-child button').trigger('click');
+    //$('.filter-button-group .category_filter:first-child').trigger('click');
+  var menu_type='<?php echo $merchant_detail['menu_type'];?>';
+  if(menu_type==2){
+        $('.master_category_filter:first-child').trigger('click');
+    }
+
     $(".category_filter").click(function(e){
+    var menu_type='<?php echo $merchant_detail['menu_type'];?>';
+    
         var filterValue = $(this).attr('data-filter');
+    
         $("#without_table tbody").html("");  
-        var data = {method:"getNoneImageProduct", id: <?php echo $id;?>, category: filterValue.substr(1, filterValue.length)};
+    
+       
+    if(menu_type==1)
+    {
+      var data = {method:"getImageProduct", id: <?php echo $id;?>, category: filterValue.substr(1, filterValue.length)};
         $(".new_grid").html("");
+      $.ajax({
+             url:"functions.php",
+             type:"post",
+             data:data,
+             dataType:'json',
+             success:function(result){
+                var html="";
+        
+                for(var i = 0; i < result.length; i++){
+                    html += "<div class='well col-md-4 element-item Cham鸳鸯'>";
+          html += " <form action='product_view.php' method='post' class='set_calss input-has-value' data-id='"+result[i]['id']+"' data-code='C005' data-pr='39' style='background: #51d2b7;    padding: 12px;    border: 1px solid #e3e3e3;    border-radius: 4px;    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05); box-shadow: inset 0 1px 1px rgba(0,0,0,.05);'>";
+                    html += " <div class='container_test'>";
+          html +="<img src='<?php echo $site_url; ?>/images/product_images/"+result[i]['image']+"' class='make_bigger' width='100%' height='150px'>";
+                    // html += "<td>"+result[i]['product_name']+"</td>";
+                    // html += "<td id='text_without' class='text_add_cart_without' data-id='"+result[i]['id']+"' data-code='"+result[i]['type']+"' data-pr='"+result[i]['price']+"' data-name='"+result[i]['product_name']+"'>Add to cart</td>";
+                    // html += "<td>"+result[i]['price']+"</td>";
+                    // html += "<td>"+result[i]['remark']+"</td>";
+                    // html += "<td>"+result[i]['type']+"</td>";
+                    html += "</div>";
+                    html += "<input type='hidden' id='id' name='m_id' value='"+result[i]['user_id']+"'>";
+                    html += "<input type='hidden' id='id' name='p_id' value='"+result[i]['id']+"'>";
+                    html += "<p class='pro_name'>"+result[i]['product_name']+"</p>";
+          html += "<p class='mBt10'></p>";
+          html += "<p class='mBt10'></p>Price : Rm"+result[i]['price']+"<p></p>";
+                    html += "<div class='common_quant'>";
+          //html += "<p class='text_add_cart' data-id='"+result[i]['id']+"' data-code='C005' data-pr='39' data-name='Carlsberg Smooth (B)X3'>Add to Cart</p>";
+          html += "<p class='text_add_cart' data-id='"+result[i]['id']+"' data-code='"+result[i]['type']+"' data-pr='"+result[i]['price']+"' data-name='"+result[i]['product_name']+"'>Add to Cart</p>";
+          html += "<p class='quantity'> </p>";
+                    html += "<div style='display:grid;grid-template-columns:.2fr 1fr;align-content:center;vertical-align:center;' class='input-has-value'>";
+          html += " <label>X</label><input type='number' value='1' class='quatity' name='quatity' style='height:1.5em'>";
+                    html += "</div>";
+                    html += "</div>";
+                    html += "</form>";
+                    html += "</div>";
+                }
+                $(".new_grid").html(html);
+              $(".text_add_cart").on("click", function(){
+        var id = $(this).data("id");
+        var code = $(this).data("code");
+        var p_price = $(this).data("pr");
+        var name = $(this).data("name");
+        var quantity = $(this).closest("form").find("input[name='quatity']").val();
+        
+        var p_total = p_price*quantity;
+      p_total = p_total.toFixed(2);
+        
+        $("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td>"+name+"</td><td><input style='width:50px;'  onchange='UpdateTotal("+id+" ,"+p_price+")'  type=number name='qty[]' maxlength='3'  value="+quantity+" id='"+id+"_test_athy'><input type= hidden name='p_id[]' value= "+id+"><input type= hidden name='p_code[]' value= "+code+"><input type='hidden' name='ingredients'/></td><td>"+code+"</td><td><a href='#remarks_area' role='button' class='introduce-remarks btn btn-large btn-primary' data-toggle='modal'>Remarks</a></td>  <td><input style='width:70px;' type='text' name='p_price[]' value= "+p_price+" readonly></td><td><input type='text' style='width:70px;' name='p_total[]' value= "+p_total+" readonly  id='"+id+"_cat_total'></td> </tr>");
+        alert('The product added');
+      });
+                
+             }
+         });
+    }
+     var data = {method:"getNoneImageProduct", id: <?php echo $id;?>, category: filterValue.substr(1, filterValue.length)};
         $.ajax({
              url:"functions.php",
              type:"post",
@@ -1244,39 +1489,37 @@ $(document).ready(function(){
              success:function(result){
                 var html="";
                 for(var i = 0; i < result.length; i++){
-                	var prodPrice = parseFloat(result[i]['price']);
                     html += "<tr>";
                     html += "<td>"+(i + 1)+"</td>";
                     html += "<td>"+result[i]['product_name']+"</td>";
-                    html += "<td id='text_without' class='text_add_cart_without' data-id='"+result[i]['id']+"' data-code='"+result[i]['type']+"' data-pr='"+prodPrice.toFixed(2)+"' data-name='"+result[i]['product_name']+"'>Add to cart</td>";
-                    html += "<td>"+prodPrice.toFixed(2)+"</td>";
+                    html += "<td id='text_without' class='text_add_cart_without' data-id='"+result[i]['id']+"' data-code='"+result[i]['type']+"' data-pr='"+result[i]['price']+"' data-name='"+result[i]['product_name']+"'>Add to cart</td>";
+                    html += "<td>"+result[i]['price']+"</td>";
                     html += "<td>"+result[i]['remark']+"</td>";
                     html += "<td>"+result[i]['type']+"</td>";
                     html += "</tr>";
                 }
                 $("#without_table tbody").html(html);
-                // $(".new_grid").html(html);
-            	$(".text_add_cart_without").on("click", function(){
-            		var id = $(this).data("id");
-            		//~ alert(id);
-            		var code = $(this).data("code");
-            		//~ alert(code);
-            		var p_price = $(this).data("pr");
-            		//~ alert(p_price);
-            		var name = $(this).data("name");
-            		//~ alert(name);
-            		var quantity = $(this).closest(".well").find("input[name='quatity']").val();
-            		if(quantity == null ){
-            		    
-            		    	var quantity = 1 ; 
-            		    
-            		}
-                	var p_total = p_price *quantity ;
-                  p_total = p_total.toFixed(2);
+                $(".text_add_cart_without").on("click", function(){
+    var id = $(this).data("id");
+    //~ alert(id);
+    var code = $(this).data("code");
+    //~ alert(code);
+    var p_price = $(this).data("pr");
+    //~ alert(p_price);
+    var name = $(this).data("name");
+    // alert(name);
+    var quantity = 1 ;
+    //alert(quantity) ;
+    if(quantity ==''){
+        
+        var quantity = 1 ;
+    }
+    var p_total = p_price *quantity ;
+    p_total = p_total.toFixed(2);
 
-            		$("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td>"+name+"</td><td><input style='width:70px;' onchange='UpdateTotal("+id+" ,"+p_price+")'  type=number name='qty[]' value="+quantity+" id='"+id+"_test_athy'><input type= hidden name='p_id[]' value= "+id+"><input type= hidden name='p_code[]' value= "+code+"><input type='hidden' name='ingredients'/></td> <td>"+code+"</td><td><a href='#remarks_area' role='button' class='introduce-remarks btn btn-large btn-primary' data-toggle='modal'>Remarks</a></td>  <td><input type='text' name='p_price[]' style='width:70px;' value= "+p_price+" readonly></td><td><input type='text' style='width:70px;' name='p_total[]' value= "+p_total+" readonly id='"+id+"_cat_total'></td></tr>");
-            		alert('The product added');
-            	});
+    $("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td>"+name+"</td><td><input style='width:50px;' maxlength='3'  onchange='UpdateTotal("+id+" ,"+p_price+")'  type=number name='qty[]' value="+quantity+" id='"+id+"_test_athy'><input type= hidden name='p_id[]' value= "+id+"><input type= hidden name='p_code[]' value= "+code+"><input type='hidden' name='ingredients'/></td><td>"+code+"</td><td><a href='#remarks_area' role='button' class='introduce-remarks btn btn-large btn-primary' data-toggle='modal'>Remarks</a></td>  <td><input style='width:70px;' type='text' name='p_price[]' value= "+p_price+" readonly></td><td><input type='text' style='width:70px;' name='p_total[]' value= "+p_total+" readonly  id='"+id+"_cat_total'></td> </tr>");
+    alert('The product added');
+  });
                 
              }
          });
@@ -1284,12 +1527,12 @@ $(document).ready(function(){
 });
 </script>
 <script>
-document.getElementById('oth_pr').onclick = function() {
-    document.getElementById('test_code').focus();
-};
-document.getElementById('text_without').onclick = function() {
-    document.getElementById('test_athy').focus();
-};
+// document.getElementById('oth_pr').onclick = function() {
+    // document.getElementById('test_code').focus();
+// };
+// document.getElementById('text_without').onclick = function() {
+    // document.getElementById('test_athy').focus();
+// };
 
 </script>
 
@@ -1299,20 +1542,18 @@ var chat_appid = '52013';
 </script>
 <?php 
 ?>
-	<script>
-var chat_appid = '52013';
-</script>
+
 <?php 
-	if(isset($_SESSION["merchant_id"]) && $_SESSION["merchant_id"] > 0) { ?>
-	 <script>
-		var chat_id = "<?php echo $_SESSION["merchant_id"]; ?>";
-		var chat_name = "<?php echo $_SESSION["user_name"]; ?>"; 
-		var chat_link = "<?php echo $_SESSION["user_link"]; ?>"; //Similarly populate it from session for user's profile link if exists
-		var chat_avatar = "<?php echo $_SESSION["user_avatar"]; ?>"; //Similarly populate it from session for user's avatar src if exists
-		var chat_role = "<?php echo $_SESSION["user_role"]; ?>"; //Similarly populate it from session for user's role if exists
-		var chat_friends = '<?php echo $_SESSION["merchant_id"]; ?>'; //Similarly populate it with user's friends' site user id's eg: 14,16,20,31
-		</script>
-	<?php } ?>
+  if(isset($_SESSION["merchant_id"]) && $_SESSION["merchant_id"] > 0) { ?>
+   <script>
+    var chat_id = "<?php echo $_SESSION["merchant_id"]; ?>";
+    var chat_name = "<?php echo $_SESSION["user_name"]; ?>"; 
+    var chat_link = "<?php echo $_SESSION["user_link"]; ?>"; //Similarly populate it from session for user's profile link if exists
+    var chat_avatar = "<?php echo $_SESSION["user_avatar"]; ?>"; //Similarly populate it from session for user's avatar src if exists
+    var chat_role = "<?php echo $_SESSION["user_role"]; ?>"; //Similarly populate it from session for user's role if exists
+    var chat_friends = '<?php echo $_SESSION["merchant_id"]; ?>'; //Similarly populate it with user's friends' site user id's eg: 14,16,20,31
+    </script>
+  <?php } ?>
 <script>
 (function() {
     var chat_css = document.createElement('link'); chat_css.rel = 'stylesheet'; chat_css.type = 'text/css'; chat_css.href = 'https://fast.cometondemand.net/'+chat_appid+'x_xchat.css';
@@ -1334,20 +1575,20 @@ var chat_appid = '52013';
 
 <script>
 function UpdateTotal(id=0 , uprice= 0){
-	var qty = $("#"+id+"_test_athy").val();
-	//alert(qty);
-	//alert(qty);
-	var total =  parseFloat(Number(qty*uprice).toFixed(2));
-	$("#"+id+"_cat_total").val(total);
+  var qty = $("#"+id+"_test_athy").val();
+  //alert(qty);
+  //alert(qty);
+  var total =  parseFloat(Number(qty*uprice).toFixed(2));
+  $("#"+id+"_cat_total").val(total);
 }
 function UpdateTotalCart(id=0){
-	// var qty = $("#"+id+"_test_athy").val();
-	var qty = $("#other_qty_"+id).val();
-	var unitprize = $("#other_product_price_"+id).val();
-	var total =  parseFloat(Number(qty*unitprize).toFixed(2));
-	$("#"+id+"_cat_total").val(total);
-	
-	
+  // var qty = $("#"+id+"_test_athy").val();
+  var qty = $("#other_qty_"+id).val();
+  var unitprize = $("#other_product_price_"+id).val();
+  var total =  parseFloat(Number(qty*unitprize).toFixed(2));
+  $("#"+id+"_cat_total").val(total);
+  
+  
 }
 </script>
 
