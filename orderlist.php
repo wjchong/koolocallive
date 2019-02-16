@@ -1,12 +1,27 @@
 <?php
-   include("config.php");
-if($_SESSION['login']=='')
-{
-    header('Location: '. $site_url .'/login.php');
-    die;
+include("config.php");
+function checkSession(){
+  $conn = $GLOBALS['conn'];
+  $session = $_COOKIE['session_id'];
+  $rw = mysqli_fetch_row(mysqli_query($conn, "SELECT id FROM users WHERE session = '$session'"));
+  if($rw > 0){
+    return true;
+  }else{
+    return false;
+  }
 }
-     $total_rows = mysqli_query($conn, "SELECT * FROM order_list WHERE user_id ='".$_SESSION['login']."' ORDER BY `created_on` DESC");
-      $user_order = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM order_list WHERE user_id ='".$_SESSION['login']."' ORDER BY `created_on` DESC"));
+
+if(!isset($_SESSION['login']) || empty($_SESSION['login']))
+{
+  header("location:logout.php");
+}else{
+  if(!checkSession()){
+    header("location:logout.php");
+  }
+}
+
+     $total_rows = mysqli_query($conn, "SELECT * FROM order_list WHERE user_id ='".$_SESSION['login']."' ORDER BY `created_on` DESC LIMIT 0,50");
+      $user_order = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM order_list WHERE user_id ='".$_SESSION['login']."' ORDER BY `created_on` DESC LIMIT 0,50"));
       $created_new =$user_order['created_on'];
       $status1 =$user_order['status'];
    	$_SESSION['mm_id'] = "";

@@ -2,13 +2,29 @@
 session_start();
 include("config.php");
 $current_time = date('Y-m-d H:i:s');
-if(empty($_SESSION['login'])|| !isset($_SESSION['login']))
-{
-    header('Location: '. $site_url .'/logout.php');
-    die;
+
+function checkSession(){
+    $conn = $GLOBALS['conn'];
+    $session = $_COOKIE['session_id'];
+    $rw = mysqli_fetch_row(mysqli_query($conn, "SELECT id FROM users WHERE session = '$session'"));
+    if($rw > 0){
+        return true;
+    }else{
+        return false;
+    }
 }
-$total_rows = mysqli_query($conn, "SELECT order_list.*, users.mobile_number FROM order_list inner join users on order_list.user_id = users.id WHERE merchant_id ='".$_SESSION['login']."' ORDER BY `created_on` DESC");
-$total_rows1 = mysqli_query($conn, "SELECT order_list.*, users.mobile_number FROM order_list inner join users on order_list.user_id = users.id WHERE merchant_id ='".$_SESSION['login']."' ORDER BY `created_on` DESC");
+
+if(!isset($_SESSION['login']) || empty($_SESSION['login']))
+{
+    header("location:logout.php");
+}else{
+    if(!checkSession()){
+        header("location:logout.php");
+    }
+}
+
+$total_rows = mysqli_query($conn, "SELECT order_list.*, users.mobile_number FROM order_list inner join users on order_list.user_id = users.id WHERE merchant_id ='".$_SESSION['login']."' ORDER BY `created_on` DESC LIMIT 0,50");
+$total_rows1 = mysqli_query($conn, "SELECT order_list.*, users.mobile_number FROM order_list inner join users on order_list.user_id = users.id WHERE merchant_id ='".$_SESSION['login']."' ORDER BY `created_on` DESC LIMIT 0,50");
 $merchant_name = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM users WHERE id ='".$_SESSION['login']."'"));
 $pending_time = $merchant_name['pending_time'];
 require_once ("languages/".$_SESSION["langfile"].".php");

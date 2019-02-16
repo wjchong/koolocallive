@@ -2,9 +2,9 @@
 	
 	include("config.php");
 	
-    // $merchant_id = $_POST['merchant'];
-	$merchant_id = 634;
-	$total_rows = mysqli_query($conn, "SELECT order_list.*, users.mobile_number FROM order_list inner join users on order_list.user_id = users.id WHERE merchant_id ='".$merchant_id."' ORDER BY `created_on` DESC");
+    $merchant_id = $_POST['merchant'];
+	// $merchant_id = 634;
+	$total_rows = mysqli_query($conn, "SELECT order_list.*, users.mobile_number FROM order_list inner join users on order_list.user_id = users.id WHERE merchant_id ='".$merchant_id."' ORDER BY `created_on` DESC LIMIT 0,50");
 
 	$dt = new DateTime();
 
