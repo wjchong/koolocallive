@@ -930,6 +930,8 @@ input[name='p_total[]'],input[name='p_price[]']{
 
     $('#remarks_area').on('hide.bs.modal', function (e) {
         $("#remark_input").attr("type","hidden").val('');
+        $("input[name='ingredients'].selected").removeClass("selected");
+        $("a.introduce-remarks.selected").removeClass("selected");
     });
     $('#remarks_area').on('click','.save_close', function (e) {
         var selected = [];
