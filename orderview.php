@@ -2,9 +2,9 @@
 session_start();
 include("config.php");
 $current_time = date('Y-m-d H:i:s');
-if($_SESSION['login']=='')
+if(empty($_SESSION['login'])|| !isset($_SESSION['login']))
 {
-    header('Location: '. $site_url .'/login.php');
+    header('Location: '. $site_url .'/logout.php');
     die;
 }
 $total_rows = mysqli_query($conn, "SELECT order_list.*, users.mobile_number FROM order_list inner join users on order_list.user_id = users.id WHERE merchant_id ='".$_SESSION['login']."' ORDER BY `created_on` DESC");
@@ -579,7 +579,7 @@ while ($row=mysqli_fetch_assoc($total_rows1)){
         alert("Send Delivery Service to Admin!");
     }
     function hasClass(element, className) {
-        return (' ' + element.className + ' ').indexOf(' ' + className+ ' ') > -1;
+        return (' ' + element.className + ' ').indexOf(' ' + className + ' ') > -1;
     }
     $(document).ready(function(){
         function handleKeyPress (e) {
@@ -805,10 +805,11 @@ while ($row=mysqli_fetch_assoc($total_rows1)){
             }
         });
         /*adding new update */
-        $(".pop_upss").click(function(){
+        $("body").on('click','.pop_upss',function(){
             $("#myModal").modal("show");
             var dataid=$(this).data("id");
             var prodid=$(this).data("prodid");
+            $("#amount").val("");
             $("#id").val(dataid);
             $("#p_id").val(prodid);
         });
@@ -828,19 +829,18 @@ while ($row=mysqli_fetch_assoc($total_rows1)){
         });
         $("form#data").submit(function(e) {
             //alert('adf') ;
-            console.log(e);
+            // console.log(e);
             e.preventDefault();
             var formData = new FormData(this);
-            console.log($(this).serialize());
+            // console.log($(this).serialize());
             var data = {amount: $("#amount").val(),p_id: $("#p_id").val(),id: $("#id").val()};
             $.ajax({
                 url: 'update_amount.php',
                 type: 'post',
                 data: $(this).serialize(),
                 success: function (data) {
-                    console.log(data);
-                    // alert(data);
-                    location.reload();
+                    console.log(data ? "true" : "false");
+                    
                 }
             });
         });
@@ -865,7 +865,8 @@ while ($row=mysqli_fetch_assoc($total_rows1)){
                 data: {merchant: merchant_id},
                 success: function(data){
                     //console.log(data);
-                    console.log("sdfsdf");
+                    console.log("Updating order list...");
+                    // console.log("Merchant ID: " + merchant_id);
                     var content = "";
                     for(var i = 0; i < data.length; i++){
                         content +=  "<tr id='"+data[i]['invoice_no']+"' class='"+data[i]['todayorder']+" fdfd "+data[i]['callss']+"' data-id='"+data[i]['id']+"'>";
@@ -894,7 +895,9 @@ while ($row=mysqli_fetch_assoc($total_rows1)){
                         content += "<td>"+data[i]['remark']+"</td>";
                         content += "<td>"+data[i]['product_code']+"</td>";
                         content += "<td>"+data[i]['amount_val']+"</td>";
+
                         content += "<td>"+data[i]['quantity_val']+"</td>";
+
                         content += "<td>"+data[i]['total_val']+"</td>";
                         content += "<td>"+data[i]['wallet']+"</td>";
                         content += "<td class='location_"+data[i]['id']+" new_tablee'>"+data[i]['location']+"</td>";
@@ -903,7 +906,12 @@ while ($row=mysqli_fetch_assoc($total_rows1)){
                         content += "<td>"+data[i]['account_type']+"</td>";
                         content += "</tr>";
                     }
+                    // console.log(content);
                     $("#orderview-body").html(content);
+                },
+                error: function(data){
+                    console.log("Error:");
+                    console.log(data);
                 }
             }); 
         }
