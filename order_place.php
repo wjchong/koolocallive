@@ -25,7 +25,7 @@ if(isset($_POST['submit']))
 	$pro_id = implode(',', $_POST['p_id']);
 	$qty_list = implode(',', $_POST['qty']);
 	$p_price = implode(',', $_POST['p_price']);
-	$option = implode('|', $_POST['option']);
+	$option = $_POST['options'];
 	$product_name =isset($_POST['product_name']) ? $_POST['product_name'] : '';
 	$product_code =isset($_POST['product_code']) ? $_POST['product_code'] : '';
 	

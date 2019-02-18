@@ -9,6 +9,7 @@ include("config.php");
  $product_type=$_POST['product_type'];
  $product_price=$_POST['product_price'];
  $remark=$_POST['remark'];
+ $ingredients = $_POST['ingredients'];
  
  	$image_pic =  $_FILES["image_pic"]["name"] != '' ? $_FILES["image_pic"]["name"] : $_POST['img']; 
     $image_code =  $_FILES["image_code"]["name"] != '' ? $_FILES["image_code"]["name"] : $_POST['img_code']; 

@@ -1,5 +1,10 @@
 $(document).ready(function(){
-    $(".sidebar-toggle").click(function(){
+    var ingredients = $("input[name='ingredients']").val();
+    if(ingredients != undefined){
+        ingredients = ingredients.split(",");
+    }else{
+        ingredients = [];
+    }    $(".sidebar-toggle").click(function(){
         if($("aside.site-sidebar").hasClass("displayed")){
             $("aside.site-sidebar").removeClass("displayed").addClass("notdisplayed");
         }else{
@@ -80,12 +85,12 @@ $(document).ready(function(){
     }, 5000);
 
     function updateOrder(order) {
-        console.log(order);
+        // console.log(order);
         if( order['id'] ) {
-            console.log(order);
+            // console.log(order);
             var status = order['status'];
             //&& order['wallet'] != ""
-            if(status == 0 && order['printed'] != 1 && order['printed'] != '1' && order['user_id'] != 0 && order['user_id'] != '0'  ) {
+            if(status === 0 && order['user_id'] !== 0 && order['user_id'] !== '0' && order['wallet'] !== ""  )  {
                 $.ajax({
                     url: 'update_status.php',
                     type: 'POST',
@@ -183,5 +188,76 @@ $(document).ready(function(){
             unread_array.splice(len-1, 1); 
         }
              
+    });
+
+
+    // Ingredients managing
+
+    $("#add-ingredient").click(function(){
+        $(".tuto").slideUp();
+        if($("input[name='new-ingredient']").val() == ''){
+           alert("The ingredient place is empty");
+        }else{
+            if($("input[name='new-ingredient']").val().split(",") > 1){
+                console.log("More than 1");
+            }else{
+                ingredients.push($("input[name='new-ingredient']").val().toLowerCase().replace(/ /g,"_"));
+                console.log("Less than 1");
+            }
+            var ingredientName = $("input[name='new-ingredient']").val().charAt(0).toUpperCase() + $("input[name='new-ingredient']").val().slice(1).toLowerCase();
+
+            $("#ingredients_container").append("<div class='ingredient'><button type='button' class='btn btn-info remove-ingredient' aria-label='Close' ><span aria-hidden='true'>&times;</span></button><span class='ingredient-name'>" + ingredientName + "</span><input type='hidden' name='ingredient-name-input' value=" + $("input[name='new-ingredient']").val().replace(/ /g,"_") + " /></div>");
+            $("input[name='new-ingredient']").val('');
+            $("input[name='ingredients']").val(ingredients);
+            // console.log(ingredients);
+        }
+    });
+    $("input[name='new-ingredient']").keyup(function(e){
+        if(e.keyCode === 13){
+            $(".tuto").slideUp();
+            if($("input[name='new-ingredient']").val() == ''){
+                alert("The ingredient place is empty");
+            }else{
+                ingredients.push($("input[name='new-ingredient']").val().toLowerCase().replace(/ /g,"_"));
+                var ingredientName = $("input[name='new-ingredient']").val().charAt(0).toUpperCase() + $("input[name='new-ingredient']").val().slice(1).toLowerCase();
+                $("#ingredients_container").append("<div class='ingredient'><button type='button' class='btn btn-info remove-ingredient' aria-label='Close' ><span aria-hidden='true'>&times;</span></button><span class='ingredient-name'>" + ingredientName + "</span><input type='hidden' name='ingredient-name-input' value=" + $("input[name='new-ingredient']").val().replace(/ /g,"_") + " /></div>");
+                $("input[name='new-ingredient']").val('');
+                $("input[name='ingredients']").val(ingredients);
+                // console.log(ingredients);
+            } 
+        }
+        console.log(ingredients);
+    });
+
+    $("#ingredients_container").on('click','.remove-ingredient',function(e){
+        var ingName = $(this).siblings("input[name='ingredient-name-input']").val().toLowerCase();
+        // console.log("Ingredient name: " + ingName);
+        $(this).parent().remove();
+        var index = ingredients.indexOf(ingName);
+        if (index > -1) {
+            ingredients.splice(index, 1);
+        }
+        $("input[name='ingredients']").val(ingredients);
+        // console.log($("input[name='ingredients']").val());
+        console.log(ingredients);
+    });
+
+    $("body").on("click","#update-ingredients", function(e){
+        $(".tuto").slideUp();
+        $.post("./remark.php",{
+            update_ingredients:$("input[name='ingredients']").val() 
+        }, function(data, result){
+            if(data){
+              alert("The ingredients have been updated");
+            }else{
+                console.log(data);
+            }
+        });
+        e.preventDefault();
+    });
+
+    $("a[href='#tutorial']").click(function(e){
+        e.preventDefault();
+        $(".tuto").slideToggle();
     });
 });
