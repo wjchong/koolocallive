@@ -1,6 +1,15 @@
 <?php 
 include("config.php");
 
+# ACLARATION:
+#	To have a fully working remark system
+#	you'll need to have a column in 'users' table
+#	
+#	If this column does not exist remark WON'T work
+#
+
+
+
 if(!isset($_SESSION['login']))
 {
 	header("location:login.php");
