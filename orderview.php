@@ -416,7 +416,7 @@ while ($row=mysqli_fetch_assoc($total_rows1)){
 
                                     } else {
 
-                                        echo '0<br>';
+                                        echo '<p class="pop_upss" data-id=' . $row['id'] . '  style="margin-bottom: 0px;display:block;" data-prodid="' . $key . '""><i class="fa fa-pencil-square-o" aria-hidden="true"></i>0</p>';
 
                                     }
 
@@ -510,14 +510,14 @@ while ($row=mysqli_fetch_assoc($total_rows1)){
                                                 <span id="total_amount" style="font-size: 20px;width: 30%;        border: 1px solid;padding-left: 4px; border-left: none; border-bottom-right-radius: 2px; border-top-right-radius: 2px;"></span>
                                             </div>
                                             <div class="modal-footer" style="padding-bottom:2px; border-top: none;padding: 0px;padding-top: 5px;">
-                                                <button style="width:200px;height:50px;background-color: #99e1dc;">Submit</button>
+                                                <button id="amount_submit_button" style="width:200px;height:50px;background-color: #99e1dc;">Submit</button>
                                             </div>
                                         </form>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="modal fade" id="myModal" role="dialog">
+                        <div class="modal fade" id="AmountModal" role="dialog">
                             <div class="modal-dialog">
                                 <!-- Modal content-->
                                 <div class="modal-content">
@@ -563,6 +563,67 @@ while ($row=mysqli_fetch_assoc($total_rows1)){
 </body>
 </html>
 <script type="text/javascript">
+    var merchant_id = '<?php echo $_SESSION['login'];?>';
+    var site_url = '<?php echo $site_url;?>';
+    function reloadData(merchant_id,site_url){
+        $.ajax({
+                url : site_url + '/get_order_list_merchant.php',
+                type : 'post',
+                dataType: 'json',
+                data: {merchant: merchant_id},
+                success: function(data){
+                    //console.log(data);
+                    console.log("Updating order list...");
+                    // console.log("Merchant ID: " + merchant_id);
+                    var content = "";
+                    for(var i = 0; i < data.length; i++){
+                        content +=  "<tr id='"+data[i]['invoice_no']+"' class='"+data[i]['todayorder']+" fdfd "+data[i]['callss']+"' data-id='"+data[i]['id']+"'>";
+                        
+                        content +=      "<input type='hidden' class='merchant_"+data[i]['id']+"' value='"+data[i]['merchant_name']+"'>";
+                        
+                        content +=      "<input type='hidden' class='userphone_"+data[i]['id']+"' value='"+data[i]['user_mobile_number']+"' >";
+                        content +=      "<input type='hidden' class='merchantphone_"+data[i]['id']+"' value='"+data[i]['merchant_mobile_number']+"' >";
+                        content +=      "<input type='hidden' class='merchantaddress_"+data[i]['id']+"' value='"+data[i]['merchant_google_map']+"' >";
+                        content +=      "<td>"+(i+1)+"</td>";
+                        content +=      "<td>"+data[i]['date']+"<br>"+data[i]['new_time']+"<p style='color: red;'>"+data[i]['diff_time']+"</p></td>";
+                        content +=      "<td class='username_"+data[i]['id']+"'>"+data[i]['user_name']+"</td>";
+                        content += "<td><label class='status' status='"+data[i]['status']+"' data-id='"+data[i]['id']+"'>"+data[i]['sta']+"</label></td>";
+                        if(data[i]['status'] == '2'){
+                            content += "<td target='_blank' href='print_kitchen.php?id="+data[i]['id']+"&merchant="+merchant_id+"'>Print</td>";
+                        } else {
+                           content += "<td></td>"; 
+                        }
+                        content += "<td><a class='print-order' href='#' data-id='"+data[i]['id']+"' data-invoice='"+data[i]['invoice_no']+"'>Print Receipt</a></td>";
+                        content += "<td><a target='_blank' href='"+site_url+"/chat/chat.php?sender="+merchant_id+"&receiver="+data[i]['user_id']+"'><i class='fa fa-comments-o' style='font-size:25px;'></i></a></td>";
+                        content += "<td><a target='_blank' href='print.php?id="+data[i]['id']+"&merchant="+merchant_id+"'>Print</a></td>";
+                        content += "<td class='table_number_"+data[i]['id']+"'>"+data[i]['table_type']+"</td>";
+                        content += "<td>"+data[i]['invoice_no']+"</td>";
+                        content += "<td class='quantity_"+data[i]['id']+"'>"+data[i]['quantities']+"</td>";
+                        content += "<td class='products_namess product_name_"+data[i]['id']+" test_productss'>"+data[i]['product_name']+"</td>";
+                        content += "<td>"+data[i]['remark']+"</td>";
+                        content += "<td>"+data[i]['product_code']+"</td>";
+                        content += "<td>"+data[i]['amount_val']+"</td>";
+
+                        content += "<td>"+data[i]['quantity_val']+"</td>";
+
+                        content += "<td>"+data[i]['total_val']+"</td>";
+                        content += "<td>"+data[i]['wallet']+"</td>";
+                        content += "<td class='location_"+data[i]['id']+" new_tablee'>"+data[i]['location']+"</td>";
+                        content += "<td>"+data[i]['lock_mobile']+"</td>";
+                        content += "<td><a onclick='copy_orderDetail("+data[i]['id']+")'' href='#' class='delivery' id='"+data[i]['id']+"'><i class='fa fa-truck' style='font-size:25px;'></i></a></td>";
+                        content += "<td>"+data[i]['account_type']+"</td>";
+                        content += "</tr>";
+                    }
+                    // console.log(content);
+                    $("#orderview-body").html(content);
+                },
+                error: function(data){
+                    console.log("Error:");
+                    console.log(data);
+                }
+            }); 
+    }
+
     function copy_orderDetail(id){
         var detailContent = "";
         var username = $("username");
@@ -620,6 +681,7 @@ while ($row=mysqli_fetch_assoc($total_rows1)){
                 }, 200);
             }
         });
+
         function empty(str){
             return !str || !/[^\s]+/.test(str);
         }
@@ -822,7 +884,7 @@ while ($row=mysqli_fetch_assoc($total_rows1)){
         });
         /*adding new update */
         $("body").on('click','.pop_upss',function(){
-            $("#myModal").modal("show");
+            $("#AmountModal").modal("show");
             var dataid=$(this).data("id");
             var prodid=$(this).data("prodid");
             $("#amount").val("");
@@ -855,8 +917,13 @@ while ($row=mysqli_fetch_assoc($total_rows1)){
                 type: 'post',
                 data: $(this).serialize(),
                 success: function (data) {
-                    console.log(data ? "true" : "false");
-                    
+                    if(data == 1){
+                        $("#AmountModal").modal("hide");
+                        reloadData(merchant_id,site_url);
+                    }else{
+                        alert("An error occured, try again later");
+                        console.log(data);
+                    }
                 }
             });
         });
@@ -869,67 +936,9 @@ while ($row=mysqli_fetch_assoc($total_rows1)){
             window.location.reload();
         }
     }*/
-    var merchant_id = '<?php echo $_SESSION['login'];?>';
-    var site_url = '<?php echo $site_url;?>';
     setInterval(function(){
         if( !hasClass( document.getElementById("myScanModal"), "show" ) ) {
-            //window.location.reload();
-            $.ajax({
-                url : site_url + '/get_order_list_merchant.php',
-                type : 'post',
-                dataType: 'json',
-                data: {merchant: merchant_id},
-                success: function(data){
-                    //console.log(data);
-                    console.log("Updating order list...");
-                    // console.log("Merchant ID: " + merchant_id);
-                    var content = "";
-                    for(var i = 0; i < data.length; i++){
-                        content +=  "<tr id='"+data[i]['invoice_no']+"' class='"+data[i]['todayorder']+" fdfd "+data[i]['callss']+"' data-id='"+data[i]['id']+"'>";
-                        
-                        content +=      "<input type='hidden' class='merchant_"+data[i]['id']+"' value='"+data[i]['merchant_name']+"'>";
-                        
-                        content +=      "<input type='hidden' class='userphone_"+data[i]['id']+"' value='"+data[i]['user_mobile_number']+"' >";
-                        content +=      "<input type='hidden' class='merchantphone_"+data[i]['id']+"' value='"+data[i]['merchant_mobile_number']+"' >";
-                        content +=      "<input type='hidden' class='merchantaddress_"+data[i]['id']+"' value='"+data[i]['merchant_google_map']+"' >";
-                        content +=      "<td>"+(i+1)+"</td>";
-                        content +=      "<td>"+data[i]['date']+"<br>"+data[i]['new_time']+"<p style='color: red;'>"+data[i]['diff_time']+"</p></td>";
-                        content +=      "<td class='username_"+data[i]['id']+"'>"+data[i]['user_name']+"</td>";
-                        content += "<td><label class='status' status='"+data[i]['status']+"' data-id='"+data[i]['id']+"'>"+data[i]['sta']+"</label></td>";
-                        if(data[i]['status'] == '2'){
-                            content += "<td target='_blank' href='print_kitchen.php?id="+data[i]['id']+"&merchant="+merchant_id+"'>Print</td>";
-                        } else {
-                           content += "<td></td>"; 
-                        }
-                        content += "<td><a class='print-order' href='#' data-id='"+data[i]['id']+"' data-invoice='"+data[i]['invoice_no']+"'>Print Receipt</a></td>";
-                        content += "<td><a target='_blank' href='"+site_url+"/chat/chat.php?sender="+merchant_id+"&receiver="+data[i]['user_id']+"'><i class='fa fa-comments-o' style='font-size:25px;'></i></a></td>";
-                        content += "<td><a target='_blank' href='print.php?id="+data[i]['id']+"&merchant="+merchant_id+"'>Print</a></td>";
-                        content += "<td class='table_number_"+data[i]['id']+"'>"+data[i]['table_type']+"</td>";
-                        content += "<td>"+data[i]['invoice_no']+"</td>";
-                        content += "<td class='quantity_"+data[i]['id']+"'>"+data[i]['quantities']+"</td>";
-                        content += "<td class='products_namess product_name_"+data[i]['id']+" test_productss'>"+data[i]['product_name']+"</td>";
-                        content += "<td>"+data[i]['remark']+"</td>";
-                        content += "<td>"+data[i]['product_code']+"</td>";
-                        content += "<td>"+data[i]['amount_val']+"</td>";
-
-                        content += "<td>"+data[i]['quantity_val']+"</td>";
-
-                        content += "<td>"+data[i]['total_val']+"</td>";
-                        content += "<td>"+data[i]['wallet']+"</td>";
-                        content += "<td class='location_"+data[i]['id']+" new_tablee'>"+data[i]['location']+"</td>";
-                        content += "<td>"+data[i]['lock_mobile']+"</td>";
-                        content += "<td><a onclick='copy_orderDetail("+data[i]['id']+")'' href='#' class='delivery' id='"+data[i]['id']+"'><i class='fa fa-truck' style='font-size:25px;'></i></a></td>";
-                        content += "<td>"+data[i]['account_type']+"</td>";
-                        content += "</tr>";
-                    }
-                    // console.log(content);
-                    $("#orderview-body").html(content);
-                },
-                error: function(data){
-                    console.log("Error:");
-                    console.log(data);
-                }
-            }); 
+            reloadData(merchant_id,site_url);
         }
     },
     60000);
