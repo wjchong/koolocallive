@@ -152,6 +152,8 @@ if(false){  //@isset($_SESSION['IsVIP']
 				<li><a href="view_category.php">View Category</a></li>
 			</ul>
         </li>
+		 <li><a href="remark.php"><span class="hide-menu">Remarks</span></a></li>
+        
         <?php } 
         }?>
 				 <li><a href="sub.php"><span class="hide-menu">Subscription</span></a></li>

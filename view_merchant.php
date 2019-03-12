@@ -1,7 +1,10 @@
 <?php
 include("config.php");
+<<<<<<< HEAD
 include("config.php");
 include_once('php/Section.php');
+=======
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
 // Start of Hire's work
 // Load merchant's product with QR
 if(!empty($_GET['sid'])){
@@ -17,6 +20,7 @@ if(!empty($_GET['sid'])){
     $_SESSION['mm_id']= $product['id'];
      
 } 
+<<<<<<< HEAD
 // include_once('php/SectionTable.php');
 
 $sectionsObj = new Section($conn);
@@ -37,6 +41,8 @@ if($sectionsList) {
 // $sectionTablesList = $sectionTablesObj->getList($sectionTableFilter);
 
 
+=======
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
 // End of Hire's work
 $bank_data = isset($_SESSION['login']) ? mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM users WHERE id='".$_SESSION['login']."'")) : '';
 $nature_array = array(
@@ -65,6 +71,7 @@ $nature_image = array(
 
 <head>
     <?php include("includes1/head.php"); ?>
+<<<<<<< HEAD
 	<style>
 	 .well
 	{
@@ -102,20 +109,25 @@ $nature_image = array(
 		grid-template-columns: 1fr 1fr;
 	}
 		.other_products {
+=======
+  <style>
+    .other_products {
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
     display: flex;
 }
-		.create_date
-		{
-			float: right;
-		}
+    .create_date
+    {
+      float: right;
+    }
 
-		.comment_box {
+    .comment_box {
     border: 1px solid #ccc;
     padding: 15px;
     border-radius: 5px;
     margin-bottom: 15px;
     margin-top: 15px;
     box-shadow: 0 0 5px 0px;
+<<<<<<< HEAD
 	}
 		.submit_button
 		{
@@ -135,6 +147,27 @@ $nature_image = array(
 		box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
 	}
 	.well {
+=======
+  }
+    .submit_button
+    {
+      width:25% !important;
+    }
+    .comment{
+      width:90%;
+    }
+  .well
+  {
+  
+    min-height: 20px;
+    background-color: #fff;
+    border: 1px solid #e3e3e3;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
+  }
+  .well {
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
     width: 100% !important;
     min-height: 20px;
     background-color: transparent!important;
@@ -143,12 +176,21 @@ $nature_image = array(
     -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
     box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
 }
+<<<<<<< HEAD
 	.well form{
 	    min-height: 280px;
 	}
 	.pro_name
 	{
 	 text-align: center;
+=======
+  .well form{
+      min-height: 280px;
+  }
+  .pro_name
+  {
+   text-align: center;
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
     font-size: 22px;
     font-weight: 600;
     margin: 10px 0px;
@@ -224,7 +266,11 @@ p.quantity {
         border-radius: 8px;
         margin-left: -10px;
     }
+<<<<<<< HEAD
 	 .master_category_filter{
+=======
+   .master_category_filter{
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
         font-size: 1.2rem;
         line-height: 0.8rem;
         margin-bottom: 5px !important;
@@ -256,7 +302,7 @@ p.quantity {
 
 @media only screen and (max-width: 600px) and (min-width: 300px)  {
 
-	.sidebar-expand .main-wrapper {
+  .sidebar-expand .main-wrapper {
         margin-left: 0px!important;
     }
 
@@ -344,8 +390,8 @@ h4.head_oth {
 
     }
     .oth_pr{
-	height: 40px;
-	}
+  height: 40px;
+  }
 }
 @media only screen and (max-width: 1050px) and (min-width: 992px)  {
    .text_add_cart{width: 100px}
@@ -521,6 +567,7 @@ input[name='p_total[]'],input[name='p_price[]']{
   grid-row-gap: 20px;
 }
 
+<<<<<<< HEAD
 .product_button
    {
 	       background: #003A66;
@@ -544,6 +591,10 @@ input[name='p_total[]'],input[name='p_price[]']{
 }
 /* End of Style for new products layout */
 	</style>
+=======
+/* End of Style for new products layout */
+  </style>
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
 </head>
 
 <body class="header-light sidebar-dark sidebar-expand pace-done">
@@ -566,7 +617,7 @@ input[name='p_total[]'],input[name='p_price[]']{
 
                     <?php
                      $id = $_SESSION['mm_id'];
-			
+      
                     $merchant_detail = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM users WHERE id='".$id."'"));
                     if( isset($_SESSION['login']) ) {
                         $sql_transaction = "SELECT COUNT(id) ordered_num
@@ -593,7 +644,11 @@ input[name='p_total[]'],input[name='p_price[]']{
                     
                     $product = mysqli_fetch_assoc(mysqli_query($conn, "SELECT count(id) as pro_ct FROM products WHERE user_id ='".$id."' and status=0"));
                     $total_rows = mysqli_query($conn, "SELECT * FROM products WHERE user_id ='".$id."' and status=0");  
+<<<<<<< HEAD
 					
+=======
+          
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
                     $favorite = isset($_SESSION['login']) ? mysqli_query($conn, "SELECT * FROM favorities WHERE user_id = ".$_SESSION['login']." AND favorite_id = ".$id."") : '';
                     $count = $favorite != '' ? mysqli_num_rows($favorite) : 0;
                     ?>
@@ -634,7 +689,7 @@ input[name='p_total[]'],input[name='p_price[]']{
                             </div> 
                         </div> 
                         <div class="cont-area3"> 
-                        <div class="white-box">	
+                        <div class="white-box"> 
                         <div class="btns">
                         <div class="main-btn"> <a  href="<?php echo $site_url; ?>/about_menu.php"><?php echo $language["about_us"]?></a> </div>
                         <div class="main-btn1">  <a  href="<?php echo $site_url; ?>/rating_list.php"><?php echo $language["rating"]?> </div>
@@ -718,7 +773,11 @@ input[name='p_total[]'],input[name='p_price[]']{
                     ?>  
                    
                     <?php 
+<<<<<<< HEAD
 					/** 
+=======
+          /** 
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
                     $categories = mysqli_query($conn, "SELECT DISTINCT(products.category) FROM products WHERE user_id ='".$id."' and status=0 ORDER BY created_date ASC");
                     if($product['pro_ct'] > 0) { ?>
                     <div class="col-md-12 filter-button-group">
@@ -764,7 +823,7 @@ input[name='p_total[]'],input[name='p_price[]']{
                     <p class ="pro_name"><?php echo $row['product_name']; ?></p>
                     <p class="mBt10"><?php echo 'Code: '.$row['product_type']; ?></p>
                     <p class="mBt10"><?php echo $row['remark']; ?></p>
-                    <!--	<p><?php echo 'Category : '.str_replace("-", " ", $row['category']); ?></p>-->
+                    <!--  <p><?php echo 'Category : '.str_replace("-", " ", $row['category']); ?></p>-->
                     <p class="mBt10"></p><?php echo 'Price : Rm'.number_format((float)$row['product_price'], 2, '.', ''); ?></p>
                     <!--
                     <p ><?php //echo 'Remark : '.$row['remark']; ?></p>
@@ -802,8 +861,13 @@ input[name='p_total[]'],input[name='p_price[]']{
         if($merchant_detail['menu_type']==1) {
 
 
+<<<<<<< HEAD
 		// echo "SELECT * FROM products WHERE category = '".$sub_cat."' and user_id ='".$id."' and status=0";
 		// die;
+=======
+    // echo "SELECT * FROM products WHERE category = '".$sub_cat."' and user_id ='".$id."' and status=0";
+    // die;
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
         $total_rows1 = isset($category) ? mysqli_query($conn, "SELECT * FROM products WHERE category = '".$sub_cat."' and user_id ='".$id."' and status=0") : [];
         ?>
         <div class="without_picture">
@@ -827,17 +891,17 @@ input[name='p_total[]'],input[name='p_price[]']{
         
         
         ?>
-        	<tr>
-        	    <td><?php echo $i; ?> </td>
-        	    <input type="hidden" id="id" name="m_id" value="<?php echo $id;?>">
+          <tr>
+              <td><?php echo $i; ?> </td>
+              <input type="hidden" id="id" name="m_id" value="<?php echo $id;?>">
                 <input type="hidden" id="id" name="p_id" value="<?php echo $row['id'];?>">
-        		<td><?php echo $row['product_name']; ?></td>
-        		<td class="text_add_cart_without"  data-id = "<?php echo $row['id'] ?>" data-code = "<?php echo $row['product_type'] ?>"  data-pr = "<?php echo number_format((float)$row['product_price'], 2, '.', ''); ?>" data-name = "<?php echo $row['product_name'] ?>" id="text_without">Add to Cart</td>
-        		<td><?php echo number_format((float)$row['product_price'], 2, '.', ''); ?></td>
-        		<td><?php echo $row['remark']; ?></td>
-        		<td><?php echo $row['product_type']; ?></td>
-        		
-        		</tr>
+            <td><?php echo $row['product_name']; ?></td>
+            <td class="text_add_cart_without"  data-id = "<?php echo $row['id'] ?>" data-code = "<?php echo $row['product_type'] ?>"  data-pr = "<?php echo number_format((float)$row['product_price'], 2, '.', ''); ?>" data-name = "<?php echo $row['product_name'] ?>" id="text_without">Add to Cart</td>
+            <td><?php echo number_format((float)$row['product_price'], 2, '.', ''); ?></td>
+            <td><?php echo $row['remark']; ?></td>
+            <td><?php echo $row['product_type']; ?></td>
+            
+            </tr>
         <?php  $i++; }
         ?>
         <?php } ?>
@@ -881,7 +945,7 @@ input[name='p_total[]'],input[name='p_price[]']{
         
         <th><?php echo ucfirst(strtolower($language["remark"])); ?></th>
         
-		<th>Unit Price</th>
+    <th>Unit Price</th>
         <th>Total</th>
         </tr>
         <tbody id="test"> </tbody>
@@ -916,6 +980,7 @@ input[name='p_total[]'],input[name='p_price[]']{
             // End of Hire's code 
             // --------------------
             ?>
+<<<<<<< HEAD
 
               <input class="form-control comment" name="location" placeholder="location" value="<?php  echo $merchant_detail['google_map']; ?>" required style="margin: 0 !important;"><br><br>
           </div>
@@ -953,6 +1018,27 @@ input[name='p_total[]'],input[name='p_price[]']{
 		
 	</div>	
 	
+=======
+
+              <input class="form-control comment" name="location" placeholder="location" value="<?php  echo $merchant_detail['google_map']; ?>" required style="margin: 0 !important;"><br><br>
+          </div>
+    
+  <div style="float:left;width:100%">
+  
+    
+    <div style="float:left;width:20%;margin-top:20px;">
+        <label>Section <br></label>
+             <input type="text" class="form-control table" name="section_type" value="<?php echo $section; ?>"/>
+    </div>
+
+    <div style="float:left;width:33%;margin-top:20px;">
+            <label><?php echo ucfirst(strtolower($language["table_number"])); ?></label>
+            <input type="text" class="form-control table" name="table_type" value="<?php echo $tablenumber; ?>"/>
+    </div>
+    
+  </div>  
+  
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
         <input type="hidden" id="id" name="m_id" value="<?php echo $id;?>">
         <input type="hidden" name="options" value="" />  
         <input type="submit" class="btn btn-block btn-primary submit_button" name="submit" value="<?php echo $language["confirm_order"];?>">
@@ -1097,7 +1183,11 @@ input[name='p_total[]'],input[name='p_price[]']{
     $("input[type='submit']").click(function(e){
       var remarks = [];
       $('input[name="ingredients"]').each(function() {
+<<<<<<< HEAD
              remarks.push($(this).val());
+=======
+         remarks.push($(this).val());
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
         });
       var result = '';
         for (var i = 0; i <= remarks.length - 1; i++) {
@@ -1121,6 +1211,7 @@ input[name='p_total[]'],input[name='p_price[]']{
 
     // Remark
     // End of DrakkoFire's code
+<<<<<<< HEAD
 	$(".text_add_cart").on("click", function(){
 		 $("#product_main").html("");
 		 $("#product_table").html("");
@@ -1270,36 +1361,68 @@ input[name='p_total[]'],input[name='p_price[]']{
 		    var quantity = 1 ;
 		}
 		var p_total = p_price *quantity ;
+=======
+  $(".text_add_cart").on("click", function(){
+    var id = $(this).data("id");
+    var code = $(this).data("code");
+    var p_price = $(this).data("pr");
+    var name = $(this).data("name");
+    var quantity = $(this).closest("form").find("input[name='quatity']").val();
+        
+    var p_total = p_price*quantity;
+    p_total = p_total.toFixed(2);
+        
+      $("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td>"+name+"</td><td><input style='width:50px;'  onchange='UpdateTotal("+id+" ,"+p_price+")'  type=number name='qty[]' maxlength='3'  value="+quantity+" id='"+id+"_test_athy'><input type= hidden name='p_id[]' value= "+id+"><input type= hidden name='p_code[]' value= "+code+"><input type='hidden' name='ingredients'/></td><td>"+code+"</td><td><a href='#remarks_area' role='button' class='introduce-remarks btn btn-large btn-primary' data-toggle='modal'>Remarks</a></td>  <td><input style='width:70px;' type='text' name='p_price[]' value= "+p_price+" readonly></td><td><input type='text' style='width:70px;' name='p_total[]' value= "+p_total+" readonly  id='"+id+"_cat_total'></td> </tr>");
+    alert('The product added');
+  });
+
+    $(".text_add_cart_without").on("click", function(){
+    var id = $(this).data("id");
+    //~ alert(id);
+    var code = $(this).data("code");
+    //~ alert(code);
+    var p_price = $(this).data("pr");
+    //~ alert(p_price);
+    var name = $(this).data("name");
+    // alert(name);
+    var quantity = 1 ;
+    //alert(quantity) ;
+    if(quantity ==''){
+        
+        var quantity = 1 ;
+    }
+    var p_total = p_price *quantity ;
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
     p_total = p_total.toFixed(2);
 
-		$("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td>"+name+"</td><td><input style='width:50px;' maxlength='3'  onchange='UpdateTotal("+id+" ,"+p_price+")'  type=number name='qty[]' value="+quantity+" id='"+id+"_test_athy'><input type= hidden name='p_id[]' value= "+id+"><input type= hidden name='p_code[]' value= "+code+"><input type='hidden' name='ingredients'/></td><td>"+code+"</td><td><a href='#remarks_area' role='button' class='introduce-remarks btn btn-large btn-primary' data-toggle='modal'>Remarks</a></td>  <td><input style='width:70px;' type='text' name='p_price[]' value= "+p_price+" readonly></td><td><input type='text' style='width:70px;' name='p_total[]' value= "+p_total+" readonly  id='"+id+"_cat_total'></td> </tr>");
-		alert('The product added');
-	});
+    $("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td>"+name+"</td><td><input style='width:50px;' maxlength='3'  onchange='UpdateTotal("+id+" ,"+p_price+")'  type=number name='qty[]' value="+quantity+" id='"+id+"_test_athy'><input type= hidden name='p_id[]' value= "+id+"><input type= hidden name='p_code[]' value= "+code+"><input type='hidden' name='ingredients'/></td><td>"+code+"</td><td><a href='#remarks_area' role='button' class='introduce-remarks btn btn-large btn-primary' data-toggle='modal'>Remarks</a></td>  <td><input style='width:70px;' type='text' name='p_price[]' value= "+p_price+" readonly></td><td><input type='text' style='width:70px;' name='p_total[]' value= "+p_total+" readonly  id='"+id+"_cat_total'></td> </tr>");
+    alert('The product added');
+  });
   var other_product_id = 1;
-	 $(".oth_pr").on("click", function(){
-		   $('html,body').animate({
+   $(".oth_pr").on("click", function(){
+       $('html,body').animate({
         scrollTop: $("#cartsection").offset().top},
         'slow');  
-      	   
-		$("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td><input style='width:120px;' type=text  id='other_product_name_"+other_product_id+"' class='other_product_name'><input type='hidden' name='p_id[]' id='other_product_id_"+other_product_id+"'></td> <td><input style='width:50px;' onchange='UpdateTotalCart("+other_product_id+")' id='other_qty_"+other_product_id+"' type=number name='qty[]' value='1'></td> <td><input class='other_product_code' style='width:70px;' type= text name='p_code[]' id='other_product_code_"+other_product_id+"'><input type='hidden' name='ingredients'/></td><td> <a href='#remarks_area' role='button' class='introduce-remarks btn btn-large btn-primary' data-toggle='modal'>Remarks</a></td><td><input style='width:70px;' id='other_product_price_"+other_product_id+"' type='text' name='p_price[]' readonly></td><td><input type='text' style='width:70px;' name='p_total[]' readonly  id='"+other_product_id+"_cat_total'></td></tr>");
+           
+    $("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td><input style='width:120px;' type=text  id='other_product_name_"+other_product_id+"' class='other_product_name'><input type='hidden' name='p_id[]' id='other_product_id_"+other_product_id+"'></td> <td><input style='width:50px;' onchange='UpdateTotalCart("+other_product_id+")' id='other_qty_"+other_product_id+"' type=number name='qty[]' value='1'></td> <td><input class='other_product_code' style='width:70px;' type= text name='p_code[]' id='other_product_code_"+other_product_id+"'><input type='hidden' name='ingredients'/></td><td> <a href='#remarks_area' role='button' class='introduce-remarks btn btn-large btn-primary' data-toggle='modal'>Remarks</a></td><td><input style='width:70px;' id='other_product_price_"+other_product_id+"' type='text' name='p_price[]' readonly></td><td><input type='text' style='width:70px;' name='p_total[]' readonly  id='"+other_product_id+"_cat_total'></td></tr>");
       var focus_id="other_product_code_"+other_product_id;
-	  document.getElementById(focus_id).focus(); 
-	other_product_id++;
+    document.getElementById(focus_id).focus(); 
+  other_product_id++;
     jQuery(".other_product_name").autocomplete({
       source: "auto_complete_product_name.php",
       minLength: 1, 
       select: function(event, ui) {
         var id = $(this).attr('id').split('_')[3];
-		var qty_id='other_qty_'+id;
-		var qty_no=document.getElementById(qty_id).value;
-		 var total_cart=qty_no*(ui.item.price);
-		 // alert(total_cart);
+    var qty_id='other_qty_'+id;
+    var qty_no=document.getElementById(qty_id).value;
+     var total_cart=qty_no*(ui.item.price);
+     // alert(total_cart);
         $("#other_product_id_"+id).val(ui.item.id);
         $("#other_product_code_"+id).val(ui.item.code);
         $("#other_product_price_"+id).val(ui.item.price);
         $("#other_product_remark_"+id).val(ui.item.remark);
         var cart_id=id+"_cat_total";
-		document.getElementById(cart_id).value =total_cart;
+    document.getElementById(cart_id).value =total_cart;
       }
     });
     jQuery(".other_product_name").keyup(function(e){
@@ -1312,22 +1435,22 @@ input[name='p_total[]'],input[name='p_price[]']{
       select: function(event, ui) {
         var id = $(this).attr('id').split('_')[3];
        var qty_id='other_qty_'+id;
-		var qty_no=document.getElementById(qty_id).value;
-		 var total_cart=qty_no*(ui.item.price);
-		 // alert(total_cart);
+    var qty_no=document.getElementById(qty_id).value;
+     var total_cart=qty_no*(ui.item.price);
+     // alert(total_cart);
         $("#other_product_id_"+id).val(ui.item.id);
         $("#other_product_code_"+id).val(ui.item.code);
         $("#other_product_name_"+id).val(ui.item.name);
         $("#other_product_price_"+id).val(ui.item.price);
         $("#other_product_remark_"+id).val(ui.item.remark);
         var cart_id=id+"_cat_total";
-		document.getElementById(cart_id).value =total_cart;
+    document.getElementById(cart_id).value =total_cart;
         
       }
     });
 
-	});
-	
+  });
+  
      jQuery(document).on('click', 'button.removebutton', function () {
          alert("Product has Removed");
          jQuery(this).closest('tr').remove();
@@ -1335,12 +1458,16 @@ input[name='p_total[]'],input[name='p_price[]']{
      });
 
      $()
-	</script>
+  </script>
 
 <style>
 .category_filter{
     margin-bottom: 10px;
+<<<<<<< HEAD
 	padding: 8px;
+=======
+  padding: 8px;
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
 }
 .sub_category_grid{
     margin-top: 10px;
@@ -1453,16 +1580,22 @@ var $grid_sub = $('.sub_category_grid').isotope({
 var $grid = $('.grid').isotope({
   // options
 });
+<<<<<<< HEAD
 var menu_type='<?php echo $merchant_detail['menu_type'];?>';
 if(menu_type==1)
 {
 var master_filter='.'+'<?php echo $master_cat;?>';
 $grid.isotope({ filter:master_filter });
 }
+=======
+var master_filter='.'+'<?php echo $master_cat;?>';
+$grid.isotope({ filter:master_filter });
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
 // filter items on button click
 $('.master_category_filter').on( 'click', function(e) {
     e.preventDefault();
     var filterValue = $(this).attr('data-filter');
+<<<<<<< HEAD
 
     $grid_sub.on( 'arrangeComplete', function ( event, filteredItems) {
         console.log(event, filteredItems);
@@ -1472,9 +1605,19 @@ $('.master_category_filter').on( 'click', function(e) {
 
     $grid_sub.isotope({ filter: filterValue });
 
+=======
+
+    $grid_sub.on( 'arrangeComplete', function ( event, filteredItems) {
+        console.log(event, filteredItems);
+        $(filteredItems[0].element).find('button').trigger('click');
+        console.log('am called');
+    });
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
+
+    $grid_sub.isotope({ filter: filterValue });
 
 
-
+<<<<<<< HEAD
 	var menu_type='<?php echo $merchant_detail['menu_type'];?>';
 		
         var filterValue = $(this).attr('data-filter');
@@ -1489,18 +1632,45 @@ $('.master_category_filter').on( 'click', function(e) {
 			var data = {type:"mainclick",method:"getImageProduct", id: <?php echo $id;?>, category:position_value};
 		    $(".new_grid").html("");
 			$.ajax({
+=======
+
+
+  var menu_type='<?php echo $merchant_detail['menu_type'];?>';
+    
+        var filterValue = $(this).attr('data-filter');
+        var position_value = $(this).attr('data-position');
+    
+        $("#without_table tbody").html("");  
+    // alert(position_value);
+    // alert(menu_type);
+       
+    if(menu_type==1)
+    {
+      var data = {type:"mainclick",method:"getImageProduct", id: <?php echo $id;?>, category:position_value};
+        $(".new_grid").html("");
+      $.ajax({
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
              url:"functions.php",
              type:"post",
              data:data,
              dataType:'json',
              success:function(result){
                 var html="";
+<<<<<<< HEAD
 				
                 for(var i = 0; i < result.length; i++){
                     html += "<div class='well col-md-4 element-item Cham鸳鸯'>";
 					html += " <form action='product_view.php' method='post' class='set_calss input-has-value' data-id='"+result[i]['id']+"' data-code='C005' data-pr='39' style='background: #51d2b7;    padding: 12px;    border: 1px solid #e3e3e3;    border-radius: 4px;    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05); box-shadow: inset 0 1px 1px rgba(0,0,0,.05);'>";
                     html += " <div class='container_test'>";
 					html +="<img src='<?php echo $site_url; ?>/images/product_images/"+result[i]['image']+"' class='make_bigger' width='100%' height='150px'>";
+=======
+        
+                for(var i = 0; i < result.length; i++){
+                    html += "<div class='well col-md-4 element-item Cham鸳鸯'>";
+          html += " <form action='product_view.php' method='post' class='set_calss input-has-value' data-id='"+result[i]['id']+"' data-code='C005' data-pr='39' style='background: #51d2b7;    padding: 12px;    border: 1px solid #e3e3e3;    border-radius: 4px;    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05); box-shadow: inset 0 1px 1px rgba(0,0,0,.05);'>";
+                    html += " <div class='container_test'>";
+          html +="<img src='<?php echo $site_url; ?>/images/product_images/"+result[i]['image']+"' class='make_bigger' width='100%' height='150px'>";
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
                     // html += "<td>"+result[i]['product_name']+"</td>";
                     // html += "<td id='text_without' class='text_add_cart_without' data-id='"+result[i]['id']+"' data-code='"+result[i]['type']+"' data-pr='"+result[i]['price']+"' data-name='"+result[i]['product_name']+"'>Add to cart</td>";
                     // html += "<td>"+result[i]['price']+"</td>";
@@ -1510,6 +1680,7 @@ $('.master_category_filter').on( 'click', function(e) {
                     html += "<input type='hidden' id='id' name='m_id' value='"+result[i]['user_id']+"'>";
                     html += "<input type='hidden' id='id' name='p_id' value='"+result[i]['id']+"'>";
                     html += "<p class='pro_name'>"+result[i]['product_name']+"</p>";
+<<<<<<< HEAD
 					html += "<p class='mBt10'></p>";
 					html += "<p class='mBt10'></p>Price : Rm"+result[i]['price']+"<p></p>";
                     html += "<div class='common_quant'>";
@@ -1519,12 +1690,24 @@ $('.master_category_filter').on( 'click', function(e) {
 					html += "<p class='quantity'> </p>";
                     html += "<div style='display:grid;grid-template-columns:.2fr 1fr;align-content:center;vertical-align:center;' class='input-has-value'>";
 					html += " <label>X</label><input type='number' value='1' class='quatity' name='quatity' style='height:1.5em'>";
+=======
+          html += "<p class='mBt10'></p>";
+          html += "<p class='mBt10'></p>Price : Rm"+result[i]['price']+"<p></p>";
+                    html += "<div class='common_quant'>";
+          //html += "<p class='text_add_cart' data-id='"+result[i]['id']+"' data-code='C005' data-pr='39' data-name='Carlsberg Smooth (B)X3'>Add to Cart</p>";
+                    html += "<p class='text_add_cart' data-id='"+result[i]['id']+"' data-code='"+result[i]['type']+"' data-pr='"+result[i]['price']+"' data-name='"+result[i]['product_name']+"'>Add to Cart</p>";
+           
+          html += "<p class='quantity'> </p>";
+                    html += "<div style='display:grid;grid-template-columns:.2fr 1fr;align-content:center;vertical-align:center;' class='input-has-value'>";
+          html += " <label>X</label><input type='number' value='1' class='quatity' name='quatity' style='height:1.5em'>";
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
                     html += "</div>";
                     html += "</div>";
                     html += "</form>";
                     html += "</div>";
                 }
                 $(".new_grid").html(html);
+<<<<<<< HEAD
             	// $(".text_add_cart").on("click", function(){
 				// var id = $(this).data("id");
 				// var code = $(this).data("code");
@@ -1543,6 +1726,26 @@ $('.master_category_filter').on( 'click', function(e) {
          });
 		
 		 var data = {type:"mainclick",method:"getNoneImageProduct", id: <?php echo $id;?>, category: position_value};
+=======
+              $(".text_add_cart").on("click", function(){
+        var id = $(this).data("id");
+        var code = $(this).data("code");
+        var p_price = $(this).data("pr");
+        var name = $(this).data("name");
+        var quantity = $(this).closest("form").find("input[name='quatity']").val();
+        
+        var p_total = p_price*quantity;
+      p_total = p_total.toFixed(2);
+        
+        $("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td>"+name+"</td><td><input style='width:50px;'  onchange='UpdateTotal("+id+" ,"+p_price+")'  type=number name='qty[]' maxlength='3'  value="+quantity+" id='"+id+"_test_athy'><input type= hidden name='p_id[]' value= "+id+"><input type= hidden name='p_code[]' value= "+code+"><input type='hidden' name='ingredients'/></td><td>"+code+"</td><td><a href='#remarks_area' role='button' class='introduce-remarks btn btn-large btn-primary' data-toggle='modal'>Remarks</a></td>  <td><input style='width:70px;' type='text' name='p_price[]' value= "+p_price+" readonly></td><td><input type='text' style='width:70px;' name='p_total[]' value= "+p_total+" readonly  id='"+id+"_cat_total'></td> </tr>");
+        alert('The product added');
+      });
+                
+             }
+         });
+    
+     var data = {type:"mainclick",method:"getNoneImageProduct", id: <?php echo $id;?>, category: position_value};
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
         $.ajax({
              url:"functions.php",
              type:"post",
@@ -1561,6 +1764,7 @@ $('.master_category_filter').on( 'click', function(e) {
                     html += "</tr>";
                 }
                 $("#without_table tbody").html(html);
+<<<<<<< HEAD
             		$(".text_add_cart_without").on("click", function(){
 		var id = $(this).data("id");
 		//~ alert(id);
@@ -1591,6 +1795,37 @@ $('.master_category_filter').on( 'click', function(e) {
 $('.sub_category_grid .category_filter button').on( 'click',function() {
       var filterValue = $(this).attr('data-filter');
 	  // alert(filterValue);
+=======
+                $(".text_add_cart_without").on("click", function(){
+    var id = $(this).data("id");
+    //~ alert(id);
+    var code = $(this).data("code");
+    //~ alert(code);
+    var p_price = $(this).data("pr");
+    //~ alert(p_price);
+    var name = $(this).data("name");
+    // alert(name);
+    var quantity = 1 ;
+    //alert(quantity) ;
+    if(quantity ==''){
+        
+        var quantity = 1 ;
+    }
+    var p_total = p_price *quantity ;
+    p_total = p_total.toFixed(2);
+
+    $("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td>"+name+"</td><td><input style='width:50px;' maxlength='3'  onchange='UpdateTotal("+id+" ,"+p_price+")'  type=number name='qty[]' value="+quantity+" id='"+id+"_test_athy'><input type= hidden name='p_id[]' value= "+id+"><input type= hidden name='p_code[]' value= "+code+"><input type='hidden' name='ingredients'/></td><td>"+code+"</td><td><a href='#remarks_area' role='button' class='introduce-remarks btn btn-large btn-primary' data-toggle='modal'>Remarks</a></td>  <td><input style='width:70px;' type='text' name='p_price[]' value= "+p_price+" readonly></td><td><input type='text' style='width:70px;' name='p_total[]' value= "+p_total+" readonly  id='"+id+"_cat_total'></td> </tr>");
+    alert('The product added');
+  });
+                
+             }
+         });
+     }
+  
+});
+$('.sub_category_grid .category_filter button').on( 'click',function() {
+      var filterValue = $(this).attr('data-filter');
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
       console.log(filterValue);
       $grid.isotope({ filter: filterValue });
 });
@@ -1674,12 +1909,18 @@ $(document).ready(function(){
     //$('.master_category_filter:first-child').trigger('click');
     $('.sub_category_grid .category_filter:first-child button').trigger('click');
     //$('.filter-button-group .category_filter:first-child').trigger('click');
+<<<<<<< HEAD
 	var menu_type='<?php echo $merchant_detail['menu_type'];?>';
 	if(menu_type==2){
+=======
+  var menu_type='<?php echo $merchant_detail['menu_type'];?>';
+  if(menu_type==2){
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
         $('.master_category_filter:first-child').trigger('click');
     }
 
     $(".category_filter").click(function(e){
+<<<<<<< HEAD
 		var menu_type='<?php echo $merchant_detail['menu_type'];?>';
 		
         var filterValue = $(this).attr('data-filter');
@@ -1692,18 +1933,41 @@ $(document).ready(function(){
 			var data = {method:"getImageProduct", id: <?php echo $id;?>, category: filterValue.substr(1, filterValue.length)};
 		    $(".new_grid").html("");
 			$.ajax({
+=======
+    var menu_type='<?php echo $merchant_detail['menu_type'];?>';
+    
+        var filterValue = $(this).attr('data-filter');
+    
+        $("#without_table tbody").html("");  
+    
+       
+    if(menu_type==1)
+    {
+      var data = {method:"getImageProduct", id: <?php echo $id;?>, category: filterValue.substr(1, filterValue.length)};
+        $(".new_grid").html("");
+      $.ajax({
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
              url:"functions.php",
              type:"post",
              data:data,
              dataType:'json',
              success:function(result){
                 var html="";
+<<<<<<< HEAD
 				
                 for(var i = 0; i < result.length; i++){
                     html += "<div class='well col-md-4 element-item Cham鸳鸯'>";
 					html += " <form action='product_view.php' method='post' class='set_calss input-has-value' data-id='"+result[i]['id']+"' data-code='C005' data-pr='39' style='background: #51d2b7;    padding: 12px;    border: 1px solid #e3e3e3;    border-radius: 4px;    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05); box-shadow: inset 0 1px 1px rgba(0,0,0,.05);'>";
                     html += " <div class='container_test'>";
 					html +="<img src='<?php echo $site_url; ?>/images/product_images/"+result[i]['image']+"' class='make_bigger' width='100%' height='150px'>";
+=======
+        
+                for(var i = 0; i < result.length; i++){
+                    html += "<div class='well col-md-4 element-item Cham鸳鸯'>";
+          html += " <form action='product_view.php' method='post' class='set_calss input-has-value' data-id='"+result[i]['id']+"' data-code='C005' data-pr='39' style='background: #51d2b7;    padding: 12px;    border: 1px solid #e3e3e3;    border-radius: 4px;    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05); box-shadow: inset 0 1px 1px rgba(0,0,0,.05);'>";
+                    html += " <div class='container_test'>";
+          html +="<img src='<?php echo $site_url; ?>/images/product_images/"+result[i]['image']+"' class='make_bigger' width='100%' height='150px'>";
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
                     // html += "<td>"+result[i]['product_name']+"</td>";
                     // html += "<td id='text_without' class='text_add_cart_without' data-id='"+result[i]['id']+"' data-code='"+result[i]['type']+"' data-pr='"+result[i]['price']+"' data-name='"+result[i]['product_name']+"'>Add to cart</td>";
                     // html += "<td>"+result[i]['price']+"</td>";
@@ -1713,6 +1977,7 @@ $(document).ready(function(){
                     html += "<input type='hidden' id='id' name='m_id' value='"+result[i]['user_id']+"'>";
                     html += "<input type='hidden' id='id' name='p_id' value='"+result[i]['id']+"'>";
                     html += "<p class='pro_name'>"+result[i]['product_name']+"</p>";
+<<<<<<< HEAD
 					html += "<p class='mBt10'></p>";
 					html += "<p class='mBt10'></p>Price : Rm"+result[i]['price']+"<p></p>";
                     html += "<div class='common_quant'>";
@@ -1721,12 +1986,23 @@ $(document).ready(function(){
 					html += "<p class='quantity'> </p>";
                     html += "<div style='display:grid;grid-template-columns:.2fr 1fr;align-content:center;vertical-align:center;' class='input-has-value'>";
 					html += " <label>X</label><input type='number' value='1' class='quatity' name='quatity' style='height:1.5em'>";
+=======
+          html += "<p class='mBt10'></p>";
+          html += "<p class='mBt10'></p>Price : Rm"+result[i]['price']+"<p></p>";
+                    html += "<div class='common_quant'>";
+          //html += "<p class='text_add_cart' data-id='"+result[i]['id']+"' data-code='C005' data-pr='39' data-name='Carlsberg Smooth (B)X3'>Add to Cart</p>";
+          html += "<p class='text_add_cart' data-id='"+result[i]['id']+"' data-code='"+result[i]['type']+"' data-pr='"+result[i]['price']+"' data-name='"+result[i]['product_name']+"'>Add to Cart</p>";
+          html += "<p class='quantity'> </p>";
+                    html += "<div style='display:grid;grid-template-columns:.2fr 1fr;align-content:center;vertical-align:center;' class='input-has-value'>";
+          html += " <label>X</label><input type='number' value='1' class='quatity' name='quatity' style='height:1.5em'>";
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
                     html += "</div>";
                     html += "</div>";
                     html += "</form>";
                     html += "</div>";
                 }
                 $(".new_grid").html(html);
+<<<<<<< HEAD
             	// $(".text_add_cart").on("click", function(){
 				// var id = $(this).data("id");
 				// var code = $(this).data("code");
@@ -1745,6 +2021,26 @@ $(document).ready(function(){
          });
 		}
 		 var data = {method:"getNoneImageProduct", id: <?php echo $id;?>, category: filterValue.substr(1, filterValue.length)};
+=======
+              $(".text_add_cart").on("click", function(){
+        var id = $(this).data("id");
+        var code = $(this).data("code");
+        var p_price = $(this).data("pr");
+        var name = $(this).data("name");
+        var quantity = $(this).closest("form").find("input[name='quatity']").val();
+        
+        var p_total = p_price*quantity;
+      p_total = p_total.toFixed(2);
+        
+        $("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td>"+name+"</td><td><input style='width:50px;'  onchange='UpdateTotal("+id+" ,"+p_price+")'  type=number name='qty[]' maxlength='3'  value="+quantity+" id='"+id+"_test_athy'><input type= hidden name='p_id[]' value= "+id+"><input type= hidden name='p_code[]' value= "+code+"><input type='hidden' name='ingredients'/></td><td>"+code+"</td><td><a href='#remarks_area' role='button' class='introduce-remarks btn btn-large btn-primary' data-toggle='modal'>Remarks</a></td>  <td><input style='width:70px;' type='text' name='p_price[]' value= "+p_price+" readonly></td><td><input type='text' style='width:70px;' name='p_total[]' value= "+p_total+" readonly  id='"+id+"_cat_total'></td> </tr>");
+        alert('The product added');
+      });
+                
+             }
+         });
+    }
+     var data = {method:"getNoneImageProduct", id: <?php echo $id;?>, category: filterValue.substr(1, filterValue.length)};
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
         $.ajax({
              url:"functions.php",
              type:"post",
@@ -1763,6 +2059,7 @@ $(document).ready(function(){
                     html += "</tr>";
                 }
                 $("#without_table tbody").html(html);
+<<<<<<< HEAD
             		$(".text_add_cart_without").on("click", function(){
 		var id = $(this).data("id");
 		//~ alert(id);
@@ -1784,6 +2081,29 @@ $(document).ready(function(){
 		$("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td>"+name+"</td><td><input style='width:50px;' maxlength='3'  onchange='UpdateTotal("+id+" ,"+p_price+")'  type=number name='qty[]' value="+quantity+" id='"+id+"_test_athy'><input type= hidden name='p_id[]' value= "+id+"><input type= hidden name='p_code[]' value= "+code+"><input type='hidden' name='ingredients'/></td><td>"+code+"</td><td><a href='#remarks_area' role='button' class='introduce-remarks btn btn-large btn-primary' data-toggle='modal'>Remarks</a></td>  <td><input style='width:70px;' type='text' name='p_price[]' value= "+p_price+" readonly></td><td><input type='text' style='width:70px;' name='p_total[]' value= "+p_total+" readonly  id='"+id+"_cat_total'></td> </tr>");
 		alert('The product added');
 	});
+=======
+                $(".text_add_cart_without").on("click", function(){
+    var id = $(this).data("id");
+    //~ alert(id);
+    var code = $(this).data("code");
+    //~ alert(code);
+    var p_price = $(this).data("pr");
+    //~ alert(p_price);
+    var name = $(this).data("name");
+    // alert(name);
+    var quantity = 1 ;
+    //alert(quantity) ;
+    if(quantity ==''){
+        
+        var quantity = 1 ;
+    }
+    var p_total = p_price *quantity ;
+    p_total = p_total.toFixed(2);
+
+    $("#test").append("<tr>  <td><button type='button' class='removebutton'>X</button> </td><td>"+name+"</td><td><input style='width:50px;' maxlength='3'  onchange='UpdateTotal("+id+" ,"+p_price+")'  type=number name='qty[]' value="+quantity+" id='"+id+"_test_athy'><input type= hidden name='p_id[]' value= "+id+"><input type= hidden name='p_code[]' value= "+code+"><input type='hidden' name='ingredients'/></td><td>"+code+"</td><td><a href='#remarks_area' role='button' class='introduce-remarks btn btn-large btn-primary' data-toggle='modal'>Remarks</a></td>  <td><input style='width:70px;' type='text' name='p_price[]' value= "+p_price+" readonly></td><td><input type='text' style='width:70px;' name='p_total[]' value= "+p_total+" readonly  id='"+id+"_cat_total'></td> </tr>");
+    alert('The product added');
+  });
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
                 
              }
          });
@@ -1808,16 +2128,16 @@ var chat_appid = '52013';
 ?>
 
 <?php 
-	if(isset($_SESSION["merchant_id"]) && $_SESSION["merchant_id"] > 0) { ?>
-	 <script>
-		var chat_id = "<?php echo $_SESSION["merchant_id"]; ?>";
-		var chat_name = "<?php echo $_SESSION["user_name"]; ?>"; 
-		var chat_link = "<?php echo $_SESSION["user_link"]; ?>"; //Similarly populate it from session for user's profile link if exists
-		var chat_avatar = "<?php echo $_SESSION["user_avatar"]; ?>"; //Similarly populate it from session for user's avatar src if exists
-		var chat_role = "<?php echo $_SESSION["user_role"]; ?>"; //Similarly populate it from session for user's role if exists
-		var chat_friends = '<?php echo $_SESSION["merchant_id"]; ?>'; //Similarly populate it with user's friends' site user id's eg: 14,16,20,31
-		</script>
-	<?php } ?>
+  if(isset($_SESSION["merchant_id"]) && $_SESSION["merchant_id"] > 0) { ?>
+   <script>
+    var chat_id = "<?php echo $_SESSION["merchant_id"]; ?>";
+    var chat_name = "<?php echo $_SESSION["user_name"]; ?>"; 
+    var chat_link = "<?php echo $_SESSION["user_link"]; ?>"; //Similarly populate it from session for user's profile link if exists
+    var chat_avatar = "<?php echo $_SESSION["user_avatar"]; ?>"; //Similarly populate it from session for user's avatar src if exists
+    var chat_role = "<?php echo $_SESSION["user_role"]; ?>"; //Similarly populate it from session for user's role if exists
+    var chat_friends = '<?php echo $_SESSION["merchant_id"]; ?>'; //Similarly populate it with user's friends' site user id's eg: 14,16,20,31
+    </script>
+  <?php } ?>
 <script>
 (function() {
     var chat_css = document.createElement('link'); chat_css.rel = 'stylesheet'; chat_css.type = 'text/css'; chat_css.href = 'https://fast.cometondemand.net/'+chat_appid+'x_xchat.css';
@@ -1839,20 +2159,20 @@ var chat_appid = '52013';
 
 <script>
 function UpdateTotal(id=0 , uprice= 0){
-	var qty = $("#"+id+"_test_athy").val();
-	//alert(qty);
-	//alert(qty);
-	var total =  parseFloat(Number(qty*uprice).toFixed(2));
-	$("#"+id+"_cat_total").val(total);
+  var qty = $("#"+id+"_test_athy").val();
+  //alert(qty);
+  //alert(qty);
+  var total =  parseFloat(Number(qty*uprice).toFixed(2));
+  $("#"+id+"_cat_total").val(total);
 }
 function UpdateTotalCart(id=0){
-	// var qty = $("#"+id+"_test_athy").val();
-	var qty = $("#other_qty_"+id).val();
-	var unitprize = $("#other_product_price_"+id).val();
-	var total =  parseFloat(Number(qty*unitprize).toFixed(2));
-	$("#"+id+"_cat_total").val(total);
-	
-	
+  // var qty = $("#"+id+"_test_athy").val();
+  var qty = $("#other_qty_"+id).val();
+  var unitprize = $("#other_product_price_"+id).val();
+  var total =  parseFloat(Number(qty*unitprize).toFixed(2));
+  $("#"+id+"_cat_total").val(total);
+  
+  
 }
 
 // console.log("dsfgsdf", $('.section-dropdown'));

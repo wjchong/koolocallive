@@ -1,7 +1,12 @@
 <?php
+<<<<<<< HEAD
    include("config.php");
    $show_pop="n";
   function checkSession(){
+=======
+include("config.php");
+function checkSession(){
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
   $conn = $GLOBALS['conn'];
   $session = $_COOKIE['session_id'];
   $rw = mysqli_fetch_row(mysqli_query($conn, "SELECT id FROM users WHERE session = '$session'"));
@@ -11,6 +16,10 @@
     return false;
   }
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
 if(!isset($_SESSION['login']) || empty($_SESSION['login']))
 {
   header("location:logout.php");
@@ -19,6 +28,7 @@ if(!isset($_SESSION['login']) || empty($_SESSION['login']))
     header("location:logout.php");
   }
 }
+<<<<<<< HEAD
      $total_rows = mysqli_query($conn, "SELECT * FROM order_list WHERE user_id ='".$_SESSION['login']."' ORDER BY `created_on` DESC LIMIT 0,50");
       $user_order = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM order_list WHERE user_id ='".$_SESSION['login']."' ORDER BY `created_on` DESC LIMIT 0,50"));
 	
@@ -30,6 +40,12 @@ if(!isset($_SESSION['login']) || empty($_SESSION['login']))
 		 $open_order_id=$user_order['id'];
 	 }
 	 $created_new =$user_order['created_on'];
+=======
+
+     $total_rows = mysqli_query($conn, "SELECT * FROM order_list WHERE user_id ='".$_SESSION['login']."' ORDER BY `created_on` DESC LIMIT 0,50");
+      $user_order = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM order_list WHERE user_id ='".$_SESSION['login']."' ORDER BY `created_on` DESC LIMIT 0,50"));
+      $created_new =$user_order['created_on'];
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
       $status1 =$user_order['status'];
    	$_SESSION['mm_id'] = "";
    	$_SESSION['o_id'] = "";

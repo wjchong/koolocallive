@@ -2,6 +2,10 @@
 session_start();
 include("config.php");
 $current_time = date('Y-m-d H:i:s');
+<<<<<<< HEAD
+=======
+
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
 function checkSession(){
     $conn = $GLOBALS['conn'];
     $session = $_COOKIE['session_id'];
@@ -11,6 +15,7 @@ function checkSession(){
     }else{
         return false;
     }
+<<<<<<< HEAD
 }
 // if(!isset($_SESSION['login']) || empty($_SESSION['login']))
 // {
@@ -20,6 +25,19 @@ function checkSession(){
         // header("location:logout.php");
     // }
 // }
+=======
+}
+
+if(!isset($_SESSION['login']) || empty($_SESSION['login']))
+{
+    header("location:logout.php");
+}else{
+    if(!checkSession()){
+        header("location:logout.php");
+    }
+}
+
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
 $total_rows = mysqli_query($conn, "SELECT order_list.*, users.mobile_number FROM order_list inner join users on order_list.user_id = users.id WHERE merchant_id ='".$_SESSION['login']."' ORDER BY `created_on` DESC LIMIT 0,50");
 $total_rows1 = mysqli_query($conn, "SELECT order_list.*, users.mobile_number FROM order_list inner join users on order_list.user_id = users.id WHERE merchant_id ='".$_SESSION['login']."' ORDER BY `created_on` DESC LIMIT 0,50");
 $merchant_name = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM users WHERE id ='".$_SESSION['login']."'"));
@@ -664,8 +682,12 @@ blink {
 
                                     } else {
 
+<<<<<<< HEAD
                                         // echo '0<br>';
 										echo '<p class="pop_upss" data-id=' . $row['id'] . '  style="margin-bottom: 0px;display:block;" data-prodid="' . $key . '""><i class="fa fa-pencil-square-o" aria-hidden="true"></i>0</p>';
+=======
+                                        echo '<p class="pop_upss" data-id=' . $row['id'] . '  style="margin-bottom: 0px;display:block;" data-prodid="' . $key . '""><i class="fa fa-pencil-square-o" aria-hidden="true"></i>0</p>';
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
 
                                     }
 
@@ -759,14 +781,19 @@ blink {
                                                 <span id="total_amount" style="font-size: 20px;width: 30%;        border: 1px solid;padding-left: 4px; border-left: none; border-bottom-right-radius: 2px; border-top-right-radius: 2px;"></span>
                                             </div>
                                             <div class="modal-footer" style="padding-bottom:2px; border-top: none;padding: 0px;padding-top: 5px;">
+<<<<<<< HEAD
                                                 <!--button style="width:200px;height:50px;background-color: #99e1dc;">Submit</button!-->
 												 <button id="amount_submit_button" style="width:200px;height:50px;background-color: #99e1dc;">Submit</button>
+=======
+                                                <button id="amount_submit_button" style="width:200px;height:50px;background-color: #99e1dc;">Submit</button>
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
                                             </div>
                                         </form>
                                     </div>
                                 </div>
                             </div>
                         </div>
+<<<<<<< HEAD
 						 <!---amit code --->
 
                           <div class="modal fade" id="myScanModal1" role="dialog">
@@ -963,6 +990,8 @@ blink {
                         </div>
                           <!---amit code end--->
 						  
+=======
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
                         <div class="modal fade" id="AmountModal" role="dialog">
                             <div class="modal-dialog">
                                 <!-- Modal content-->
@@ -1009,6 +1038,7 @@ blink {
 </body>
 </html>
 <script type="text/javascript">
+<<<<<<< HEAD
      var merchant_id = '<?php echo $_SESSION['login'];?>';
     var site_url = '<?php echo $site_url;?>';
 	
@@ -1144,6 +1174,10 @@ var qtyno = $("input[name='qtyno[]']")
 
 
 //end code
+=======
+    var merchant_id = '<?php echo $_SESSION['login'];?>';
+    var site_url = '<?php echo $site_url;?>';
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
     function reloadData(merchant_id,site_url){
         $.ajax({
                 url : site_url + '/get_order_list_merchant.php',
@@ -1182,7 +1216,13 @@ var qtyno = $("input[name='qtyno[]']")
                         content += "<td>"+data[i]['remark']+"</td>";
                         content += "<td>"+data[i]['product_code']+"</td>";
                         content += "<td>"+data[i]['amount_val']+"</td>";
+<<<<<<< HEAD
                         content += "<td>"+data[i]['quantity_val']+"</td>";
+=======
+
+                        content += "<td>"+data[i]['quantity_val']+"</td>";
+
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
                         content += "<td>"+data[i]['total_val']+"</td>";
                         content += "<td>"+data[i]['wallet']+"</td>";
                         content += "<td class='location_"+data[i]['id']+" new_tablee'>"+data[i]['location']+"</td>";
@@ -1258,6 +1298,7 @@ var qtyno = $("input[name='qtyno[]']")
                 }, 200);
             }
         });
+<<<<<<< HEAD
 			<!--  start of amit code !-->
 		 $("#scan_order1").click(function() {
             $("#myScanModal1").modal("show");
@@ -1649,6 +1690,9 @@ var qtyno = $("input[name='qtyno[]']")
 
                     });
 				<!--  end of amit code !-->
+=======
+
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
         function empty(str){
             return !str || !/[^\s]+/.test(str);
         }
@@ -1893,15 +1937,24 @@ var qtyno = $("input[name='qtyno[]']")
                 type: 'post',
                 data: $(this).serialize(),
                 success: function (data) {
+<<<<<<< HEAD
                     // console.log(data ? "true" : "false");
 					   if(data == 1){
                         $("#AmountModal").modal("hide");
                         // reloadData(merchant_id,site_url);
+=======
+                    if(data == 1){
+                        $("#AmountModal").modal("hide");
+                        reloadData(merchant_id,site_url);
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
                     }else{
                         alert("An error occured, try again later");
                         console.log(data);
                     }
+<<<<<<< HEAD
                     
+=======
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
                 }
             });
         });
@@ -1914,6 +1967,7 @@ var qtyno = $("input[name='qtyno[]']")
             window.location.reload();
         }
     }*/
+<<<<<<< HEAD
 	   setInterval(function(){ 
         
         if( !hasClass( document.getElementById("myScanModal"), "show" ) ) {
@@ -1990,6 +2044,14 @@ var qtyno = $("input[name='qtyno[]']")
         // }
     // },
     // 120000);
+=======
+    setInterval(function(){
+        if( !hasClass( document.getElementById("myScanModal"), "show" ) ) {
+            reloadData(merchant_id,site_url);
+        }
+    },
+    60000);
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
     $(".pending_invoice_no").click(function(e){
         var id = $(this).attr('invoice-no');
         var top = $("#"+id).position().top;

@@ -10,12 +10,17 @@ include("config.php");
  $product_price=$_POST['product_price'];
  $print_ip_address=$_POST['print_ip_address'];
  $remark=$_POST['remark'];
+<<<<<<< HEAD
  if($category)
  {
 	$categories = mysqli_query($conn, "SELECT id FROM category WHERE category_name ='".$category."'");
 	$categoryrow=mysqli_fetch_assoc($categories);
 	$category_id=$categoryrow['id'];
  }
+=======
+ $ingredients = $_POST['ingredients'];
+ 
+>>>>>>> 30a5a237de95c0a6bbca6492b80b042d1b0de032
  	$image_pic =  $_FILES["image_pic"]["name"] != '' ? $_FILES["image_pic"]["name"] : $_POST['img']; 
     $image_code =  $_FILES["image_code"]["name"] != '' ? $_FILES["image_code"]["name"] : $_POST['img_code']; 
  
