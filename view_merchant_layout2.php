@@ -62,10 +62,12 @@
         -webkit-box-shadow: 0px 0px 13px 0px rgba(82, 63, 105, 0.05);
         box-shadow: 0px 0px 13px 0px rgba(82, 63, 105, 0.05);
         margin-bottom: 15px;
+        width: 100%;
     }
     @media (max-width: 767px) {
         .parent-category-menu a{
             padding: 8px 12px 8px 12px;
+            width: 24%;
         }
         .main-wrapper {
             padding: 0 0 0 15px;
@@ -99,7 +101,7 @@ if($product['pro_ct'] > 0) { ?>
             foreach ($categories as $category)
             {
                 ?>
-                <a href="#" class="master_category_filter" data-filter=".<?php echo str_replace(" ","-",$category);?>"><?php echo str_replace("-", " ", $category);?></a>
+                <a href="#" class="master_category_filter" data-position="<?php echo $index; ?>" data-filter=".<?php echo str_replace(" ","-",$category);?>"><?php echo str_replace("-", " ", $category);?></a>
                 <?php
                 $index++;
             }
@@ -110,17 +112,22 @@ if($product['pro_ct'] > 0) { ?>
             <div class="col-4 col-sm-3">
                 <div class="sub_category_grid">
                     <?php
+					$s=0;
                     foreach ($categories as $category)
                     {
                         $sub_categories_q = mysqli_query($conn, "SELECT * FROM category WHERE user_id ='".$id."' and catparent='".$index."' and status=0 ");
                         while ($row = mysqli_fetch_assoc($sub_categories_q))
                         {
+							if($s==0)
+							{
+								 $sub_cat=$row['category_name'];
+							}
                             if($row['category_name'] == "") continue;
                             ?>
                             <div class="<?php echo str_replace(" ","-",$category);?> category_filter">
                                 <button class="btn btn-primary" type="button" data-filter=".<?php echo str_replace(" ","-",$row['category_name']);?>"><?php echo str_replace("-", " ", $row['category_name']);?></button>
                             </div>
-                        <?php }
+                        <?php $s++;  }
                         $index++;
                     }
                     ?>
@@ -140,37 +147,32 @@ if($product['pro_ct'] > 0) { ?>
             <div class="col-8 col-sm-9 pl-2">
                 <div class="grid">
                     <?php
+					
                     while ($row=mysqli_fetch_assoc($total_rows)){
+						
                         ?>
-                        <?php   if(!empty($row['image'])) { ?>
+                        <?php   //if(!empty($row['image'])) { ?>
 
                             <div class="element-item grid-item <?php echo $row['category'];?>" >
                                 <form action="product_view.php" method="post" class= "set_calss" data-id = "<?php echo $row['id'] ?>" data-code = "<?php echo $row['product_type'] ?>"  data-pr = "<?php echo $row['product_price'] ?>">
                                     <div class="row no-gutters">
+                                    <?php if(!empty($row['image'])) { ?>
                                         <div class="col-5 col-sm-4">
-                                            <div class="container_test"> <?php
-                                                if(!empty($row['image']))
-                                                { ?>
-
+                                            <div class="container_test">
                                                     <img src="<?php echo $site_url; ?>/images/product_images/<?php echo $row['image'];  ?>" class="img-fluid" >
-                                                    </a>
-
-
-                                                <?php  }
-                                                else
-                                                { ?>
-                                                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg" width="100%" height="150px" class="make_bigger">
-                                                <?php }
-                                                ?></div>
+                                            </div>
                                         </div>
                                         <div class="col-7 col-sm-8 pl-2">
+                                    <?php } else { ?>
+                                         <div class="col-12">
+                                    <?php } ?>
                                             <input type="hidden" id="id" name="m_id" value="<?php echo $id;?>">
                                             <input type="hidden" id="id" name="p_id" value="<?php echo $row['id'];?>">
                                             <p class="mBt10"><strong><?php echo $row['product_name']; ?></strong></p>
-                                            <p class="mBt10"><?php echo 'Code: '.$row['product_type']; ?></p>
-                                            <p class="mBt10"><?php echo $row['remark']; ?></p>
-                                            <!--	<p><?php echo 'Category : '.str_replace("-", " ", $row['category']); ?></p>-->
-                                            <p class="mBt10"><?php echo 'Price : Rm'.number_format($row['product_price'],2); ?></p>
+                                             <div style="float: left;">
+                                                 <p class="mBt10"><?php echo $row['remark']; ?></p>
+                                                 <p class="mBt10"><?php echo 'Price : Rm'.number_format($row['product_price'],2); ?></p>
+                                             </div>
                                             <div class="common_quant">
                                                 <p class="text_add_cart"  data-id = "<?php echo $row['id'] ?>" data-code = "<?php echo $row['product_type'] ?>"  data-pr = "<?php echo $row['product_price'] ?>" data-name = "<?php echo $row['product_name'] ?>"><i class="fa fa-plus"></i></p>
                                                 <p class="quantity">
@@ -181,7 +183,8 @@ if($product['pro_ct'] > 0) { ?>
                                     </div>
                                 </form>
                             </div>
-                        <?php  } } ?>
+                        <?php  /*}*/
+                    } ?>
                 </div>
             </div>
         </div>

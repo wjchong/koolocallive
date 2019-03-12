@@ -1,6 +1,5 @@
 <?php 
 include("config.php");
-
 if(!isset($_SESSION['login']))
 {
 	header("location:login.php");
@@ -11,9 +10,9 @@ $bank_data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM users WHERE i
 if(isset($_POST['submit']))
 {
 	$categoryname = addslashes($_POST['categoryname']);
-	mysqli_query($conn, "INSERT INTO  category SET category_name='$categoryname',user_id='$current_id',status= '0',created_date='$current_date'");
+	$catparent = $_POST['catparent'] ;
+	mysqli_query($conn, "INSERT INTO  category SET category_name='$categoryname', catparent='$catparent', user_id='$current_id',status= '0',created_date='$current_date'");
 	header("location:view_category.php");
-
 }
 ?>
 <!DOCTYPE html>
@@ -72,6 +71,27 @@ if(isset($_POST['submit']))
 								<div class="panel price panel-red">
 									<h2>Category Details</h2>
 									<br><br>
+									<?php
+									$Cat_data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM cat_mater WHERE UserID='".$_SESSION['login']."'"));
+								
+									$catData = explode(',' , $Cat_data['CatName']) ;
+									?>
+									<div class="form-group">
+										<label>category Name</label>
+										<select name ="catparent" required >
+										 <option>Select Parent Category</option> 
+										<?php
+										$Count = 1 ; 
+										foreach($catData as $Catname){
+										 ?>
+										 <option value='<?php echo $Count ?>'><?php echo $Catname ?></option>   
+										  <?php
+										  $Count = $Count + 1  ;
+										}
+										
+										?>
+										</select>
+									</div>
 									<div class="form-group">
 										<label>category Name</label>
 										<input type="text" name="categoryname" class="form-control" value="" required>

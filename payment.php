@@ -118,6 +118,7 @@ else
 	 $option = $finalorder_total['remark'] ;
 	 $location = $finalorder_total['location'] ;
 	 $table_type = $finalorder_total['table_type'] ;
+	  $section_type = $finalorder_total['section_type'] ;
 	 $date = $finalorder_total['created_on'] ;
 	 $invoice_no = $finalorder_total['invoice_no'] ;
 	 if($user_id ==0){
@@ -135,7 +136,7 @@ else
      $guest_user_id =  $_SESSION['login'] ; 
   }
   
-	 $sqlFinalIns = "INSERT INTO order_list SET product_id='$pro_id',  user_id='$guest_user_id', merchant_id='$m_id', quantity='$qty_list', amount='$p_price',product_code='$p_code', remark='$option', location='".$location."', table_type='".$table_type."',created_on='$date', invoice_no='$invoice_no'";
+	 $sqlFinalIns = "INSERT INTO order_list SET product_id='$pro_id',  user_id='$guest_user_id', merchant_id='$m_id', quantity='$qty_list', amount='$p_price',product_code='$p_code', remark='$option', location='".$location."', table_type='".$table_type."',section_type='$section_type',created_on='$date', invoice_no='$invoice_no'";
       $test_method = mysqli_query($conn, $sqlFinalIns);
 	  
 	  $sqlDtemp = "DELETE FROM `order_list_temp` WHERE session_id = '$session_id'  ";
@@ -200,6 +201,7 @@ else
 		$option = $finalorder_total['remark'] ;
 		$location = $finalorder_total['location'] ;
 		$table_type = $finalorder_total['table_type'] ;
+		$section_type = $finalorder_total['section_type'] ;
 		$date = $finalorder_total['created_on'] ;
 		$invoice_no = $finalorder_total['invoice_no'] ;
 
@@ -216,7 +218,7 @@ if(empty($user_id)){
         $user_id =  $_SESSION['login'] ; 
         }
 		
-		$sqlFinalIns = "INSERT INTO order_list SET product_id='$pro_id',  user_id='$user_id', merchant_id='$m_id', quantity='$qty_list', amount='$p_price',product_code='$p_code', remark='$option', location='".$location."', table_type='".$table_type."',created_on='$date', invoice_no='$invoice_no'";
+		$sqlFinalIns = "INSERT INTO order_list SET product_id='$pro_id',  user_id='$user_id', merchant_id='$m_id', quantity='$qty_list', amount='$p_price',product_code='$p_code', remark='$option', location='".$location."', table_type='".$table_type."',section_type='$section_type',created_on='$date', invoice_no='$invoice_no'";
 		$test_method = mysqli_query($conn, $sqlFinalIns);
 		
 		$sqlDtemp = "DELETE FROM `order_list_temp` WHERE session_id = '$session_id'  ";

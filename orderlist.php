@@ -1,13 +1,35 @@
 <?php
    include("config.php");
-if($_SESSION['login']=='')
-{
-    header('Location: '. $site_url .'/login.php');
-    die;
+   $show_pop="n";
+  function checkSession(){
+  $conn = $GLOBALS['conn'];
+  $session = $_COOKIE['session_id'];
+  $rw = mysqli_fetch_row(mysqli_query($conn, "SELECT id FROM users WHERE session = '$session'"));
+  if($rw > 0){
+    return true;
+  }else{
+    return false;
+  }
 }
-     $total_rows = mysqli_query($conn, "SELECT * FROM order_list WHERE user_id ='".$_SESSION['login']."' ORDER BY `created_on` DESC");
-      $user_order = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM order_list WHERE user_id ='".$_SESSION['login']."' ORDER BY `created_on` DESC"));
-      $created_new =$user_order['created_on'];
+if(!isset($_SESSION['login']) || empty($_SESSION['login']))
+{
+  header("location:logout.php");
+}else{
+  if(!checkSession()){
+    header("location:logout.php");
+  }
+}
+     $total_rows = mysqli_query($conn, "SELECT * FROM order_list WHERE user_id ='".$_SESSION['login']."' ORDER BY `created_on` DESC LIMIT 0,50");
+      $user_order = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM order_list WHERE user_id ='".$_SESSION['login']."' ORDER BY `created_on` DESC LIMIT 0,50"));
+	
+	 $section_type=$user_order['section_type'];
+	 $table_type=$user_order['table_type'];
+	 if($section_type=="" || $table_type=="")
+	 { 
+		 $show_pop="y";
+		 $open_order_id=$user_order['id'];
+	 }
+	 $created_new =$user_order['created_on'];
       $status1 =$user_order['status'];
    	$_SESSION['mm_id'] = "";
    	$_SESSION['o_id'] = "";
@@ -18,7 +40,7 @@ if($_SESSION['login']=='')
     
       <style>
 		  .test_product{
-		      /* padding-right: 125px!important; */
+		        padding-right: 125px!important;
 		    }
 		td.products_namess {
             text-transform: lowercase;
@@ -169,6 +191,7 @@ table.table.table-striped {
                      <th>No</th>
 					 <th class="test_product"><?php echo $language["merchant_name"];?></th>
 					 <th><?php echo $language["status"];?></th>
+					   <th>Section</th>
 					 <th><?php echo $language["table_number"];?></th>
 					 <th class="location_head"><?php echo $language["location"];?></th>
 					 <th><?php echo $language["chat"];?></th>
@@ -188,6 +211,9 @@ table.table.table-striped {
                </thead>
                <?php  $i =1;
                   while ($row=mysqli_fetch_assoc($total_rows)){
+				  
+				  //print_r($row);
+				 // echo "<hr>";
                   	$product_ids = explode(",",$row['product_id']);
                   	$quantity_ids = explode(",",$row['quantity']);
                   	$product_code = explode(",",$row['product_code']);
@@ -240,6 +266,7 @@ table.table.table-striped {
                         ?>
                         <label class= "status" data-id="<?php echo $row['id']; ?>" style="cursor:pointer;"> <?php echo $sta; ?></label>
                      </td>
+					   <td><?php echo $row['section_type'];?></td>
                          <td><?php echo $row['table_type'];?></td>
                          <td class="location_<?php echo $row['id']; ?> new_tablee"><?php echo $row['location'];?></td>
   <td><a target="_blank" href="<?php echo $site_url; ?>/chat/chat.php?sender=<?php echo $_SESSION['login']?>&receiver=<?php echo $row['merchant_id'];?>"><i class="fa fa-comments-o"></i></a></td>
@@ -412,10 +439,49 @@ table.table.table-striped {
       <!-- /.widget-bg -->
       <!-- /.content-wrapper -->
       <?php include("includes1/footer.php"); ?>
+	  
+  <!-- Modal -->
+  <div class="modal fade" id="SectionModel" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+		   
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Your order is completed, kindly provide the following details</h4>
+        </div>
+        <div class="modal-body">
+         <form action="sectionsave.php" method="post">
+  <div class="form-group">
+   <label for="email">Section:</label>
+    <input type="text" class="form-control" name="section" aria-describedby="emailHelp" value="<?php echo $section_type; ?>" placeholder="Section" required>
+	<input type="hidden" value="<?php echo $open_order_id; ?>" name="order_id"/>
+  
+  </div>
+  <div class="form-group">
+   <label for="email">Table Number:</label>
+    <input type="text" class="form-control" name="table_booking" value="<?php echo $table_type; ?>" placeholder="Table Number" required>  
+  </div>
+
+ <button style="float:right;" id="sectionsubmit" type="submit" class="btn btn-primary">Save</button>
+</form>
+        </div>
+       
+      </div>
+      
+    </div>
+  </div>
    </body>
 </html>
 <script type="text/javascript">
    $(document).ready(function(){
+	   var show_pop='<?php echo $show_pop; ?>';
+	   if(show_pop=="y")
+	   {
+			$('#SectionModel').modal('show');
+	   }
+	   
         $("#sharepopup").modal({ backdrop: 'static', keyboard: false }); 
         $("#uploaded").click(function(){ $("#upl").click();});
    	   $(".dp_lab").click(function(){
@@ -575,7 +641,7 @@ table.table.table-striped {
     </script>
 
 
-<script> window.setInterval('refresh()', 60000); 
+<script> window.setInterval('refresh()', 300000); 
  function refresh() {
 	  window.location.reload();
 	  } 

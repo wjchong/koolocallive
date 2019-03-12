@@ -1,11 +1,21 @@
 <?php
 include("config.php");
+// error_reporting(E_ALL);
 require __DIR__ . '/vendor/autoload.php';
 use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\NetworkPrintConnector;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 
+
+if(isset($_POST['update_ingredients'])){
+    $words = $_POST['update_ingredients'];
+    $id = $_SESSION['login'];
+    if(!mysqli_query($conn,"UPDATE users SET preset_words='$words' WHERE id='$id'")){
+        die(false);
+    }
+    die(true);
+}
 
 if(isset($_POST['method']) && ($_POST['method'] == "favorite")){
     if($_POST['favorite'] == 1){
@@ -15,11 +25,65 @@ if(isset($_POST['method']) && ($_POST['method'] == "favorite")){
     }
 }
 if(isset($_POST['method']) && ($_POST['method'] == "getNoneImageProduct")){
-    $result = mysqli_query($conn, "SELECT * FROM products WHERE user_id ='".$_POST['id']."' and category = '".$_POST['category']."' and image='' and status=0");
+    if($_POST['type'])
+	{
+		// $catparent=$_POST['mainclick'];
+		
+		$resultcat = mysqli_query($conn, "SELECT * FROM category WHERE user_id ='".$_POST['id']."' and catparent = '".$_POST['category']."' order by id limit 0,1");
+		$resultdata=mysqli_fetch_array($resultcat,MYSQLI_ASSOC);
+		$category_name=$resultdata['category_name'];
+		$category_name = mysqli_real_escape_string($conn, $category_name);
+		 $category_name = str_replace(' ', '-', $category_name);
+		$result = mysqli_query($conn, "SELECT * FROM products WHERE user_id ='".$_POST['id']."' and category = '".$category_name."' and image='' and status=0");
+		$resultdata=mysqli_fetch_array($resultcat,MYSQLI_ASSOC);
+		
+	}
+	else
+	{
+		// echo "SELECT * FROM products WHERE user_id ='".$_POST['id']."' and category = '".$_POST['category']."' and image!='' and status=0";
+		// die;
+	   $result = mysqli_query($conn, "SELECT * FROM products WHERE user_id ='".$_POST['id']."' and category = '".$_POST['category']."' and image='' and status=0");
+	
+	}
+	$array_product = array();
+    while ($row=mysqli_fetch_row($result)){
+		
+        $item = array("image"=>$row[6],"product_name"=> $row[2], "category"=> $row[3], 'type'=> $row[4], 'price'=> $row[5], 'remark'=>$row[8], 'id' => $row[0]);
+        array_push($array_product, $item);
+    }
 
+    echo json_encode($array_product);
+}
+if(isset($_POST['method']) && ($_POST['method'] == "getImageProduct")){
+	
+	if($_POST['type'])
+	{
+		// $catparent=$_POST['mainclick'];
+		
+		$resultcat = mysqli_query($conn, "SELECT * FROM category WHERE user_id ='".$_POST['id']."' and catparent = '".$_POST['category']."' and status='0' order by id limit 0,1");
+		$resultdata=mysqli_fetch_array($resultcat,MYSQLI_ASSOC);
+		   $category_name=$resultdata['category_name'];
+		// die;
+		// $category_name="Diam-Sum-点心";
+		 $category_name = mysqli_real_escape_string($conn, $category_name);
+		 $category_name = str_replace(' ', '-', $category_name);
+	
+		$result = mysqli_query($conn, "SELECT * FROM products WHERE user_id ='".$_POST['id']."' and category = '".$category_name."' and image!='' and status=0");
+		$resultdata=mysqli_fetch_array($resultcat,MYSQLI_ASSOC);
+		
+	}
+	else
+	{
+		// echo "SELECT * FROM products WHERE user_id ='".$_POST['id']."' and category = '".$_POST['category']."' and image!='' and status=0";
+		// die;
+	   $result = mysqli_query($conn, "SELECT * FROM products WHERE user_id ='".$_POST['id']."' and category = '".$_POST['category']."' and image!='' and status=0");
+	
+	}
+    
     $array_product = array();
     while ($row=mysqli_fetch_row($result)){
-        $item = array("product_name"=> $row[2], "category"=> $row[3], 'type'=> $row[4], 'price'=> $row[5], 'remark'=>$row[8], 'id' => $row[0]);
+		
+        $item = array("image"=>$row[6],"product_name"=> $row[2], "category"=> $row[3], 'type'=> $row[4], 'price'=> $row[5], 'remark'=>$row[8], 'id' => $row[0]);
         array_push($array_product, $item);
     }
 
@@ -108,6 +172,7 @@ if(isset($_POST['method']) && ($_POST['method'] == "getUnreadMsg")){
     echo json_encode($array_unread);
 }
 
+
 if(isset($_POST['method']) && ($_POST['method'] == "getOrderDetail")){
     $id = $_POST['id'];
 
@@ -122,6 +187,7 @@ if(isset($_POST['method']) && ($_POST['method'] == "getOrderDetail")){
         $product_code = explode(",", $row['product_code']);
         $remark_ids = explode("|",$row['remark']);
         $location = isset($row['location']) ? $row['location'] : '';
+        $section_type = isset($row['section_type']) ? $row['section_type'] : '';
         $table_type = isset($row['table_type']) ? $row['table_type'] : '';
         $user_id = isset($row['user_id']) ? $row['user_id'] : '';
         $array_product_names;
@@ -138,10 +204,10 @@ if(isset($_POST['method']) && ($_POST['method'] == "getOrderDetail")){
         $register = $ref_result['register'];
         $merchant_name = $ref_result['name'];
         $sst = $ref_result['sst'];
-        $gst = $ref_result['gst'];
-        $item = array('register' => $register, 'sst' => $sst, 'gst' => $gst, 'user_id' => $user_id, 'product_code' => $product_code, 'table_type' => $table_type, 'location' => $location, 'remark' => $remark_ids, 'invoice_no' => $row['invoice_no'] , 'status' => $row['status'] , 'id' => $row['id'] , 'username' =>$order_name, 'merchantname' => $merchant_name, 'product_name' => $array_product_names, 'product_qty' => $product_qty, 'product_amt' => $product_amt);
-        array_push($array_detail, $item);
-    }
+        $gst = $ref_result['gst'];  
+        $item = array('product_ids'=>$product_ids,'register' => $register, 'sst' => $sst, 'gst' => $gst, 'user_id' => $user_id, 'product_code' => $product_code, 'table_type' => $table_type,'section_type'=>$section_type,'location' => $location, 'remark' => $remark_ids, 'invoice_no' => $row['invoice_no'] , 'status' => $row['status'] , 'id' => $row['id'] , 'username' =>$order_name, 'merchantname' => $merchant_name, 'product_name' => $array_product_names, 'product_qty' => $product_qty, 'product_amt' => $product_amt);
+        array_push($array_detail, $item);     
+    }  
     echo json_encode($array_detail);
 }
 
@@ -159,6 +225,7 @@ if(isset($_POST['method']) && ($_POST['method'] == "getOrderDetailByIdAndInvoice
         $remark_ids = explode("|",$row['remark']);
         $product_code = explode(",", $row['product_code']);
         $location = isset($row['location']) ? $row['location'] : '';
+        $section_type = isset($row['section_type']) ? $row['section_type'] : '';
         $table_type = isset($row['table_type']) ? $row['table_type'] : '';
         $user_id = isset($row['user_id']) ? $row['user_id'] : '';
         for($i = 0;  $i < count($product_ids); $i++){
@@ -166,7 +233,7 @@ if(isset($_POST['method']) && ($_POST['method'] == "getOrderDetailByIdAndInvoice
                 $product_name = mysqli_fetch_assoc(mysqli_query($conn, "SELECT product_name FROM products WHERE id ='".$product_ids[$i]."'"))['product_name'];
             } else {
                 $product_name = $product_ids[$i];
-            }
+            } 
             $array_product_names[$i] = $product_name;
         }
         $order_name = mysqli_fetch_assoc(mysqli_query($conn, "SELECT name FROM users where id='$user_id'"))['name'];
@@ -175,7 +242,7 @@ if(isset($_POST['method']) && ($_POST['method'] == "getOrderDetailByIdAndInvoice
         $sst = $ref_result['sst'];
         $gst = $ref_result['gst'];
         $register = $ref_result['register'];
-        $item = array('register' => $register, 'sst' => $sst, 'gst' => $gst, 'user_id' => $user_id, 'product_code' => $product_code, 'table_type' => $table_type, 'location' => $location, 'remark' => $remark_ids, 'invoice_no' => $row['invoice_no'] , 'status' => $row['status'] , 'id' => $row['id'] , 'username' =>$order_name, 'merchantname' => $merchant_name, 'product_name' => $array_product_names, 'product_qty' => $product_qty, 'product_amt' => $product_amt);
+        $item = array('register' => $register, 'sst' => $sst, 'gst' => $gst, 'user_id' => $user_id, 'product_code' => $product_code, 'table_type' => $table_type,'section_type'=>$section_type, 'location' => $location, 'remark' => $remark_ids, 'invoice_no' => $row['invoice_no'] , 'status' => $row['status'] , 'id' => $row['id'] , 'username' =>$order_name, 'merchantname' => $merchant_name, 'product_name' => $array_product_names, 'product_qty' => $product_qty, 'product_amt' => $product_amt);
         array_push($array_detail, $item);
     }
     echo json_encode($array_detail);
@@ -187,13 +254,14 @@ if( isset( $_POST['method']) && ( $_POST['method'] == "getUnPrintedOrder" )  ) {
     $ref_result = mysqli_fetch_assoc(mysqli_query($conn, "SELECT name, id, order_print_setting, sst, gst, register FROM users WHERE id='".$id."'"));
     if( $ref_result['order_print_setting'] === 'on' ) {
         $sst = $ref_result['sst'];
-        $gst = $ref_result['gst'];
+        $gst = $ref_result['gst'];  
         $register = $ref_result['register'];
         $merchant_name = $ref_result['name'];
-        $data = mysqli_query($conn, "SELECT * FROM order_list WHERE status=0 AND merchant_id='$id' AND printed!='1' ORDER BY ID DESC LIMIT 10");
+        $data = mysqli_query($conn, "SELECT * FROM order_list WHERE status=0 AND merchant_id='$id' AND auto_print!='1' ORDER BY ID DESC LIMIT 10");
         $array_detail = array();
         while ( $row=mysqli_fetch_assoc($data) ) {
             $user_id = $row['user_id'];
+            $order_id = $row['id'];
             $merchant_id = $row['merchant_id'];
             $wallet = isset($row['wallet']) ? $row['wallet'] : '';
             $product_ids = explode(",",$row['product_id']);
@@ -202,6 +270,7 @@ if( isset( $_POST['method']) && ( $_POST['method'] == "getUnPrintedOrder" )  ) {
             $product_code = explode(",", $row['product_code']);
             $remark_ids = explode("|",$row['remark']);
             $location = isset($row['location']) ? $row['location'] : '';
+            $section_type = isset($row['section_type']) ? $row['section_type'] : '';
             $table_type = isset($row['table_type']) ? $row['table_type'] : '';
             $user_id = isset($row['user_id']) ? $row['user_id'] : '';
             $array_product_names = [];
@@ -214,8 +283,9 @@ if( isset( $_POST['method']) && ( $_POST['method'] == "getUnPrintedOrder" )  ) {
                 $array_product_names[$i] = $product_name;
             }
             $order_name = mysqli_fetch_assoc(mysqli_query($conn, "SELECT name FROM users where id='$user_id'"))['name'];
-            $item = array('register' => $register, 'sst' => $sst, 'gst' => $gst, 'user_id' => $user_id, 'product_code' => $product_code, 'table_type' => $table_type, 'location' => $location, "wallet" => $wallet, 'remark' => $remark_ids, 'invoice_no' => $row['invoice_no'] , 'status' => $row['status'] , 'id' => $row['id'] , 'username' =>$order_name, 'merchantname' => $merchant_name, 'product_name' => $array_product_names, 'product_qty' => $product_qty, 'product_amt' => $product_amt);
+            $item = array('product_ids'=>$product_ids,'register' => $register, 'sst' => $sst, 'gst' => $gst, 'user_id' => $user_id, 'product_code' => $product_code, 'table_type' => $table_type,'section_type'=>$section_type,'location' => $location, "wallet" => $wallet, 'remark' => $remark_ids, 'invoice_no' => $row['invoice_no'] , 'status' => $row['status'] , 'id' => $row['id'] , 'username' =>$order_name, 'merchantname' => $merchant_name, 'product_name' => $array_product_names, 'product_qty' => $product_qty, 'product_amt' => $product_amt);
             array_push($array_detail, $item);
+			
         }
         echo json_encode($array_detail);
     } else {
@@ -225,177 +295,441 @@ if( isset( $_POST['method']) && ( $_POST['method'] == "getUnPrintedOrder" )  ) {
 }
 
 if( isset( $_POST['method']) && ( $_POST['method'] == "pintOrder" ) ) {
-    $ref_result = mysqli_fetch_assoc(mysqli_query($conn, "SELECT id, print_ip_address FROM users WHERE id='".$_SESSION['login']."'"));
-    if( ! isset( $ref_result['print_ip_address'] ) ) {
-        echo('print_setting_error');
-        die();
-    }
-    $ip_address = $ref_result['print_ip_address'];
-    $order = $_POST['order'];
+	$print='n';
+	
+	$order = $_POST['order'];
+	// print_R($order);
+	// die;
+	$product_ids=$order['product_ids'];
+	$mer_id=670;
     $date = $_POST['date'];
     $time = $_POST['time'];
-    if( $order == null ) {
-        echo( "empty" );
-    } else {
-        try {
-            //$connector = new WindowsPrintConnector("smb://DESKTOP-19L9BOQ/POS-80C");
-            $connector = new NetworkPrintConnector($ip_address, 9100);
-        } catch( Exception $e ) {
-            //echo('print_setting_error');
-            echo(print_r($e, true));
-            die();
-        }
-        echo(print_r($connector, true));
-        $ref_result = mysqli_fetch_assoc(mysqli_query($conn, "SELECT mobile_number FROM users WHERE id='".$order['user_id']."'"));
-        if( ! isset( $ref_result['mobile_number'] ) ) {
-            echo('User is not exist.');
-            die();
-        }
-        // 3 + 16 + 8 + 5 + 7 + 7
-        $mobile = $ref_result['mobile_number'];
-        $printer = new Printer($connector);
-        try {
-            $printer -> text("\n");
-            $printer -> setJustification(Printer::JUSTIFY_CENTER);
-            $printer -> text("\n");
-            $printer -> setEmphasis(true);
-            $printer -> selectPrintMode(Printer::MODE_FONT_B | Printer::MODE_DOUBLE_HEIGHT | Printer::MODE_DOUBLE_WIDTH);
-            $printer -> text( $order['merchantname'] . "\n" );
-            $printer -> text("\n");
-            $printer -> selectPrintMode(Printer::MODE_FONT_A);
-            $printer -> setEmphasis(false);
-            $printer -> text( '( ' . $order['register'] . ' )' . "\n" );
-            $printer -> text("\n");
-            $printer -> setEmphasis(true);
-            $printer -> selectPrintMode(Printer::MODE_FONT_B | Printer::MODE_DOUBLE_HEIGHT | Printer::MODE_DOUBLE_WIDTH);
-            $printer -> text( "Customer : " . $order['username'] . "\n" );
-            $printer -> text("\n");
-            $printer -> text( 'Phone : ' . $mobile . "\n" );
-            $printer -> text("\n");
-            $printer -> selectPrintMode(Printer::MODE_FONT_A);
-            $printer -> setEmphasis(false);
-            $printer -> text("\n");
-            $location = $order['location'];
-            $words = explode(" ", $location);
-            $rows_locations = [];
-            $rows_location = '';
-            for( $i = 0 ; $i < sizeof( $words ) ; $i ++ ) {
-                $word = $words[$i];
-                $word .= ' ';
-                if( strlen( $rows_location ) + strlen( $word ) < 30 ) {
-                    $rows_location .= $word;
-                    if( $i == sizeof( $words ) - 1 ) {
-                        array_push( $rows_locations, $rows_location);
-                    }
-                } else {
-                    array_push( $rows_locations, $rows_location);
-                    $rows_location = $word;
-                    if( $i == sizeof( $words ) - 1 ) {
-                        array_push( $rows_locations, $rows_location);
-                    }
-                }
-            }
-            foreach( $rows_locations as $item ) {
-                $printer -> text( ' ' . $item . "\n" );
-                $printer -> text("\n");
-            }
-            $printer -> text( 'GST ID : ' . $order['gst'] . "\n" );
-            $printer -> text("\n");
-            $printer -> text( 'SST NO : ' . $order['sst'] . "\n" );
-            $printer -> text("\n");
-            $printer -> text("\n");
-            $printer -> barcode( $order['id'] . '-' . $order['invoice_no'], Printer::BARCODE_CODE39 );
-            $printer -> text("\n");
-            $printer -> selectPrintMode(Printer::MODE_FONT_B | Printer::MODE_DOUBLE_HEIGHT | Printer::MODE_DOUBLE_WIDTH);
-            $printer -> text(  $order['id'] . '-' . $order['invoice_no'] . "\n" );
-            $printer -> selectPrintMode(Printer::MODE_FONT_A);
-            $printer -> text("\n");
-            $printer -> setJustification(Printer::JUSTIFY_LEFT);
-            $printer -> text("\n");
-            $printer -> setEmphasis(true);
-            $printer -> selectPrintMode(Printer::MODE_FONT_B | Printer::MODE_DOUBLE_HEIGHT | Printer::MODE_DOUBLE_WIDTH);
-            $printer -> text("  Table : " . $order['table_type'] . "\n");
-            $printer -> selectPrintMode(Printer::MODE_FONT_A);
-            $printer -> text("\n");
-            $printer -> setEmphasis(false);
-            $printer -> text( '  ' . $date . ' ' . $time . "\n");
-            $printer -> text("\n");
-            $printer -> selectPrintMode(Printer::MODE_FONT_A);
-            $printer -> text( "  No  Name( Code )    Qty  Remark  Price  Amount " . "\n");
-            $printer -> text("\n");
-            $total = 0;
-            $qty_total = 0;
-            for( $i = 0 ; $i < sizeof( $order['product_name'] ) ; $i ++ ) {
-                if( $order['product_qty'][$i] && $order['product_amt'][$i] ) {
-                    $amount = $order['product_qty'][$i] * $order['product_amt'][$i];
-                } else {
-                    $amount = 0;
-                }
-                $qty_total += $order['product_qty'][$i];
-                $total += $amount;
-                $remark = isset($order['remark'][$i]) ? $order['remark'][$i] : '';
-                $product_code = isset($order['product_code'][$i]) ? $order['product_code'][$i] : '';
-                $product_code  = '(' . $product_code . ')';
-                $name = $order['product_name'][$i];
-                $qty = $order['product_qty'][$i];
-                $price = $order['product_amt'][$i];
-                $name .= $product_code;
-                $number = $i + 1;
-                $size_number = 3;
-                $size_name = 15;
-                $size_remark = 7;
-                $size_qty = 4;
-                $size_price = 6;
-                $size_amount = 6;
-                $lines = max(intval( strlen($number) / $size_number) , intval( strlen($name) / $size_name) , intval( strlen($remark) / $size_remark) , intval( strlen($qty) / $size_qty) , intval( strlen($price) / $size_price) , intval( strlen($amount) / $size_amount) );
-                $lines ++;
-                for( $j = 0 ; $j < $lines ; $j++) {
-                    $number_print = '';
-                    if( strlen($number) > ($j) * $size_number ) {
-                        $number_print = substr($number, $j * $size_number, min($size_number, strlen($number) - ($j) * $size_number));
-                    }
-                    $number_print = str_pad($number_print,  $size_number, "   ");
-                    $name_print = '';
-                    if( strlen($name) > ($j) * $size_name ) {
-                        $name_print = substr($name, $j * $size_name, min($size_name, strlen($name) - ($j) * $size_name));
-                    }
-                    $name_print = str_pad($name_print,  $size_name, "   ");
-                    $remark_print = '';
-                    if( strlen($remark) > ($j) * $size_remark ) {
-                        $remark_print = substr($remark, $j * $size_remark, min($size_remark, strlen($remark) - ($j) * $size_remark));
-                    }
-                    $remark_print = str_pad($remark_print,  $size_remark, "   ");
-                    $qty_print = '';
-                    if( strlen($qty) > ($j) * $size_qty ) {
-                        $qty_print = substr($qty, $j * $size_qty, min($size_qty, strlen($qty) - ($j) * $size_qty));
-                    }
-                    $qty_print = str_pad($qty_print,  $size_qty, "   ");
-                    $price_print = '';
-                    if( strlen($price) > ($j) * $size_price ) {
-                        $price_print = substr($price, $j * $size_price, min($size_price, strlen($price) - ($j) * $size_price));
-                    }
-                    $price_print = str_pad($price_print,  $size_price, "   ");
-                    $amount_print = '';
-                    if( strlen($amount) > ($j) * $size_amount ) {
-                        $amount_print = substr($amount, $j * $size_amount, min($size_amount, strlen($amount) - ($j) * $size_amount));
-                    }
-                    $amount_print = str_pad($amount_print,  $size_amount, "   ");
-                    $printer -> text( '  ' . $number_print . ' ' .  $name_print . ' ' . $qty_print. ' ' . $remark_print . ' ' . $price_print . ' ' . $amount_print . "\n");
-                }
-                $printer -> text("\n");
-            }
-            $printer->setJustification(Printer::JUSTIFY_RIGHT);
-            $printer -> selectPrintMode(Printer::MODE_FONT_B | Printer::MODE_DOUBLE_HEIGHT | Printer::MODE_DOUBLE_WIDTH);
-            $printer -> text( "------------ -------------" . "\n");
-            $printer -> text( "Qty: " . $qty_total . "      " . "Total: $total" . "   " . "\n");
-            $printer -> text( "============ =============" . "\n");
-            $printer -> text("\n");
-            $printer -> text("\n");
-            $printer -> cut( Printer::CUT_FULL, 3 );
-            $printer -> close();
-            echo('success');
-        } finally {
-            $printer -> close();
-        }
-    }
+	
+    $ref_result = mysqli_fetch_assoc(mysqli_query($conn, "SELECT id, print_ip_address,printer_style FROM users WHERE id='".$_SESSION['login']."'"));
+    // $ref_result = mysqli_fetch_assoc(mysqli_query($conn, "SELECT id, print_ip_address,printer_style FROM users WHERE id='".$mer_id."'"));
+    // print_R($ref_result);
+	// die;
+	 $printer_style=$ref_result['printer_style'];
+	
+    if($printer_style=="product")
+	{
+		$prdouct_str=implode(",",$product_ids);
+		
+		$product_result = mysqli_fetch_all(mysqli_query($conn, "SELECT products.id,products.print_ip_address,products.product_name,products.product_type FROM products WHERE products.id in($prdouct_str)"));
+	  // $prow=mysqli_fetch_array($product_result);
+	  // print_R($order);
+	  // die;
+		$i=0;
+		
+		$remarkarray=$order['remark'];
+		$product_qty=$order['product_qty'];
+		foreach ($product_result as $key => $item) {
+			// print_R($item[1]);
+			
+			 $arr[$item[1]][$key]=$item[0]."+".$product_qty[$i]."+".$item[2]."+".$remarkarray[$i]."+".$item[3];
+			$i++;
+		}
+		$section_data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT name FROM sections WHERE id='".$order['section_type']."'"));
+			$order['section_name']=$section_name=$section_data['name'];
+		foreach($arr as $kp=>$p)
+		{
+			if($kp)
+			{
+				$kp=$kp;
+			}
+			else
+			{
+				$kp = $ref_result['print_ip_address'];
+			}
+			$print_report=singleorderprint($kp,$p,$date,$time,$order);
+			// break;
+		}
+		$order_id=$order['id'];
+		mysqli_query($conn,"UPDATE `order_list` SET `auto_print` = '1' WHERE `order_list`.`id` ='$order_id'");
+        
+	}
+	else if($printer_style=="section")
+	{
+		// section based printing 
+		$section_type=$order['section_type'];
+		$section_result = mysqli_fetch_assoc(mysqli_query($conn, "SELECT id, printer_ip FROM sections WHERE id='$section_type'"));
+		 $ip_address = $section_result['printer_ip'];
+		
+		$print_report=OrderCustomprint($ip_address,$order,$date,$time,$conn);
+	}
+	else
+	{
+		// if( ! isset( $ref_result['print_ip_address'] ) ) {
+			// echo('print_setting_error');
+			// die();
+		// }
+		$ip_address = $ref_result['print_ip_address'];
+		$print_report=OrderCustomprint($ip_address,$order,$date,$time,$conn);
+	}
+    // echo $ip_address;
+	// die;
+	// die;
+    //OrderCustomprint($ip_address,$order,$date,$time,$conn);
+	echo json_encode($print_report);
+	die;
+	
 }
+if(isset($_POST['method']) && ($_POST['method'] == "subproduct")){
+	$product_id = $_POST['product_id'];
+	// $product_id =433;
+	$result = array();
+	$total_rows = mysqli_query($conn, "SELECT * FROM sub_products WHERE product_id='".$product_id."'");
+	 $ref_result=mysqli_affected_rows($conn);
+
+	if($ref_result)
+	{
+		$res['status']=200;
+		while ($row=mysqli_fetch_assoc($total_rows)){
+			$item = array("id" => $row['id'], "name" => $row['name'], 
+        				'product_price' => $row['product_price']);
+        
+			array_push($result, $item);
+		}
+		 
+		$res['data']=$result;
+	}
+	else
+	{
+		$res['status']=404;
+		// $res['data']=ref_result;
+	}
+	echo json_encode($res);
+	die;
+}
+function singleorderprint($ip_address,$data,$date,$time,$order)
+{
+	// echo $ip_address;
+	   // print_R($data);
+	   // die;  
+		if( $data == null ) {
+			$res['status']=false;
+			$res['message']="Failed to make print Due to Order Blank";
+			
+			//echo( "empty" );
+			}
+		else
+		{
+			try {
+				//$connector = new WindowsPrintConnector("smb://DESKTOP-19L9BOQ/POS-80C");
+				$connector = new NetworkPrintConnector($ip_address, 9100);
+			} catch( Exception $e ) {
+				echo('print_setting_error');
+				echo(print_r($e, true));
+				// die();
+				$res['status']=false;
+				$res['message']="Printer is not connected";
+			}
+			// $profile = CapabilityProfile::load("default");
+			$printer = new Printer($connector);
+			$i=0;
+			$size_number = 3; 
+			$size_name = 15;
+		    $size_qty = 3;
+			$p_number=5;
+			$size_remark=12;
+			
+			try {
+				// $printer -> text("\n");
+				$printer -> setJustification(Printer::JUSTIFY_CENTER);
+				// $printer -> text("\n");
+				$printer -> selectPrintMode(Printer::MODE_FONT_B | Printer::MODE_DOUBLE_HEIGHT | Printer::MODE_DOUBLE_WIDTH);
+				$printer -> text(  $order['id'] . '-' . $order['invoice_no'] . "\n" );
+				$printer -> selectPrintMode(Printer::MODE_FONT_A);
+				// $printer -> text("\n");
+				$printer -> setJustification(Printer::JUSTIFY_LEFT);
+				$printer -> text("\n");
+				$printer -> setEmphasis(true);
+				$printer -> selectPrintMode(Printer::MODE_FONT_B | Printer::MODE_DOUBLE_HEIGHT | Printer::MODE_DOUBLE_WIDTH);
+				$printer -> text("  Section : " . $order['section_name'] . "       "."Table : " .$order['table_type']. "\n");
+				 // $printer -> selectPrintMode(Printer::MODE_FONT_B | Printer::MODE_DOUBLE_HEIGHT | Printer::MODE_DOUBLE_WIDTH);
+				// $printer -> text("  Section : " . $order['section_type'] . "\n");   
+				$printer -> selectPrintMode(Printer::MODE_FONT_A);
+				// $printer -> selectPrintMode(Printer::MODE_FONT_A);
+				// $printer -> text("\n"); 
+				$printer -> setEmphasis(false);
+				$printer -> text( '  ' . $date . ' ' . $time . "\n");
+				$printer -> text("\n");
+				
+				// $printer -> text( "  No  Name                                   Qty" . "\n");   
+				// $printer -> text("\n"); 
+				$printer -> selectPrintMode(Printer::MODE_FONT_B | Printer::MODE_DOUBLE_HEIGHT | Printer::MODE_DOUBLE_WIDTH);
+				$printer -> setEmphasis(true);
+				foreach($data as $d)
+				{
+					$pr_str=explode("+",$d);
+					print_R($pr_str);
+					$name=$pr_str[2];
+					$qty=$pr_str[1];
+					$remark=$pr_str[3];
+					$p_code=$pr_str[4]; 
+					$number = $i + 1;
+					
+					$lines = max(intval( strlen($number) / $size_number),intval( strlen($name) / $size_name),intval( strlen($qty) / $size_qty));
+					$lines ++;
+					for( $j = 0 ; $j < $lines ; $j++) {
+						$number_print = '';
+						if( strlen($number) > ($j) * $size_number ) {
+							$number_print = substr($number, $j * $size_number, min($size_number, strlen($number) - ($j) * $size_number));
+						}
+						$number_print = str_pad($number_print,  $size_number, "   ");
+						$name_print = '';
+						if( strlen($name) > ($j) * $size_name ) {
+							$name_print = substr($name, $j * $size_name, min($size_name, strlen($name) - ($j) * $size_name));
+							$name_print=substr($name,0);
+						}
+						// $name_print = str_pad($name_print,  $size_name, "   ");
+						$qty_print = '';
+						if( strlen($qty) > ($j) * $size_qty ) {
+							$qty_print = substr($qty, $j * $size_qty, min($size_qty, strlen($qty) - ($j) * $size_qty));
+						}
+						 $qty_print = str_pad($qty_print,  $size_qty, "   ");
+						if( strlen($p_code) > ($j) * $p_number ) {
+							$p_print = substr($p_code, $j * $p_number, min($p_number, strlen($p_code) - ($j) * $p_number));
+						}
+						$p_print = str_pad($p_print,  $p_number, "   ");
+						$remark_print = '';
+						if( strlen($remark) > ($j) * $size_remark ) {
+							$remark_print = substr($remark, $j * $size_remark, min($size_remark, strlen($remark) - ($j) * $size_remark));
+						}
+						$remark_print = str_pad($remark_print,  $size_remark, "   ");
+					}
+					 // $name=utf8_encode($name);
+					echo "<br/> No :".$number;
+						echo "<br/> Name :".$name_print;
+						echo "<br/> Remark :".$remark;
+						echo "<br/> Code :".$p_code;
+						echo "<br/> Qty".$qty;
+				     // $bullet="&bull; "; 
+					 // $printer -> text( '  ' . $number . '   ' .  $name_print.'                  '. $qty_print ."\n");
+					  $name_length=strlen($name_print);
+					   if($name_length>25)
+					   {
+						  $name1=substr($name_print,0,25);
+						  $name2=substr($name_print,26,$name_length);
+						   $printer -> text(' '.$name1.'          '. $qty ."\n");
+						   $printer -> text( '       '.  $name2."\n");
+					   }
+					   else
+					   {
+						  $printer -> text( ' '.$name_print.'          '. $qty ."\n");
+							
+					   }
+					   $printer -> text( '   '.  $p_code."\n");
+						if(strlen($remark)>0)
+						 {
+						 $printer -> text( '   '.$remark."\n"); 
+						 }	
+					
+					$i++;
+				}
+				$printer -> text("\n");
+				// $printer -> text("\n");   
+				$printer -> cut( Printer::CUT_FULL, 3 ); 
+
+				 $res['status']=true;
+				$res['message']="Print Successfully";
+				// print_R($res);
+				// die;
+			}
+			finally {
+				$printer -> close();
+			}
+		}
+		return  $res;
+}
+function OrderCustomprint($ip_address,$order,$date,$time,$conn)
+	{  
+	   
+	   	if( $order == null ) {
+			$res['status']=false;
+			$res['message']="Failed to make print Due to Order Blank";
+			
+			//echo( "empty" );
+			} else {
+			try {
+				//$connector = new WindowsPrintConnector("smb://DESKTOP-19L9BOQ/POS-80C");
+				$connector = new NetworkPrintConnector($ip_address, 9100);
+			} catch( Exception $e ) {
+				//echo('print_setting_error');
+				//echo(print_r($e, true));
+				// die();
+				$res['status']=false;
+				$res['message']="Printer is not connected";
+			}
+			$res['status']=false;
+			$res['message']="Printer is not connected";
+			//echo(print_r($connector, true));
+			$ref_result = mysqli_fetch_assoc(mysqli_query($conn, "SELECT mobile_number FROM users WHERE id='".$order['user_id']."'"));
+			if( ! isset( $ref_result['mobile_number'] ) ) {
+				$res['status']=false;
+			$res['message']="User id Not found";
+				// die();
+			}
+			
+			// 3 + 16 + 8 + 5 + 7 + 7
+			$mobile = $ref_result['mobile_number'];
+			$section_id=$order['section_type'];
+			$section_data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT name FROM sections WHERE id='".$order['section_type']."'"));
+			$section_name=$section_data['name'];
+			$printer = new Printer($connector);
+			try {
+				$printer -> text("\n");
+				$printer -> setJustification(Printer::JUSTIFY_CENTER);
+				$printer -> text("\n");
+				$printer -> setEmphasis(true);
+				$printer -> selectPrintMode(Printer::MODE_FONT_B | Printer::MODE_DOUBLE_HEIGHT | Printer::MODE_DOUBLE_WIDTH);
+				$printer -> text( $order['merchantname'] . "\n" );
+				// $printer -> text("\n");
+				$printer -> selectPrintMode(Printer::MODE_FONT_A);
+				$printer -> setEmphasis(false);
+				$printer -> text( '( ' . $order['register'] . ' )' . "\n" );
+				// $printer -> text("\n");
+				$printer -> setEmphasis(true);
+				$printer -> selectPrintMode(Printer::MODE_FONT_B | Printer::MODE_DOUBLE_HEIGHT | Printer::MODE_DOUBLE_WIDTH);
+				$printer -> text( "Customer : " . $order['username'] . "\n" );
+				// $printer -> text("\n");
+				// $printer -> selectPrintMode(Printer::MODE_FONT_B | Printer::MODE_DOUBLE_HEIGHT | Printer::MODE_DOUBLE_WIDTH);
+				 // $printer -> selectPrintMode(Printer::MODE_FONT_A);
+				$printer -> setEmphasis(false);
+				$printer -> text( 'Phone : ' . $mobile . "\n" );
+				// $printer -> text("\n");
+				$printer -> selectPrintMode(Printer::MODE_FONT_A);
+				$printer -> setEmphasis(false);
+				// $printer -> text("\n");
+				$location = $order['location'];
+				$words = explode(" ", $location);
+				$rows_locations = [];
+				$rows_location = '';
+				for( $i = 0 ; $i < sizeof( $words ) ; $i ++ ) {
+					$word = $words[$i];
+					$word .= ' ';
+					if( strlen( $rows_location ) + strlen( $word ) < 30 ) {
+						$rows_location .= $word;
+						if( $i == sizeof( $words ) - 1 ) {
+							array_push( $rows_locations, $rows_location);
+						}
+					} else {
+						array_push( $rows_locations, $rows_location);
+						$rows_location = $word;
+						if( $i == sizeof( $words ) - 1 ) {
+							array_push( $rows_locations, $rows_location);
+						}
+					}
+				}
+				foreach( $rows_locations as $item ) {
+					$printer -> text( ' ' . $item . "\n" );
+					// $printer -> text("\n");
+				}  
+				$printer -> text( 'GST ID : ' . $order['gst'] . "\n" );
+				// $printer -> text("\n");
+				$printer -> text( 'SST NO : ' . $order['sst'] . "\n" );
+				// $printer -> text("\n");
+				// $printer -> text("\n");
+				$printer -> barcode( $order['id'] . '-' . $order['invoice_no'], Printer::BARCODE_CODE39 );
+				// $printer -> text("\n");
+				$printer -> selectPrintMode(Printer::MODE_FONT_B | Printer::MODE_DOUBLE_HEIGHT | Printer::MODE_DOUBLE_WIDTH);
+				$printer -> text(  $order['id'] . '-' . $order['invoice_no'] . "\n" );
+				$printer -> selectPrintMode(Printer::MODE_FONT_A);
+				// $printer -> text("\n");
+				$printer -> setJustification(Printer::JUSTIFY_LEFT);
+				$printer -> text("\n");
+				$printer -> setEmphasis(true);
+				$printer -> selectPrintMode(Printer::MODE_FONT_B | Printer::MODE_DOUBLE_HEIGHT | Printer::MODE_DOUBLE_WIDTH);
+				$printer -> text("  Table : " . $order['table_type'] . "  "."Section : " .$section_name. "\n");
+				 // $printer -> selectPrintMode(Printer::MODE_FONT_B | Printer::MODE_DOUBLE_HEIGHT | Printer::MODE_DOUBLE_WIDTH);
+				// $printer -> text("  Section : " . $order['section_type'] . "\n");   
+				$printer -> selectPrintMode(Printer::MODE_FONT_A);
+				$printer -> text("\n"); 
+				$printer -> setEmphasis(false);
+				$printer -> text( '  ' . $date . ' ' . $time . "\n");
+				$printer -> text("\n");
+				$printer -> selectPrintMode(Printer::MODE_FONT_A);
+				$printer -> text( "  No  Name( Code )    Qty  Remark  Price  Amount " . "\n");
+				$printer -> text("\n");
+				$total = 0;
+				$qty_total = 0;
+				for( $i = 0 ; $i < sizeof( $order['product_name'] ) ; $i ++ ) {
+					if( $order['product_qty'][$i] && $order['product_amt'][$i] ) {
+						$amount = $order['product_qty'][$i] * $order['product_amt'][$i];
+					} else {
+						$amount = 0;
+					}
+					$qty_total += $order['product_qty'][$i];
+					$total += $amount;
+					$total=number_format($total,2);
+					$remark = isset($order['remark'][$i]) ? $order['remark'][$i] : '';
+					$product_code = isset($order['product_code'][$i]) ? $order['product_code'][$i] : '';
+					$product_code  = '(' . $product_code . ')';
+					$name = $order['product_name'][$i];
+					$qty = $order['product_qty'][$i];
+					$price = $order['product_amt'][$i];
+					$name .= $product_code;
+					$number = $i + 1;
+					$size_number = 3;
+					$size_name = 15;
+					$size_remark = 7;
+					$size_qty = 4;
+					$size_price = 6;
+					$size_amount = 6;
+					$lines = max(intval( strlen($number) / $size_number) , intval( strlen($name) / $size_name) , intval( strlen($remark) / $size_remark) , intval( strlen($qty) / $size_qty) , intval( strlen($price) / $size_price) , intval( strlen($amount) / $size_amount) );
+					$lines ++;
+					for( $j = 0 ; $j < $lines ; $j++) {
+						$number_print = '';
+						if( strlen($number) > ($j) * $size_number ) {
+							$number_print = substr($number, $j * $size_number, min($size_number, strlen($number) - ($j) * $size_number));
+						}
+						$number_print = str_pad($number_print,  $size_number, "   ");
+						$name_print = '';
+						if( strlen($name) > ($j) * $size_name ) {
+							$name_print = substr($name, $j * $size_name, min($size_name, strlen($name) - ($j) * $size_name));
+						}
+						$name_print = str_pad($name_print,  $size_name, "   ");
+						$remark_print = '';
+						if( strlen($remark) > ($j) * $size_remark ) {
+							$remark_print = substr($remark, $j * $size_remark, min($size_remark, strlen($remark) - ($j) * $size_remark));
+						}
+						$remark_print = str_pad($remark_print,  $size_remark, "   ");
+						$qty_print = '';
+						if( strlen($qty) > ($j) * $size_qty ) {
+							$qty_print = substr($qty, $j * $size_qty, min($size_qty, strlen($qty) - ($j) * $size_qty));
+						}
+						$qty_print = str_pad($qty_print,  $size_qty, "   ");
+						$price_print = '';
+						if( strlen($price) > ($j) * $size_price ) {
+							$price_print = substr($price, $j * $size_price, min($size_price, strlen($price) - ($j) * $size_price));
+						}
+						$price_print = str_pad($price_print,  $size_price, "   ");
+						$amount_print = '';
+						if( strlen($amount) > ($j) * $size_amount ) {
+							$amount_print = substr($amount, $j * $size_amount, min($size_amount, strlen($amount) - ($j) * $size_amount));
+						}
+						$amount_print = str_pad($amount_print,  $size_amount, "   ");
+						$printer -> text( '  ' . $number_print . ' ' .  $name_print . ' ' . $qty_print. ' ' . $remark_print . ' ' . $price_print . ' ' . $amount_print . "\n");
+					}
+					$printer -> text("\n");
+				}
+				$printer->setJustification(Printer::JUSTIFY_RIGHT);
+				$printer -> selectPrintMode(Printer::MODE_FONT_B | Printer::MODE_DOUBLE_HEIGHT | Printer::MODE_DOUBLE_WIDTH);
+				$printer -> text( "------------ -------------" . "\n");
+				$printer -> text( "Qty: " . $qty_total . "      " . "Total: RM $total" . "   " . "\n");
+				$printer -> text( "============ =============" . "\n");
+				$printer -> text("\n");
+				$printer -> text("\n");
+				$printer -> cut( Printer::CUT_FULL, 3 );
+				$printer -> close();
+				//echo('success');   
+				$order_id=$order['id'];
+				 mysqli_query($conn,"UPDATE `order_list` SET `auto_print` = '1' WHERE `order_list`.`id` ='$order_id'");
+				$res['status']=true;
+				$res['message']="Print Successfully";
+			} finally {
+				$printer -> close();
+			}
+		}
+			return $res;
+	}

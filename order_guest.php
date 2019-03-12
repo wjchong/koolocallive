@@ -181,6 +181,7 @@ debug_logs: 0
 					 <th class="test_product"><?php echo $language["merchant_name"];?></th>
 					 <th><?php echo $language["status"];?></th>
 					 <th>K1/K2</th>
+					  <th><?php echo "Section";?></th>
 					  <th><?php echo $language["table_number"];?></th>
 					 <th class="location_head"><?php echo $language["location"];?></th>
 					 <th><?php echo $language["chat"];?></th>
@@ -255,6 +256,7 @@ debug_logs: 0
                         <label class= "status" data-id="<?php echo $row['id']; ?>" style="cursor:pointer;"> <?php echo $sta; ?></label>
                      </td>
                          <td><?php echo $user_name['account_type']; ?></td>
+						   <td><?php echo $row['section_type'];?></td>
                           <td><?php echo $row['table_type'];?></td>
                          <td class="location_<?php echo $row['id']; ?> new_tablee"><?php echo $row['location'];?></td>
   <td><a target="_blank" href="<?php echo $site_url; ?>/chat/chat.php?sender=<?php echo $_SESSION['login']?>&receiver=<?php echo $row['merchant_id'];?>"><i class="fa fa-comments-o"></i></a></td>

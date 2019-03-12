@@ -4,6 +4,7 @@ $language["dashboard"] = "Dashboard";
 $language["wallet"] = "Wallet";
 $language["transfer"] = "transfer";
 $language["merchant"] = "MERCHANT";
+$language["sections"] ="SECTION";
 $language["withdrawal"] = "Withdrawal";
 $language["exchange"] = "Exchange";
 $language["referral_list"] = "Referral List";
@@ -25,7 +26,7 @@ $language["product_name"] = "PRODUCT NAME";
 $language["quantity"] = "QUANTITY";
 $language["remark"] = "REMARK";
 $language["location"] = "LOCATION";
-$language["table_number"] = "TABLE <br>NUMBER";
+$language["table_number"] = "TABLE NUMBER";
 $language["your_order_has_been_sent"] = "YOUR ORDER HAS BEEN SENT";
 $language["following_mode_of_payments"] = "PLEASE PAY RM %s BY SELECTING THE FOLLOWING MODE OF PAYMENT";
 

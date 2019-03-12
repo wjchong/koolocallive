@@ -7,12 +7,15 @@ if(!isset($_SESSION['login']))
 $bank_data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM users WHERE id='".$_SESSION['login']."'"));
 $k_history = mysqli_query($conn, "SELECT * FROM k_type WHERE user_id='".$_SESSION['login']."' ORDER BY date");
 $referred_by = $bank_data['referred_by'];
+$printer_style = $bank_data['printer_style']; 
 if($bank_data['referred_by'] == "")
     $referred_by = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM users WHERE user_roles = '1' and  referral_id='".$_SESSION['referral_id']."'"))['referred_by'];
     
 $user_mobile = mysqli_fetch_assoc(mysqli_query($conn, "SELECT mobile_number FROM users WHERE id='".$_SESSION['login']."'"))['mobile_number'];
 if(isset($_POST['submit']))
 {
+	// print_R($_POST);
+	// die;
 	$ref_result = mysqli_fetch_assoc(mysqli_query($conn, "SELECT id, created_at, referred_by, k_date, account_type FROM users WHERE id='".$_SESSION['login']."'"));
 	$user_id = $ref_result['id'];
 	if(($ref_result['created_at'] != null) || ($ref_result['created_at'] != "")){
@@ -33,7 +36,7 @@ if(isset($_POST['submit']))
 	$error = "";
 	$expired_flag = false;
     $expired_type_flag = false;
-    
+    $printer_style=$_POST['printer_style'];
 	$realname = addslashes($_POST['realname']);
 	$company = addslashes($_POST['company']);
 	$register = addslashes($_POST['register']);
@@ -135,10 +138,11 @@ if(isset($_POST['submit']))
 	{
 		$filenamess = $bank_data['company_doc'];
 	}
-	
+	  
 	if($flag == false)
-	{
-		$test_test = mysqli_query($conn, "UPDATE users SET merchant_code='$merchant_code', merchant_url='$merchant_address', name='$realname',latitude='$latitude', longitude='$longitude', company='$company',register='$register',address='$address',gst='$gst', sst='$sst', print_ip_address='$print_ip_address', order_print_setting='$order_print_setting', facsimile_number='$facsimile',referred_by='$referred_by', business1='$business1', business2='$business2', name_card='$name_card',card_number='$card_number',expiry_date='$expiry_date',cvv='$cvv',bank_name='$bankname',name_accoundholder='$name_accoundholder',bank_ac_num='$ac_num',charge='$charge',nric_number='$nric_number',address_person='$address_person',hand_phone='$hand_phone',google_map='$google_map',doc_copy='$filename',company_doc='$filenamess',number_lock='$number_lock', handphone_number='$handphone_number', created_at='$date', account_type='$account_type', k_date='$k_date', k_lock='$k_lock', guest_permission='$guest_permission', pending_time='$pending_time',menu_type='$menu_type' WHERE id='".$_SESSION['login']."'");
+	{  
+		//$test_test = mysqli_query($conn, "UPDATE users SET merchant_code='$merchant_code', merchant_url='$merchant_address', name='$realname',latitude='$latitude', longitude='$longitude', company='$company',register='$register',address='$address',gst='$gst', sst='$sst', print_ip_address='$print_ip_address', order_print_setting='$order_print_setting', facsimile_number='$facsimile',referred_by='$referred_by', business1='$business1', business2='$business2', name_card='$name_card',card_number='$card_number',expiry_date='$expiry_date',cvv='$cvv',bank_name='$bankname',name_accoundholder='$name_accoundholder',bank_ac_num='$ac_num',charge='$charge',nric_number='$nric_number',address_person='$address_person',hand_phone='$hand_phone',google_map='$google_map',doc_copy='$filename',company_doc='$filenamess',number_lock='$number_lock', handphone_number='$handphone_number', created_at='$date', account_type='$account_type', k_date='$k_date', k_lock='$k_lock', guest_permission='$guest_permission', pending_time='$pending_time',menu_type='$menu_type' WHERE id='".$_SESSION['login']."'");
+		$test_test = mysqli_query($conn, "UPDATE users SET printer_style='$printer_style',merchant_code='$merchant_code', merchant_url='$merchant_address', name='$realname',latitude='$latitude', longitude='$longitude', company='$company',register='$register',address='$address',gst='$gst', sst='$sst', print_ip_address='$print_ip_address', order_print_setting='$order_print_setting', facsimile_number='$facsimile',referred_by='$referred_by', business1='$business1', business2='$business2', name_card='$name_card',card_number='$card_number',expiry_date='$expiry_date',cvv='$cvv',bank_name='$bankname',name_accoundholder='$name_accoundholder',bank_ac_num='$ac_num',charge='$charge',nric_number='$nric_number',address_person='$address_person',hand_phone='$hand_phone',google_map='$google_map',doc_copy='$filename',company_doc='$filenamess',number_lock='$number_lock', handphone_number='$handphone_number', created_at='$date', account_type='$account_type', k_date='$k_date', k_lock='$k_lock', guest_permission='$guest_permission', pending_time='$pending_time',menu_type='$menu_type' WHERE id='".$_SESSION['login']."'");
 		$error .= "Successfully Updated profile Details.<br>";
 		if($expired_flag == false){
 			$error .= "You can change the referral id after ".(183 - $num_date)." days. <br />"; 
@@ -245,7 +249,7 @@ else
 					<div class="container" > 
 					    <div class="row">
 					        <div class="well col-md-6">
-							<form method="post" onsubmit="return change_amount()" enctype="multipart/form-data" id="profile_account">
+							<form method="post" onSubmit="return change_amount()" enctype="multipart/form-data" id="profile_account">
 								<div class="panel price panel-red">
 									<h2>Update Profile Details</h2>
 									<br><br>
@@ -352,6 +356,12 @@ else
 										<input type="number" name="pending_time" class="form-control" value="<?php if(isset($pending_time)){ echo $pending_time; }?>" >
 									</div>
 									<div class="form-group">
+										<label>Printer Style</label><br>
+										      <input type="radio" name="printer_style" value="normal" <?php if($printer_style=="normal"){echo "checked";} ?>> Normal<br>
+											  <input type="radio" name="printer_style" value="section" <?php if($printer_style=="section"){echo "checked";} ?>> Section<br>
+											  <input type="radio" name="printer_style" value="product" <?php if($printer_style=="product"){echo "checked";} ?>> Product  
+									</div>    
+									<div class="form-group">
 										<label>K1/K2 Type</label><br>
 										<select class='account_kType' name="account_type" style="">
 										    <option <?php if($account_type == '') echo 'selected'; ?> value="">Non K1/K2</option>
@@ -362,8 +372,9 @@ else
 										<br />
 										<input type="checkbox" class="k_lock" name="k_lock" <?php if($k_lock == '1') echo "checked='checked'";?>" >
 										I only allow above members to place orders. 
-										<br>
-									</div>
+										<br/>
+									</div> 
+									
                                     <div class="form-group">
                                         <label>Menu Type</label>
                                         <select class='menu_type' name="menu_type" style="">
@@ -599,6 +610,57 @@ else
                 </div>
                 </div>
 				 <div class="col-md-3"></div>
+				  <div class="col-md-3"></div>
+				  
+				  <div class="well col-md-6" id="qrcode">
+                    <h3> QR code for Table</h3>
+					
+					
+                <div style="margin:10px">
+                 
+                    <form method="post" action="<?php echo $site_url.'/profile_merchant.php#qrcode'; ?>" >
+                    <div class="form-group input-has-value">
+										<label>Section</label>
+										<input type="text" name="section" class="form-control" value="" required>
+									</div>
+									
+									
+									<div class="form-group input-has-value">
+										<label>Table</label>
+										<input type="text" name="tablehwe" class="form-control" value="" required>
+									</div>
+									
+					<input type="submit" class="btn btn-block btn-primary" name="submithwe" value="Create QR Code">				
+                    </form>
+                    
+                <?php
+                if(isset($_POST['submithwe']))
+                {
+                    $section=$_POST['section']; 
+                     $tablehwe=$_POST['tablehwe'];
+                     
+                     $getdetail=$section."hweset".$tablehwe;
+                     $basecode=base64_encode($getdetail) ;
+                     
+                  //  echo "$site_url/view_merchant.php?sid=$user_mobile&data=$basecode";
+                     
+                     	$PPU = urlencode("$site_url/view_merchant.php?sid=$user_mobile&data=$basecode") ;
+                     	
+                     	 $txt = "<img src=\"https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=$PPU&choe=UTF-8\" title=\"Link to Google.com\" />";
+                             echo $txt ;
+            
+                     	
+                     	
+                    
+                }
+                
+                
+                	
+                	
+             
+                ?>
+                </div>
+                </div>
 				
 			</main>
         </div>

@@ -21,6 +21,7 @@ if(isset($_POST['submit']))
 		$product_type = addslashes($_POST['product_type']);
 		$product_price = addslashes($_POST['product_price']);
 		$remark = addslashes($_POST['product_remark']);
+		$print_ip_address=$_POST['print_ip_address'];
 		$image = $_FILES["image_pic"]["name"];	
 		$code = $_FILES["code_pic"]["name"];
      
@@ -88,8 +89,8 @@ if(isset($_POST['submit']))
 }
        
       $current_date= date("Y/m/d");  
-	
-	mysqli_query($conn, "INSERT INTO products SET product_name='$productname',user_id='$current_id', category='$category', product_type='$product_type',product_price='$product_price', remark = '$remark', image='$image', code='$code',created_date='$current_date'");
+	  
+	mysqli_query($conn, "INSERT INTO products SET product_name='$productname',user_id='$current_id', category='$category', product_type='$product_type',product_price='$product_price', remark = '$remark', image='$image', code='$code',created_date='$current_date',print_ip_address='$print_ip_address'");
 
 }
 ?>
@@ -178,8 +179,8 @@ if(isset($_POST['submit']))
 										<input type="text" name="product_type" class="form-control" value="" >
 									</div>
 									<div class="form-group">
-										<label>Product Price</label>
-										<input type="text" name="product_price" class="form-control" value="" >
+										<label>Print Ip address</label>
+										<input type="text" name="print_ip_address" class="form-control" value="" >
 									</div>
 
 									<div class="form-group">

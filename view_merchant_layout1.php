@@ -1,17 +1,24 @@
 <?php
 //$categories = mysqli_query($conn, "SELECT DISTINCT(products.category),created_date FROM products WHERE user_id ='".$id."' and status=0 ORDER BY created_date ASC");
 $categories_q = mysqli_query($conn, "SELECT * FROM cat_mater WHERE UserID ='".$id."' and IsEnable=1 ");
+
 if($product['pro_ct'] > 0) { ?>
     <div class="col-md-12 filter-button-group">
         <?php
         $index = 1;
+		$s=0;
         $category_a = mysqli_fetch_assoc($categories_q);
         $categories = explode(",",$category_a['CatName']);
         foreach ($categories as $category)
         {
+			if($s==0)
+					{
+						 $master_cat=str_replace("-", " ", $category);
+					}
             ?>
-            <button class="btn btn-primary master_category_filter" type="button" data-filter=".<?php echo str_replace(" ","-",$category);?>"><?php echo str_replace("-", " ", $category);?></button>
+            <button  style="background:#51d2b7;border:none;"  class="btn btn-primary master_category_filter" type="button" data-position="<?php echo $index; ?>" data-filter=".<?php echo str_replace(" ","-",$category);?>"><?php echo str_replace("-", " ", $category);?></button>
             <?php
+            $s++;
             $index++;
         }
         $index = 1;
@@ -20,18 +27,28 @@ if($product['pro_ct'] > 0) { ?>
     <div class="col-md-12">
         <div class="sub_category_grid">
             <?php
+			$s=0;
             foreach ($categories as $category)
             {
-                $sub_categories_q = mysqli_query($conn, "SELECT * FROM category WHERE user_id ='".$id."' and catparent='".$index."' and status=0 ");
+               // echo "SELECT * FROM category WHERE user_id ='".$id."' and catparent='".$index."' and status=0";
+			   // die;
+                $sub_categories_q = mysqli_query($conn, "SELECT * FROM category WHERE user_id ='".$id."' and catparent='".$index."' and status=0");
                 while ($row = mysqli_fetch_assoc($sub_categories_q))
                 {
-                    if($row['category_name'] == "") continue;
-                    ?>
-                    <div class="<?php echo str_replace(" ","-",$category);?> category_filter">
-                        <button class="btn btn-primary" type="button" data-filter=".<?php echo str_replace(" ","-",$row['category_name']);?>"><?php echo str_replace("-", " ", $row['category_name']);?></button>
-                    </div>
-                <?php }
-                $index++;
+					
+					if($s==0)
+					{
+						 $sub_cat=$row['category_name'];
+					}
+                    //if($row['category_name'] == "") continue;
+					
+                    ?>  
+                     
+                        <button class="<?php echo str_replace(" ","-",$category);?> category_filter btn btn-primary" type="button" data-filter=".<?php echo str_replace(" ","-",$row['category_name']);?>"><?php  echo str_replace("-", " ", $row['category_name']);?></button>
+                      
+					<?php  $s++; }
+                $index++; 
+				$s++;
             }
             ?>
 
@@ -49,15 +66,15 @@ if($product['pro_ct'] > 0) { ?>
     </div>
 
 
-    <div class="grid row">
+    <div class="new_grid">
 
 
         <?php
         while ($row=mysqli_fetch_assoc($total_rows)){
             ?>
-            <?php   if(!empty($row['image'])) { ?>
+            <?php   if(!empty($row['image'])) {  $item_cat=$row['category']; ?>
 
-                <div class="well col-md-4 element-item <?php echo $row['category'];?>" >
+                <div class="well col-md-4 element-item <?php echo $row['category'];?>" style="<?php  if (strcasecmp($item_cat, $sub_cat) != 0) { echo "display:none;";} ?>">
                     <form action="product_view.php" method="post" class= "set_calss" data-id = "<?php echo $row['id'] ?>" data-code = "<?php echo $row['product_type'] ?>"  data-pr = "<?php echo $row['product_price'] ?>" style="background: #51d2b7;    padding: 12px;    border: 1px solid #e3e3e3;    border-radius: 4px;    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05); box-shadow: inset 0 1px 1px rgba(0,0,0,.05);">
                         <div class="container_test"> <?php
                             if(!empty($row['image']))
@@ -77,7 +94,7 @@ if($product['pro_ct'] > 0) { ?>
                         <input type="hidden" id="id" name="p_id" value="<?php echo $row['id'];?>">
 
                         <p class ="pro_name"><?php echo $row['product_name']; ?></p>
-                        <p class="mBt10"><?php echo 'Code: '.$row['product_type']; ?></p>
+                        <!-- <p class="mBt10"><?php echo 'Code: '.$row['product_type']; ?></p> -->
                         <p class="mBt10"><?php echo $row['remark']; ?></p>
                         <!--	<p><?php echo 'Category : '.str_replace("-", " ", $row['category']); ?></p>-->
                         <p class="mBt10"></p><?php echo 'Price : Rm'.number_format($row['product_price'],2); ?></p>
@@ -96,8 +113,10 @@ if($product['pro_ct'] > 0) { ?>
                                 <!--
                                 <label>Quantity</label>
                                 -->
-                                <label>X</label>
-                                <input type="number" value="1" class="quatity" name="quatity">
+                                <div style="display:grid;grid-template-columns:.2fr 1fr;align-content:center;vertical-align:center;">
+                                    <label>X</label>
+                                    <input type="number" value="1" class="quatity" name="quatity" style="height:1.5em">
+                                </div>
                             </p>
                         </div>
 
@@ -105,7 +124,8 @@ if($product['pro_ct'] > 0) { ?>
                 </div>
 
 
-            <?php  } } ?>
+            <?php  }} ?>
+			
     </div>
     <?php
 }

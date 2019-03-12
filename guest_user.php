@@ -7,6 +7,8 @@ $merchant_id = $_SESSION['merchant_id'];
 $guest_permission = mysqli_fetch_assoc(mysqli_query($conn, "SELECT guest_permission FROM `users` WHERE id = '$merchant_id'"))['guest_permission'];
 if(isset($_POST['submit'])) 
 {
+	// print_R($_POST);
+   // die;
    $m_id=$_POST['m_id']; 
    if( !isset( $m_id ) || $m_id == '' || $m_id == 0 ) {
         //echo('Something went wrong.');
@@ -14,6 +16,7 @@ if(isset($_POST['submit']))
    $date = date('Y-m-d H:i:s');
    $location =$_POST['location'];
    $table_type =$_POST['table_type'];
+    $section_type =$_POST['section_type'];
    $p_code = implode(',', $_POST['p_code']); 
    $qty_list = implode(',', $_POST['qty']);
    $p_price = implode(',', $_POST['p_price']);
@@ -21,7 +24,8 @@ if(isset($_POST['submit']))
    $qty_list = implode(',', $_POST['qty']);
    $p_price = implode(',', $_POST['p_price']);
    //~ $option = implode(',', $_POST['option']);
-   $option = implode('|', $_POST['option']);
+   $option = $_POST['options'];
+   // $option = implode('|', $_POST['option']);
    $stl_key = $_POST['stl_key'];
    $sql = "SELECT MAX(invoice_no) invoice_no
             FROM order_list_temp
@@ -29,12 +33,15 @@ if(isset($_POST['submit']))
   $invoice_no = mysqli_fetch_assoc(mysqli_query($conn, $sql))['invoice_no'];
   if($invoice_no == NULL) $invoice_no = 1;
   else $invoice_no += 1;
+  
    //if($stl_key == $_SESSION['stl_key']) {
         $u_id = 0;
 		$session_id = session_id();
 		$Delete = mysqli_query($conn, "DELETE FROM `order_list_temp` where session_id='$session_id' ") ;
-        $sql = "INSERT INTO order_list_temp SET product_id='$pro_id',  session_id='$session_id', user_id='', merchant_id='$m_id', quantity='$qty_list', amount='$p_price',product_code='$p_code', remark='$option', location='".$location."', table_type='".$table_type."',created_on='$date', invoice_no='$invoice_no'";
-      $test_method = mysqli_query($conn, $sql);
+        $sql = "INSERT INTO order_list_temp SET product_id='$pro_id',  session_id='$session_id', user_id='', merchant_id='$m_id', quantity='$qty_list', amount='$p_price',product_code='$p_code', remark='$option', location='".$location."', table_type='".$table_type."',section_type='$section_type',created_on='$date', invoice_no='$invoice_no'";
+   
+	 $test_method = mysqli_query($conn, $sql);
+	
       $_SESSION['stl_key'] = "empty";
       
     //}
@@ -43,7 +50,8 @@ if(isset($_POST['submit']))
    //~ $test_method = mysqli_query($conn, "INSERT INTO order_list SET product_id='$pro_id',merchant_id='$m_id',quantity='$qty_list',amount='$p_price',remark='$option',location='".$location."',table_type='".$table_type."',created_on='$date'");
    $order_total = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM `order_list_temp` WHERE id = (SELECT MAX(id) FROM `order_list_temp`)"));
    $_SESSION['order_id'] = $order_total['id'];
-
+   // print_R($order_total);
+   // die;
    $tttt_qt= $order_total['quantity'] ;
    $tt_amt= $order_total['amount'];
 
@@ -62,6 +70,8 @@ if(isset($_POST['submit']))
 
    if(isset($_POST['guest_login']))
    {
+	   // print_R($_POST);
+	   // die;
       $name = addslashes($_POST['name']);
       $o_id = addslashes($_POST['o_id']);
       $user_role = addslashes($_POST['user_role']);
@@ -83,7 +93,7 @@ if(isset($_POST['submit']))
        $check = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM users WHERE mobile_number='$cm' && user_roles= '$user_role'"));
    
        $check_user = isset($check) && isset($check['id']) ? $check['id'] : 0;
-    
+   
       if($check_user != 0){
 
          $check_order = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM order_list WHERE user_id='$check_user'"));
@@ -97,10 +107,10 @@ if(isset($_POST['submit']))
 
             if($error == ""){
                 $get_user = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM users WHERE mobile_number='$cm' && user_roles= '$user_role'"));
-                $user_id = $get_user['id'];
-            
+                 $user_id = $get_user['id'];
+              
                 $upt_tt = mysqli_query($conn, "UPDATE `order_list` SET `user_id`=' $user_id' WHERE id = '$o_id' ");
-
+              
                 $url="location:order_place.php?user_id=".$user_id."&order_id=".$o_id;
                  header($url);
                  

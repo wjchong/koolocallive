@@ -104,6 +104,7 @@ $(document).ready(function(){
         <th>Category</th>
 		    <th>Product Code</th>
 		    <th>Product Price</th>
+		    <th>Printer Ip Address</th>
 	  	  <th>Remark</th>
         <th>Image</th>
         <th>Code</th>
@@ -124,6 +125,7 @@ $(document).ready(function(){
 		   <td><?php echo $row['category'];  ?></td>
 		  <td><?php echo $row['product_type'];  ?></td>
 		  <td><?php echo $row['product_price'];  ?></td>
+		  <td><?php echo $row['print_ip_address'];  ?></td>
 		  <td><?php //echo $row['remark'];  ?></td>
 		  
       <?php
@@ -153,6 +155,7 @@ $(document).ready(function(){
    <?php }
       ?>
       <td class="pop_up" data-id="<?php echo $row['id']; ?>">Edit</td>  
+      <td class="sub_product" data-del="<?php echo $row['id']; ?>"><a href="<?php echo $site_url; ?>/sub_product.php?p_id=<?php echo $row['id']; ?>">Product Varieties</a></td>
       <td class="del" data-del="<?php echo $row['id']; ?>">Delete</td>
       </tr>
 	  
@@ -215,8 +218,12 @@ $(document).ready(function(){
       <label>Product Code</label>
     	<input type="text" name="product_type" id = "product_type" class="form-control" value="" required>
       </div>
+	    <div class="form-group">
+      <label>Print Ip Address</label>
+    	<input type="text" name="print_ip_address" id = "print_ip_address" class="form-control">
+      </div>
       <div class="form-group">
-      <label>Product Price</label>
+      <label>Product Price</label>  
     	<input type="text" name="product_price" id = "product_price" class="form-control" value="" required>
       </div>
       <div class="form-group">
@@ -308,6 +315,7 @@ $(document).ready(function(){
       $("#category").val(response.category);
       $("#product_type").val(response.product_type);
       $("#product_price").val(response.product_price);
+      $("#print_ip_address").val(response.print_ip_address);
       $("#remark").val(response.remark);
       $("#img").val(response.image);
       $("#img_code").val(response.img_code);

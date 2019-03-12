@@ -148,6 +148,7 @@ if(false){  //@isset($_SESSION['IsVIP']
 			<a href="javascript:void(0);" class="ripple"><span class="color-color-scheme"><span class="hide-menu">Category</span></span></a>
 			<ul class="list-unstyled sub-menu collapse" aria-expanded="true">
 				<li><a href="add_category.php">Add Category</a></li>
+				<li><a href="add_mater_category.php">Add Master</a></li>
 				<li><a href="view_category.php">View Category</a></li>
 			</ul>
         </li>
@@ -168,7 +169,8 @@ if(false){  //@isset($_SESSION['IsVIP']
        <!--chat/chat.php?sender=<?php echo $_SESSION['login'];?>!-->
         
         <li><a href="https://www.koofamilies.com/chat.php" target="_new"><span class="hide-menu"><?php echo $language["my_community"];?></span></a></li>
-        <?php 
+         
+	   <?php 
         if(isset($profile_data['user_roles']) && $profile_data['user_roles'] !=  '2') { ?>
      
 <!--
@@ -200,11 +202,16 @@ if(false){  //@isset($_SESSION['IsVIP']
         <?php  }
         if(isset($profile_data['user_roles']) && $profile_data['user_roles'] !=  '') { ?>
 		    <li><a href="kType.php"><span class="hide-menu">K Type</span></a></li>
+			  
         <?php } ?>
         <?php if(isset($profile_data['user_roles']) && $profile_data['user_roles'] ==  '1') { ?>
 		    <li><a href="profile.php"><span class="hide-menu"><?php echo $language['profile'];?></span></a></li>
         <?php } ?>
         <?php  if(isset($profile_data['user_roles']) && $profile_data['user_roles'] ==  '2') { ?>
+		
+		<li>
+        	<a href="sections.php"><?php echo $language['sections'];?></a>
+        </li>
 		<li><a href="profile_merchant.php"><span class="hide-menu"><?php echo $language['profile'];?></span></a></li>
 <?php } ?>
         <li><a href="investor_relations.php" class="investor_relation"><span class="hide-menu"><?php echo $language['investor_relations'];?></span><i class='fa fa-star' style="color:yellow;"></i></a></li>

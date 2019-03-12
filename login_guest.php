@@ -382,6 +382,12 @@ if(isset($_POST['forget_fund']))
 							<li class="resp-tab-item sign_up" aria-controls="tab_item-2" role="tab"><label>/</label><span>Forget Password</span></li>
                             <div class="clear"> </div>
                         </ul>
+							 <div class="login-bottom login-bottom1" style="width:100%;clear:both;">
+
+<a class="col-md-2" href="<?php echo $site_url;?>/facebook-login/fbconfig.php?via=login"><img src="img/login-cont-facebook.jpg" style=""></a>
+
+</div>
+  <hr class="first_test"> Or <hr class="second_test">
                         <div class="resp-tabs-container">   
                             <div class="tab-1 resp-tab-content" aria-labelledby="tab_item-0">
 

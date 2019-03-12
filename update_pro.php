@@ -8,8 +8,14 @@ include("config.php");
  $category=$_POST['category'];
  $product_type=$_POST['product_type'];
  $product_price=$_POST['product_price'];
+ $print_ip_address=$_POST['print_ip_address'];
  $remark=$_POST['remark'];
- 
+ if($category)
+ {
+	$categories = mysqli_query($conn, "SELECT id FROM category WHERE category_name ='".$category."'");
+	$categoryrow=mysqli_fetch_assoc($categories);
+	$category_id=$categoryrow['id'];
+ }
  	$image_pic =  $_FILES["image_pic"]["name"] != '' ? $_FILES["image_pic"]["name"] : $_POST['img']; 
     $image_code =  $_FILES["image_code"]["name"] != '' ? $_FILES["image_code"]["name"] : $_POST['img_code']; 
  
@@ -17,7 +23,7 @@ include("config.php");
   
 //~ mysqli_query($conn,"UPDATE products SET product_name='$productname', category='$category', product_type='$product_type' image='$image_pic' WHERE id='$id'");
  
- $tt = mysqli_query($conn,"UPDATE `products` SET `product_name`='$productname', category='$category' , product_type='$product_type', product_price='$product_price',remark = '$remark', image='$image_pic', code='$image_code' WHERE `id`=$id");
+ $tt = mysqli_query($conn,"UPDATE `products` SET `product_name`='$productname', category='$category' , product_type='$product_type', product_price='$product_price',print_ip_address='$print_ip_address',remark = '$remark', image='$image_pic', code='$image_code',category_id='$category_id' WHERE `id`=$id");
 
 //~ mysqli_query($conn,"UPDATE `products` SET `product_name`='ytyt',`category`='yty',`product_type`='tyt',`image`='yyytytyh.png' WHERE `id` = 4");
     // Check if file was uploaded without errors

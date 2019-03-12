@@ -4,7 +4,7 @@ $profile_data = isset($_SESSION['login']) ? mysqli_fetch_assoc(mysqli_query($con
 $session_id = session_id();
 if(isset($_POST['submit']))
 {
-
+     
  	$m_id=$_POST['m_id'];
  	$sql = "SELECT MAX(invoice_no) invoice_no
             FROM order_list
@@ -21,11 +21,12 @@ if(isset($_POST['submit']))
 	$date = date('Y-m-d H:i:s');
 	$location =$_POST['location'];
 	$table_type =$_POST['table_type'];
+	 $section_type =$_POST['section_type'];
 	$p_code = implode(',', $_POST['p_code']);
 	$pro_id = implode(',', $_POST['p_id']);
 	$qty_list = implode(',', $_POST['qty']);
 	$p_price = implode(',', $_POST['p_price']);
-	$option = implode('|', $_POST['option']);
+	$option = $_POST['options'];
 	$product_name =isset($_POST['product_name']) ? $_POST['product_name'] : '';
 	$product_code =isset($_POST['product_code']) ? $_POST['product_code'] : '';
 	
@@ -44,12 +45,16 @@ if(isset($_POST['submit']))
 		     $discount = "4%";
 		 }
 		// $session_id = session_id();
+		// echo $k_lock;
+		// echo $discount;
+		// die;   
         if(($k_lock == '1') && ($discount != '')){
 			
 			$Delete = mysqli_query($conn, "DELETE FROM `order_list_temp` where session_id='$session_id' ") ;
 			
-            $test_method = mysqli_query($conn, "INSERT INTO order_list_temp SET product_id='$pro_id',user_id='$u_id',merchant_id='$m_id',session_id='$session_id',quantity='$qty_list',product_code='$p_code',amount='$p_price',remark='$option',location='".$location."',table_type='".$table_type."',created_on='$date', invoice_no='$invoice_no'");
-	        $order_id = mysqli_insert_id($conn);
+             $test_method = mysqli_query($conn, "INSERT INTO order_list_temp SET product_id='$pro_id',user_id='$u_id',merchant_id='$m_id',session_id='$session_id',quantity='$qty_list',product_code='$p_code',amount='$p_price',remark='$option',location='".$location."',table_type='".$table_type."',section_type='$section_type',created_on='$date', invoice_no='$invoice_no'");
+	       
+			$order_id = mysqli_insert_id($conn);
         
             mysqli_query($conn, "INSERT INTO k1k2_history SET user_id='$u_id', merchant_id='$m_id', k_user='$user_kType', k_merchant='$merchant_kType', order_id='$order_id', discount='$discount'");
         
@@ -57,8 +62,9 @@ if(isset($_POST['submit']))
         }
         if($k_lock == '0'){
 			$Delete = mysqli_query($conn, "DELETE FROM `order_list_temp` where session_id='$session_id' ") ;
-            $test_method = mysqli_query($conn, "INSERT INTO order_list_temp SET product_id='$pro_id',user_id='$u_id',merchant_id='$m_id',session_id='$session_id',quantity='$qty_list',product_code='$p_code',amount='$p_price',remark='$option',location='".$location."',table_type='".$table_type."',created_on='$date', invoice_no='$invoice_no'");
-	        $order_id = mysqli_insert_id($conn);
+            $test_method = mysqli_query($conn, "INSERT INTO order_list_temp SET product_id='$pro_id',user_id='$u_id',merchant_id='$m_id',session_id='$session_id',quantity='$qty_list',product_code='$p_code',amount='$p_price',remark='$option',location='".$location."',table_type='".$table_type."',section_type='$section_type',created_on='$date', invoice_no='$invoice_no'");
+	      
+		   $order_id = mysqli_insert_id($conn);
         
             if($discount != ""){
 	            mysqli_query($conn, "INSERT INTO k1k2_history SET user_id='$u_id', merchant_id='$m_id', k_user='$user_kType', k_merchant='$merchant_kType', order_id='$order_id', discount='$discount'");
@@ -69,7 +75,7 @@ if(isset($_POST['submit']))
 	     $flag = 1;
 	 	if($stl_key == $_SESSION['stl_key']) {
 			$Delete = mysqli_query($conn, "DELETE FROM `order_list_temp` where session_id='$session_id' ") ;
-    		$test_method = mysqli_query($conn, "INSERT INTO order_list_temp SET product_id='$pro_id',user_id='$u_id',session_id='$session_id',merchant_id='$m_id',quantity='$qty_list',product_code='$p_code',amount='$p_price',remark='$option',location='".$location."',table_type='".$table_type."',created_on='$date', invoice_no='$invoice_no'");
+    		$test_method = mysqli_query($conn, "INSERT INTO order_list_temp SET product_id='$pro_id',user_id='$u_id',session_id='$session_id',merchant_id='$m_id',quantity='$qty_list',product_code='$p_code',amount='$p_price',remark='$option',location='".$location."',table_type='".$table_type."',section_type='$section_type',created_on='$date', invoice_no='$invoice_no'");
     		$_SESSION['stl_key'] = "empty";
         }
      }

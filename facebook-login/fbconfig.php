@@ -14,16 +14,22 @@ use Facebook\Entities\AccessToken;
 use Facebook\HttpClients\FacebookCurlHttpClient;
 use Facebook\HttpClients\FacebookHttpable;
 // init app with app id and secret
-FacebookSession::setDefaultApplication( '348820975669069','77e48ada4c63b6bcfc6651ea6a120b73' );
+// FacebookSession::setDefaultApplication( '348820975669069','77e48ada4c63b6bcfc6651ea6a120b73' );
+FacebookSession::setDefaultApplication('2309721359240776','dfee86672ff809614856847624cc67de');
 // login helper with redirect_uri
-    $helper = new FacebookRedirectLoginHelper('https://www.koofamilies.com/demo4/facebook-login/fbconfig.php' );
-try {
+    $helper = new FacebookRedirectLoginHelper('https://www.koofamilies.com/demo1/facebook-login/fbconfig.php' );
+try {  
   $session = $helper->getSessionFromRedirect();
 } catch( FacebookRequestException $ex ) {
+	
   // When Facebook returns an error
 } catch( Exception $ex ) {
+	
+	
   // When validation fails or other local issues
 }
+$past_url=$_SERVER['HTTP_REFERER'];
+
 // see if we have a session
 if ( isset( $session ) ) {
   // graph api request for user data
@@ -56,10 +62,20 @@ if ( isset( $session ) ) {
      //print_r($fbmemebrArray); die();
      
     $_SESSION['login'] = $fbmemebrArray['id'];
-   
-  header("Location: ../order_place.php");
+  
+	if(strpos($past_url, 'login.php') !== false) 
+	{  
+
+		header("Location: ../dashboard.php");
+	}
+	else
+	{
+	   header("Location: ../order_place.php");	
+	}
+  
 } else {
   $loginUrl = $helper->getLoginUrl();
+    // header("Location: ../dashboard.php");
  header("Location: ".$loginUrl);
 }
 ?>

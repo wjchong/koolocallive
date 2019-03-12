@@ -529,6 +529,13 @@ if(isset($_POST['forget_fund']))
 								<option value="malaysian" <?php if($_SESSION["langfile"] == "malaysian") echo "selected"?>>Malay</option>
 							</select>
 						</div>
+						
+								 <div class="login-bottom login-bottom1" style="width:100%;clear:both;">
+
+<a class="col-md-2" href="<?php echo $site_url;?>/facebook-login/fbconfig.php?via=login"><img src="img/login-cont-facebook.jpg" style=""></a>
+
+</div>
+  <hr class="first_test"> Or <hr class="second_test">
                         <ul class="resp-tabs-list">
                             <li class="resp-tab-item" aria-controls="tab_item-0" role="tab"><span><?php echo $language["login"];?></span></li>
                             <li class="resp-tab-item" aria-controls="tab_item-1" role="tab"><label>/</label><span><?php echo $language["signup"];?></span></li>
@@ -802,7 +809,8 @@ if(isset($_POST['forget_fund']))
 								          <br>
 								          <br>
                                  <button class="guest_user_bt" style="padding:15px;" onclick="location.href='<?php echo $site_url; ?>/merchant_find.php';"><?php echo $language["visitor_guest"];?></button>
-
+								 
+         
 
 <!--
                            <button class="guest_user_bt" style="padding:5px;" onclick="location.href='http://kooexchange.com/demo/guest_user.php';">GUEST USER</button>
